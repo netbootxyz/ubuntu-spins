@@ -1,6 +1,9 @@
 name: Process Ubuntu Mini ISO
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'  # Run daily at midnight UTC
@@ -70,11 +73,11 @@ jobs:
       - name: Generate json files
         run: |
           python3 scripts/generate_iso_json.py --config config/iso-settings.yaml --output-dir output/
-          
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: iso-artifacts
-          path: |
-            vmlinuz
-            new-initrd
+
+#      - name: Upload artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: iso-artifacts
+#          path: |
+#            vmlinuz
+#            new-initrd
