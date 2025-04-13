@@ -23,7 +23,7 @@ jobs:
         run: |
           git clone https://github.com/canonical/mini-iso-tools build/mini-iso-tools
           cd build/mini-iso-tools
-          cp ../../patches/json.c src/json.c
+          cp ../../patches/json.c json.c
           meson setup build
           ninja -C build
           ninja -C build install
