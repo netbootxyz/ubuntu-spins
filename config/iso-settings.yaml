@@ -1,0 +1,107 @@
+default_settings:
+  updated: "Thu, 27 Mar 2025 12:41:08 +0000"
+  datatype: "image-downloads"
+  format: "products:1.0"
+
+spin_groups:
+  ubuntu:
+    content_id: "com.ubuntu.releases:ubuntu"
+    spins:
+      - name: ubuntu
+        image_type: desktop
+        version: "24.04"
+        release: oracular
+        release_codename: "Noble Numbat"
+        release_title: "24.04"
+        architectures: 
+          - amd64
+        files:
+          iso:
+            path_template: "{{ release }}/{{ name }}-{{ version }}-{{ image_type }}-{{ arch }}.iso"
+            sha256: "ba76abf526b4c7ab22e8125cca69547f76559f703bd357c54bdf5d74be0bfd2b"
+            size: 4242739200
+
+  xubuntu:
+    content_id: "org.xubuntu:xubuntu"
+    spins:
+      - name: xubuntu
+        image_type: desktop
+        version: "24.04"
+        release: noble
+        release_codename: "Noble Numbat"
+        release_title: "24.04.2"
+        architectures: 
+          - amd64
+        files:
+          iso:
+            path_template: "{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{ arch }}.iso"
+            sha256: "ba76abf526b4c7ab22e8125cca69547f76559f703bd357c54bdf5d74be0bfd2b"
+            size: 4242739200
+
+  kylin:
+    content_id: "com.ubuntu.releases:xubuntu"
+    spins:
+      - name: xubuntu
+        image_type: desktop
+        version: "24.04"
+        release: noble
+        release_codename: "Noble Numbat"
+        release_title: "24.04"
+        architectures: 
+          - amd64
+        files:
+          iso:
+            path_template: "{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{ arch }}.iso"
+            sha256: "ba76abf526b4c7ab22e8125cca69547f76559f703bd357c54bdf5d74be0bfd2b"
+            size: 4242739200
+
+  ubuntu-budgie:
+    content_id: "org.ubuntubudgie:ubuntu-budgie"
+    spins:
+      - name: ubuntu-budgie
+        image_type: desktop
+        version: "24.04"
+        release: noble
+        release_codename: "Noble Numbat"
+        release_title: "24.04.2"
+        architectures: 
+          - amd64
+        files:
+          iso:
+            path_template: "{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{ arch }}.iso"
+            sha256: "0b9fd288f7ad2d3936187c7f9ebf74aa755068fa5c5dc33520f40b9ba88403a1"
+            size: 4294967296
+
+  lubuntu:
+    content_id: "me.lubuntu:lubuntu"
+    spins:
+      - name: lubuntu
+        image_type: desktop
+        version: "24.04"
+        release: noble
+        release_codename: "Noble Numbat"
+        release_title: "24.04.2"
+        architectures: 
+          - amd64
+        files:
+          iso:
+            path_template: "{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{ arch }}.iso"
+            sha256: "d29e07f791eec68f76521bd8fecd2fb15507c9aab9f8197979cbc70e117dacb1"
+            size: 4242739200
+
+  kbuntu:
+    content_id: "org.kubuntu:kubuntu"
+    spins:
+      - name: kubuntu
+        image_type: desktop
+        version: "24.04"
+        release: noble
+        release_codename: "Noble Numbat"
+        release_title: "24.04.2"
+        architectures: 
+          - amd64
+        files:
+          iso:
+            path_template: "{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{ arch }}.iso"
+            sha256: "ba76abe84c3cb8a9e91504fabbc4763adaacfee0ebd27ef988529dadafb9c53276fb4b"
+            size: 4242739200

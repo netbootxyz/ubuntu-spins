@@ -1,0 +1,80 @@
+name: Process Ubuntu Mini ISO
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
+
+jobs:
+  process-iso:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install required packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xorriso cpio xz-utils build-essential gcc make meson ninja-build
+
+      - name: Clone and build mini-iso-tools with patch
+        run: |
+          git clone https://github.com/canonical/mini-iso-tools build/mini-iso-tools
+          cd build/mini-iso-tools
+          cp ../../patches/json.c src/json.c
+          meson setup build
+          ninja -C build
+          ninja -C build install
+          cp /usr/lib/mini-iso-tools/iso-chooser-menu
+          make
+
+      - name: Download latest ISO
+        run: |
+          wget https://cdimage.ubuntu.com/ubuntu-mini-iso/noble/daily-live/current/noble-mini-iso-amd64.iso
+
+      - name: Extract VMlinuz and initrd
+        run: |
+          mkdir -p iso-extract
+          sudo mount -o loop noble-mini-iso-amd64.iso iso-extract
+          cp iso-extract/casper/vmlinuz .
+          cp iso-extract/casper/initrd .
+          sudo umount iso-extract
+
+      - name: Unpack initrd
+        run: |
+          mkdir -p initrd-unpack
+          cd initrd-unpack
+          unmkinitramfs ../initrd .
+
+      - name: Apply patches and copy binary
+        run: |
+          # Patch minit
+          patch initrd-unpack/usr/lib/minit < patches/minit.patch
+          # Patch iso-menu-session
+          patch initrd-unpack/main/usr/lib/mini-iso-tools/iso-menu-session < patches/iso-menu-session.patch
+          # Copy compiled binary
+          cp build/mini-iso-tools/bin/mini-iso-tools initrd-unpack/main/usr/bin/
+          cp /usr/lib/mini-iso-tools/iso-chooser-menu initrd-unpack/main/usr/lib/mini-iso-tools/
+
+      - name: Repack initrd
+        run: |
+          cd initrd-unpack
+          cd early
+          find . -print0 | cpio --null --create --format=newc > ../../new-initrd
+          cd ../early2
+          find . -print0 | cpio --null --create --format=newc >> ../../new-initrd
+          cd ../early3
+          find . -print0 | cpio --null --create --format=newc >> ../../new-initrd
+          cd ../main
+          find . | cpio --create --format=newc | xz --format=lzma >> ../../new-initrd
+
+      - name: Generate json files
+        run: |
+          python3 scripts/generate_iso_json.py --config config/iso-settings.yaml --output-dir output/
+          
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: iso-artifacts
+          path: |
+            vmlinuz
+            new-initrd
