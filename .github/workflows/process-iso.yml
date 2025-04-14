@@ -25,10 +25,8 @@ jobs:
           cd build/mini-iso-tools
           cp ../../patches/json.c json.c
           meson setup build
-          ninja -C build
-          ninja -C build install
-          cp /usr/lib/mini-iso-tools/iso-chooser-menu
-          make
+          sudo ninja -C build
+          sudo ninja -C build install
 
       - name: Download latest ISO
         run: |
