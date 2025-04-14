@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+
+# ensures we have the unicode glyphs - half-blocks, right arrow
+/usr/bin/setfont /usr/lib/mini-iso-tools/subiquity.psf
+
+mkdir -p /tmp/mini-iso-menu
+
+urls=""
+urls="$urls https://releases.ubuntu.com/streams/v1/com.ubuntu.releases:ubuntu-server.json"
+urls="$urls https://releases.ubuntu.com/streams/v1/com.ubuntu.releases:ubuntu.json"
+urls="$urls http://10.0.100.10:8080/xyz.netboot.boot:ubuntu-spins-budgie.json"
+urls="$urls http://10.0.100.10:8080/xyz.netboot.boot:ubuntu-spins-kubuntu.json"
+urls="$urls http://10.0.100.10:8080/xyz.netboot.boot:ubuntu-spins-xubuntu.json"
+urls="$urls http://10.0.100.10:8080/xyz.netboot.boot:ubuntu-spins-lubuntu.json"
+
+for url in $urls; do
+    wget -P /tmp/mini-iso-menu "$url"
+done
+
+/usr/lib/mini-iso-tools/iso-chooser-menu /mini-iso-menu.vars /tmp/mini-iso-menu/*

@@ -48,12 +48,7 @@ jobs:
 
       - name: Apply patches and copy binary
         run: |
-          # Patch minit
-          patch initrd-unpack/usr/lib/minit < patches/minit.patch
-          # Patch iso-menu-session
-          patch initrd-unpack/main/usr/lib/mini-iso-tools/iso-menu-session < patches/iso-menu-session.patch
-          # Copy compiled binary
-          cp build/mini-iso-tools/bin/mini-iso-tools initrd-unpack/main/usr/bin/
+          cp iso-menu-session initrd-unpack/main/usr/lib/mini-iso-tools/
           cp /usr/lib/mini-iso-tools/iso-chooser-menu initrd-unpack/main/usr/lib/mini-iso-tools/
 
       - name: Repack initrd
