@@ -17,7 +17,7 @@ jobs:
       - name: Install required packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y xorriso cpio xz-utils build-essential gcc make meson ninja-build libjson-c-dev cmake
+          sudo apt-get install -y xorriso cpio xz-utils build-essential gcc make meson ninja-build libjson-c-dev cmake libcmocka-dev  
 
       - name: Clone and build mini-iso-tools with patch
         run: |
