@@ -43,8 +43,9 @@ jobs:
       - name: Unpack initrd
         run: |
           mkdir -p initrd-unpack
+          mv initrd initrd.orig
           cd initrd-unpack
-          unmkinitramfs ../initrd .
+          unmkinitramfs ../initrd.orig .
 
       - name: Apply patches and copy binary
         run: |
