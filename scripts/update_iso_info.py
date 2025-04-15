@@ -8,6 +8,7 @@ import tempfile
 import subprocess
 import argparse
 import logging
+import shutil
 from datetime import datetime
 from urllib.parse import urljoin
 import re
@@ -21,6 +22,16 @@ logger = logging.getLogger(__name__)
 
 # Base URLs for different Ubuntu spins
 MIRROR_URLS = {
+    "ubuntu": "https://releases.ubuntu.com/",
+    "xubuntu": "https://cdimage.ubuntu.com/xubuntu/releases/",
+    "lubuntu": "https://cdimage.ubuntu.com/lubuntu/releases/",
+    "kubuntu": "https://cdimage.ubuntu.com/kubuntu/releases/",
+    "ubuntu-budgie": "https://cdimage.ubuntu.com/ubuntu-budgie/releases/",
+    # Add more spins as needed
+}
+
+# Base URLs for torrent files
+TORRENT_URLS = {
     "ubuntu": "https://releases.ubuntu.com/",
     "xubuntu": "https://cdimage.ubuntu.com/xubuntu/releases/",
     "lubuntu": "https://cdimage.ubuntu.com/lubuntu/releases/",
@@ -67,9 +78,9 @@ def get_latest_release_version(spin_name):
         logger.error(f"Error fetching version for {spin_name}: {e}")
         return None
 
-def download_iso(url, temp_dir):
-    """Download an ISO file to a temporary directory."""
-    logger.info(f"Downloading ISO from {url}")
+def download_iso_direct(url, temp_dir):
+    """Download an ISO file directly to a temporary directory."""
+    logger.info(f"Downloading ISO directly from {url}")
     local_filename = os.path.join(temp_dir, os.path.basename(url))
     
     try:
@@ -99,6 +110,84 @@ def download_iso(url, temp_dir):
     except requests.RequestException as e:
         logger.error(f"Error downloading ISO: {e}")
         return None
+
+def download_via_torrent(torrent_url, temp_dir):
+    """Download an ISO file using transmission-cli from a torrent URL."""
+    logger.info(f"Downloading ISO via torrent from {torrent_url}")
+    
+    # First download the torrent file
+    torrent_file = os.path.join(temp_dir, "ubuntu.torrent")
+    try:
+        response = requests.get(torrent_url, stream=True)
+        response.raise_for_status()
+        
+        with open(torrent_file, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+        
+        logger.info(f"Torrent file downloaded to {torrent_file}")
+        
+        # Create a script to kill transmission-cli when download completes
+        kill_script = os.path.join(temp_dir, "kill_transmission.sh")
+        with open(kill_script, 'w') as f:
+            f.write("#!/bin/bash\nkillall transmission-cli")
+        os.chmod(kill_script, 0o755)
+        
+        # Check if transmission-cli is installed
+        if shutil.which("transmission-cli") is None:
+            logger.error("transmission-cli is not installed. Please install it with 'brew install transmission-cli' or appropriate package manager.")
+            return None
+        
+        # Run transmission-cli to download the ISO
+        logger.info("Starting torrent download with transmission-cli...")
+        subprocess.run(["transmission-cli", "-f", kill_script, "-w", temp_dir, torrent_file], check=True)
+        
+        # Find the ISO file in the temporary directory
+        iso_files = [f for f in os.listdir(temp_dir) if f.endswith('.iso')]
+        if not iso_files:
+            logger.error("No ISO file found after torrent download completed")
+            return None
+        
+        iso_file = os.path.join(temp_dir, iso_files[0])
+        logger.info(f"Torrent download completed: {iso_file}")
+        return iso_file
+    
+    except requests.RequestException as e:
+        logger.error(f"Error downloading torrent file: {e}")
+        return None
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error running transmission-cli: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"Unexpected error during torrent download: {e}")
+        return None
+
+def download_iso(url, temp_dir, use_torrent=False):
+    """Download an ISO file to a temporary directory, using torrent if specified."""
+    if use_torrent:
+        # Attempt to construct a torrent URL from the direct ISO URL
+        # This assumes torrent files are available at the same location with .torrent extension
+        torrent_url = re.sub(r'\.iso$', '.iso.torrent', url)
+        
+        # Try to download via torrent
+        try:
+            logger.info(f"Attempting to download via torrent: {torrent_url}")
+            # First check if the torrent file exists
+            response = requests.head(torrent_url)
+            if response.status_code == 200:
+                result = download_via_torrent(torrent_url, temp_dir)
+                if result:
+                    return result
+                else:
+                    logger.warning("Torrent download failed, falling back to direct download")
+            else:
+                logger.warning(f"Torrent file not found at {torrent_url}, falling back to direct download")
+        except Exception as e:
+            logger.warning(f"Error during torrent download attempt: {e}. Falling back to direct download.")
+    
+    # Fall back to direct download if torrent fails or is not requested
+    return download_iso_direct(url, temp_dir)
 
 def calculate_sha256(file_path):
     """Calculate SHA256 hash of a file."""
@@ -176,7 +265,7 @@ def resolve_iso_url(spin, latest_version):
     
     return urljoin(base_url, path)
 
-def check_and_update_spins(config_file, dry_run=False, specific_version=None, specific_spin=None):
+def check_and_update_spins(config_file, dry_run=False, specific_version=None, specific_spin=None, use_torrent=False):
     """Check for updates to Ubuntu spins and update the configuration."""
     config_data = load_yaml_config(config_file)
     updated_spins = []
@@ -224,7 +313,7 @@ def check_and_update_spins(config_file, dry_run=False, specific_version=None, sp
                     iso_url = resolve_iso_url(spin, target_version)
                     spin["version"] = original_version  # Restore original version
                     
-                    iso_file = download_iso(iso_url, temp_dir)
+                    iso_file = download_iso(iso_url, temp_dir, use_torrent)
                     
                     if not iso_file:
                         logger.error(f"Failed to download ISO for {spin['name']}, skipping")
@@ -256,11 +345,12 @@ def main():
     parser.add_argument('--dry-run', action='store_true', help='Check for updates without downloading ISOs or making changes')
     parser.add_argument('--version', help='Specify a specific Ubuntu version to check/update (e.g., 22.04)')
     parser.add_argument('--spin', help='Specify a specific spin to check/update (e.g., ubuntu, kubuntu, xubuntu)')
+    parser.add_argument('--use-torrent', action='store_true', help='Use torrent to download ISOs when available (requires transmission-cli)')
     
     args = parser.parse_args()
     
     logger.info("Starting ISO information update process")
-    check_and_update_spins(args.config, args.dry_run, args.version, args.spin)
+    check_and_update_spins(args.config, args.dry_run, args.version, args.spin, args.use_torrent)
     logger.info("Update process completed")
 
 if __name__ == '__main__':
