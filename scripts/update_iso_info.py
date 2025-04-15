@@ -111,6 +111,16 @@ def download_iso_direct(url, temp_dir):
         logger.error(f"Error downloading ISO: {e}")
         return None
 
+def cleanup_files(file_paths):
+    """Clean up downloaded files (ISOs and torrents) after processing."""
+    for file_path in file_paths:
+        if file_path and os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"Cleaned up file: {file_path}")
+            except OSError as e:
+                logger.warning(f"Could not remove file {file_path}: {e}")
+
 def download_via_torrent(torrent_url, temp_dir):
     """Download an ISO file using transmission-cli from a torrent URL."""
     logger.info(f"Downloading ISO via torrent from {torrent_url}")
@@ -137,6 +147,7 @@ def download_via_torrent(torrent_url, temp_dir):
         # Check if transmission-cli is installed
         if shutil.which("transmission-cli") is None:
             logger.error("transmission-cli is not installed. Please install it with 'brew install transmission-cli' or appropriate package manager.")
+            cleanup_files([torrent_file, kill_script])
             return None
         
         # Run transmission-cli to download the ISO
@@ -147,21 +158,28 @@ def download_via_torrent(torrent_url, temp_dir):
         iso_files = [f for f in os.listdir(temp_dir) if f.endswith('.iso')]
         if not iso_files:
             logger.error("No ISO file found after torrent download completed")
+            cleanup_files([torrent_file, kill_script])
             return None
         
         iso_file = os.path.join(temp_dir, iso_files[0])
 
         logger.info(f"Torrent download completed: {iso_file}")
+        
+        # Clean up torrent file but keep ISO for processing
+        cleanup_files([torrent_file, kill_script])
         return iso_file
     
     except requests.RequestException as e:
         logger.error(f"Error downloading torrent file: {e}")
+        cleanup_files([torrent_file])
         return None
     except subprocess.CalledProcessError as e:
         logger.error(f"Error running transmission-cli: {e}")
+        cleanup_files([torrent_file, kill_script])
         return None
     except Exception as e:
         logger.error(f"Unexpected error during torrent download: {e}")
+        cleanup_files([torrent_file, kill_script])
         return None
 
 def download_iso(url, temp_dir, use_torrent=False):
@@ -321,10 +339,18 @@ def check_and_update_spins(config_file, dry_run=False, specific_version=None, sp
                         continue
                     
                     # Update the spin information
-                    if update_spin_info(config_data, spin_group, spin, iso_file):
-                        # Update the version in the configuration
-                        spin["version"] = target_version
-                        updated_spins.append(spin["name"])
+                    updated = False
+                    try:
+                        # Update the spin information with SHA256 and file size
+                        updated = update_spin_info(config_data, spin_group, spin, iso_file)
+                        if updated:
+                            # Update the version in the configuration
+                            spin["version"] = target_version
+                            updated_spins.append(spin["name"])
+                    finally:
+                        # Always clean up the ISO file after processing, regardless of success
+                        cleanup_files([iso_file])
+                        logger.info(f"Cleaned up ISO file after extracting information")
                 else:
                     logger.info(f"{spin['name']} is already at the latest version: {target_version}")
     
