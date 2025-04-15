@@ -131,7 +131,7 @@ def download_via_torrent(torrent_url, temp_dir):
         # Create a script to kill transmission-cli when download completes
         kill_script = os.path.join(temp_dir, "kill_transmission.sh")
         with open(kill_script, 'w') as f:
-            f.write("#!/bin/bash\nkillall transmission-cli")
+            f.write("#!/bin/bash\nkillall transmission-cli\nexit 0")
         os.chmod(kill_script, 0o755)
         
         # Check if transmission-cli is installed
@@ -141,7 +141,7 @@ def download_via_torrent(torrent_url, temp_dir):
         
         # Run transmission-cli to download the ISO
         logger.info("Starting torrent download with transmission-cli...")
-        subprocess.run(["transmission-cli", "-f", kill_script, "-w", temp_dir, torrent_file], check=True)
+        subprocess.run(["transmission-cli", "-f", kill_script, "-w", temp_dir, torrent_file], check=False)
         
         # Find the ISO file in the temporary directory
         iso_files = [f for f in os.listdir(temp_dir) if f.endswith('.iso')]
@@ -150,6 +150,7 @@ def download_via_torrent(torrent_url, temp_dir):
             return None
         
         iso_file = os.path.join(temp_dir, iso_files[0])
+
         logger.info(f"Torrent download completed: {iso_file}")
         return iso_file
     
