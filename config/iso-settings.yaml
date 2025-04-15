@@ -1,5 +1,5 @@
 default_settings:
-  updated: Tue, 15 Apr 2025 03:11:33 +0000
+  updated: Tue, 15 Apr 2025 06:37:17 +0000
   datatype: image-downloads
   format: products:1.0
 spin_groups:
@@ -8,7 +8,7 @@ spin_groups:
     spins:
     - name: ubuntu
       image_type: desktop
-      version: '24.04'
+      version: 24.04.2
       release: oracular
       release_codename: Noble Numbat
       release_title: '24.04'
@@ -18,14 +18,14 @@ spin_groups:
         iso:
           path_template: '{{ release }}/{{ name }}-{{ version }}-{{ image_type }}-{{
             arch }}.iso'
-          sha256: ba76abf526b4c7ab22e8125cca69547f76559f703bd357c54bdf5d74be0bfd2b
-          size: 4242739200
+          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
+          size: 6343219200
   xubuntu:
     content_id: org.xubuntu:xubuntu
     spins:
     - name: xubuntu
       image_type: desktop
-      version: '24.04'
+      version: 24.04.2
       release: noble
       release_codename: Noble Numbat
       release_title: 24.04.2
@@ -42,7 +42,7 @@ spin_groups:
     spins:
     - name: xubuntu
       image_type: desktop
-      version: '24.04'
+      version: 24.04.2
       release: noble
       release_codename: Noble Numbat
       release_title: '24.04'
@@ -59,7 +59,7 @@ spin_groups:
     spins:
     - name: ubuntu-budgie
       image_type: desktop
-      version: '24.04'
+      version: 24.04.2
       release: noble
       release_codename: Noble Numbat
       release_title: 24.04.2
@@ -70,13 +70,13 @@ spin_groups:
           path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
             }}-{{ arch }}.iso'
           sha256: 0b9fd288f7ad2d3936187c7f9ebf74aa755068fa5c5dc33520f40b9ba88403a1
-          size: 4294967296
+          size: 4248414208
   lubuntu:
     content_id: me.lubuntu:lubuntu
     spins:
     - name: lubuntu
       image_type: desktop
-      version: '24.04'
+      version: 24.04.2
       release: noble
       release_codename: Noble Numbat
       release_title: 24.04.2
@@ -87,7 +87,7 @@ spin_groups:
           path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
             }}-{{ arch }}.iso'
           sha256: d29e07f791eec68f76521bd8fecd2fb15507c9aab9f8197979cbc70e117dacb1
-          size: 4242739200
+          size: 3352426496
   kbuntu:
     content_id: org.kubuntu:kubuntu
     spins:
