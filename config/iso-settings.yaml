@@ -15,7 +15,7 @@ spin_groups:
       - amd64
       files:
         iso:
-          path_template: '{{ release }}/{{ name }}-{{ version }}-{{ image_type }}-{{
+          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
             arch }}.iso'
           sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
           size: 6343219200
@@ -32,7 +32,7 @@ spin_groups:
       - amd64
       files:
         iso:
-          path_template: '{{ release }}/{{ name }}-{{ version }}-{{ image_type }}-{{
+          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
             arch }}.iso'
           sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
           size: 6343219200
@@ -49,7 +49,7 @@ spin_groups:
       - amd64
       files:
         iso:
-          path_template: '{{ release }}/{{ name }}-{{ version }}-{{ image_type }}-{{
+          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
             arch }}.iso'
           sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
           size: 6343219200
@@ -66,7 +66,7 @@ spin_groups:
       - amd64
       files:
         iso:
-          path_template: '{{ release }}/{{ name }}-{{ version }}-{{ image_type }}-{{
+          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
             arch }}.iso'
           sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
           size: 6343219200
@@ -83,7 +83,7 @@ spin_groups:
       - amd64
       files:
         iso:
-          path_template: '{{ release }}/{{ name }}-{{ version }}-{{ image_type }}-{{
+          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
             arch }}.iso'
           sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
           size: 6343219200
