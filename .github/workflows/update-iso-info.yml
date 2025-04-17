@@ -95,6 +95,3 @@ jobs:
             4. Updated the YAML configuration
             
             Please review the changes before merging.
-          labels: |
-            automated-pr
-            iso-update
