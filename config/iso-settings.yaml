@@ -1,15 +1,82 @@
 default_settings:
-  updated: Tue, 15 Apr 2025 06:37:17 +0000
   datatype: image-downloads
   format: products:1.0
 spin_groups:
+  ubuntu-unity:
+    content_id: org.ubuntuunity:ubuntu-unity
+    spins:
+    - name: ubuntu-unity
+      image_type: desktop
+      version: 24.04.2
+      release: noble
+      release_codename: Noble Numbat
+      release_title: '24.04'
+      architectures:
+      - amd64
+      files:
+        iso:
+          path_template: '{{ release }}/{{ name }}-{{ version }}-{{ image_type }}-{{
+            arch }}.iso'
+          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
+          size: 6343219200
+  ubuntu-studio:
+    content_id: org.ubuntustudio:ubuntu-studio
+    spins:
+    - name: ubuntustudio
+      image_type: desktop
+      version: 24.04.2
+      release: noble
+      release_codename: Noble Numbat
+      release_title: '24.04'
+      architectures:
+      - amd64
+      files:
+        iso:
+          path_template: '{{ release }}/{{ name }}-{{ version }}-{{ image_type }}-{{
+            arch }}.iso'
+          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
+          size: 6343219200
+  ubuntu-mate:
+    content_id: org.ubuntu-mate:ubuntu-mate
+    spins:
+    - name: ubuntu-mate
+      image_type: desktop
+      version: 24.04.2
+      release: noble
+      release_codename: Noble Numbat
+      release_title: '24.04'
+      architectures:
+      - amd64
+      files:
+        iso:
+          path_template: '{{ release }}/{{ name }}-{{ version }}-{{ image_type }}-{{
+            arch }}.iso'
+          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
+          size: 6343219200
+  edubuntu:
+    content_id: org.edubuntu:edubuntu
+    spins:
+    - name: ubuntu
+      image_type: desktop
+      version: 24.04.2
+      release: noble
+      release_codename: Noble Numbat
+      release_title: '24.04'
+      architectures:
+      - amd64
+      files:
+        iso:
+          path_template: '{{ release }}/{{ name }}-{{ version }}-{{ image_type }}-{{
+            arch }}.iso'
+          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
+          size: 6343219200
   ubuntu:
     content_id: com.ubuntu.releases:ubuntu
     spins:
     - name: ubuntu
       image_type: desktop
       version: 24.04.2
-      release: oracular
+      release: noble
       release_codename: Noble Numbat
       release_title: '24.04'
       architectures:
@@ -37,10 +104,10 @@ spin_groups:
             }}-{{ arch }}.iso'
           sha256: ba76abf526b4c7ab22e8125cca69547f76559f703bd357c54bdf5d74be0bfd2b
           size: 4242739200
-  kylin:
-    content_id: com.ubuntu.releases:xubuntu
+  ubuntu-kylin:
+    content_id: com.ubuntukylin:ubuntukylin
     spins:
-    - name: xubuntu
+    - name: kylin
       image_type: desktop
       version: 24.04.2
       release: noble

@@ -27,6 +27,11 @@ MIRROR_URLS = {
     "lubuntu": "https://cdimage.ubuntu.com/lubuntu/releases/",
     "kubuntu": "https://cdimage.ubuntu.com/kubuntu/releases/",
     "ubuntu-budgie": "https://cdimage.ubuntu.com/ubuntu-budgie/releases/",
+    "edubuntu": "https://cdimage.ubuntu.com/edubuntu/releases/",
+    "ubuntu-mate": "https://cdimage.ubuntu.com/ubuntu-mate/releases/",
+    "ubuntu-studio": "https://cdimage.ubuntu.com/ubuntustudio/releases/",
+    "ubuntu-unity": "https://cdimage.ubuntu.com/ubuntu-unity/releases/",
+    "ubuntu-kylin": "https://cdimage.ubuntu.com/ubuntukylin/releases/",
     # Add more spins as needed
 }
 
@@ -37,6 +42,11 @@ TORRENT_URLS = {
     "lubuntu": "https://cdimage.ubuntu.com/lubuntu/releases/",
     "kubuntu": "https://cdimage.ubuntu.com/kubuntu/releases/",
     "ubuntu-budgie": "https://cdimage.ubuntu.com/ubuntu-budgie/releases/",
+    "edubuntu": "https://cdimage.ubuntu.com/edubuntu/releases/",
+    "ubuntu-mate": "https://cdimage.ubuntu.com/ubuntu-mate/releases/",
+    "ubuntu-studio": "https://cdimage.ubuntu.com/ubuntustudio/releases/",
+    "ubuntu-unity": "https://cdimage.ubuntu.com/ubuntu-unity/releases/",
+    "ubuntu-kylin": "https://cdimage.ubuntu.com/ubuntukylin/releases/",
     # Add more spins as needed
 }
 
