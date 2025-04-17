@@ -15,10 +15,10 @@ spin_groups:
       - amd64
       files:
         iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
-            arch }}.iso'
-          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
-          size: 6343219200
+          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
+            }}-{{ arch }}.iso'
+          sha256: 52d9944c1616ebe4b81c83a126037623452223c8240d014784178149c4c27dbc
+          size: 3567362048
   ubuntu-studio:
     content_id: org.ubuntustudio:ubuntu-studio
     spins:
@@ -32,8 +32,8 @@ spin_groups:
       - amd64
       files:
         iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
-            arch }}.iso'
+          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
+            }}-{{ arch }}.iso'
           sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
           size: 6343219200
   ubuntu-mate:
@@ -49,10 +49,10 @@ spin_groups:
       - amd64
       files:
         iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
-            arch }}.iso'
-          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
-          size: 6343219200
+          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
+            }}-{{ arch }}.iso'
+          sha256: ec1399cf90678c29ee1f80055826b21a3d90f59d50d154e5ea70b1931ce909c9
+          size: 4301398016
   edubuntu:
     content_id: org.edubuntu:edubuntu
     spins:
@@ -66,8 +66,8 @@ spin_groups:
       - amd64
       files:
         iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
-            arch }}.iso'
+          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
+            }}-{{ arch }}.iso'
           sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
           size: 6343219200
   ubuntu:
@@ -83,8 +83,8 @@ spin_groups:
       - amd64
       files:
         iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
-            arch }}.iso'
+          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
+            }}-{{ arch }}.iso'
           sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
           size: 6343219200
   xubuntu:
