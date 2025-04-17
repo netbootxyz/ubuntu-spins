@@ -1,6 +1,7 @@
 default_settings:
   datatype: image-downloads
   format: products:1.0
+  updated: Thu, 17 Apr 2025 07:02:45 +0000
 spin_groups:
   ubuntu-unity:
     content_id: org.ubuntuunity:ubuntu-unity
