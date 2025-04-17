@@ -16,7 +16,6 @@ def generate_json_for_spin_group(group_name, group_data, default_settings, outpu
         "datatype": default_settings["datatype"],
         "format": default_settings["format"],
         "products": {},
-        "updated": default_settings["updated"]
     }
     
     for spin in group_data["spins"]:
