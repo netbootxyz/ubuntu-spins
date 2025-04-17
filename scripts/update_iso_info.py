@@ -244,9 +244,6 @@ def update_spin_info(config_data, spin_group, spin, iso_file):
             s["files"]["iso"]["sha256"] = sha256
             s["files"]["iso"]["size"] = file_size
             
-            # Update the updated timestamp
-            config_data["default_settings"]["updated"] = datetime.now().strftime("%a, %d %b %Y %H:%M:%S +0000")
-            
             return True
     
     return False
