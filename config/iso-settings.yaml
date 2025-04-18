@@ -1,315 +1,134 @@
-default_settings:
+default_settings: &default_settings
   datatype: image-downloads
   format: products:1.0
-  updated: Thu, 17 Apr 2025 07:02:45 +0000
+
+# Define common versions
+versions:
+  noble: &noble_lts
+    version: 24.04.2
+    release: noble
+    release_codename: Noble Numbat
+    release_title: '24.04.2'
+  noble_current: &noble_current
+    version: 25.04
+    release: noble
+    release_codename: Plucky Puffin
+    release_title: '25.04'
+
+# Define common file templates
+file_templates:
+  desktop_iso: &desktop_iso_template
+    path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{ arch }}.iso'
+
+# Define common architectures
+arch_amd64: &arch_amd64
+  architectures:
+    - amd64
+
+# Base spin template
+base_spin: &base_spin
+  image_type: desktop
+  <<: *arch_amd64
+  files:
+    iso: *desktop_iso_template
+
 spin_groups:
   ubuntu-unity:
     content_id: org.ubuntuunity:ubuntu-unity
     spins:
-    - name: ubuntu-unity
-      image_type: desktop
-      version: 25.04
-      release: noble
-      release_codename: Plucky Puffin
-      release_title: '25.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
-            arch }}.iso'
-          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
-          size: 6343219200
-    - name: ubuntu-unity
-      image_type: desktop
-      version: 24.04.2
-      release: noble
-      release_codename: Noble Numbat
-      release_title: '24.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: 52d9944c1616ebe4b81c83a126037623452223c8240d014784178149c4c27dbc
-          size: 3567362048
+      - name: ubuntu-unity
+        <<: *base_spin
+        <<: *noble_current
+      - name: ubuntu-unity
+        <<: *base_spin
+        <<: *noble_lts
+
   ubuntu-studio:
     content_id: org.ubuntustudio:ubuntu-studio
     spins:
-    - name: ubuntustudio
-      image_type: desktop
-      version: 25.04
-      release: noble
-      release_codename: Plucky Puffin
-      release_title: '25.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
-            arch }}.iso'
-          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
-          size: 6343219200
-    - name: ubuntustudio
-      image_type: desktop
-      version: 24.04.2
-      release: noble
-      release_codename: Noble Numbat
-      release_title: '24.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
-          size: 6343219200
+      - name: ubuntustudio
+        <<: *base_spin
+        <<: *noble_current
+      - name: ubuntustudio
+        <<: *base_spin
+        <<: *noble_lts
+
   ubuntu-mate:
     content_id: org.ubuntu-mate:ubuntu-mate
     spins:
-    - name: ubuntu-mate
-      image_type: desktop
-      version: 25.04
-      release: noble
-      release_codename: Plucky Puffin
-      release_title: '25.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
-            arch }}.iso'
-          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
-          size: 6343219200
-    - name: ubuntu-mate
-      image_type: desktop
-      version: 24.04.2
-      release: noble
-      release_codename: Noble Numbat
-      release_title: '24.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: ec1399cf90678c29ee1f80055826b21a3d90f59d50d154e5ea70b1931ce909c9
-          size: 4301398016
+      - name: ubuntu-mate
+        <<: *base_spin
+        <<: *noble_current
+      - name: ubuntu-mate
+        <<: *base_spin
+        <<: *noble_lts
+
   edubuntu:
     content_id: org.edubuntu:edubuntu
     spins:
-    - name: edubuntu
-      image_type: desktop
-      version: 25.04
-      release: noble
-      release_codename: Plucky Puffin
-      release_title: '25.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
-            arch }}.iso'
-          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
-          size: 6343219200
-    - name: edubuntu
-      image_type: desktop
-      version: 24.04.2
-      release: noble
-      release_codename: Noble Numbat
-      release_title: '24.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
-          size: 6343219200
+      - name: edubuntu
+        <<: *base_spin
+        <<: *noble_current
+      - name: edubuntu
+        <<: *base_spin
+        <<: *noble_lts
+
   ubuntu:
     content_id: com.ubuntu.releases:ubuntu
     spins:
-    - name: ubuntu
-      image_type: desktop
-      version: 25.04
-      release: noble
-      release_codename: Plucky Puffin
-      release_title: '25.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{
-            arch }}.iso'
-          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
-          size: 6343219200
-    - name: ubuntu
-      image_type: desktop
-      version: 24.04.2
-      release: noble
-      release_codename: Noble Numbat
-      release_title: '24.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: d7fe3d6a0419667d2f8eff12796996328daa2d4f90cd9f87aa9371b362f987bf
-          size: 6343219200
+      - name: ubuntu
+        <<: *base_spin
+        <<: *noble_current
+      - name: ubuntu
+        <<: *base_spin
+        <<: *noble_lts
+
   xubuntu:
     content_id: org.xubuntu:xubuntu
     spins:
-    - name: xubuntu
-      image_type: desktop
-      version: 25.04
-      release: noble
-      release_codename: Plucky Puffin
-      release_title: '25.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: ba76abf526b4c7ab22e8125cca69547f76559f703bd357c54bdf5d74be0bfd2b
-          size: 4242739200
-    - name: xubuntu
-      image_type: desktop
-      version: 24.04.2
-      release: noble
-      release_codename: Noble Numbat
-      release_title: '24.04.2'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: ba76abf526b4c7ab22e8125cca69547f76559f703bd357c54bdf5d74be0bfd2b
-          size: 4242739200
+      - name: xubuntu
+        <<: *base_spin
+        <<: *noble_current
+      - name: xubuntu
+        <<: *base_spin
+        <<: *noble_lts
+
   ubuntu-kylin:
     content_id: com.ubuntukylin:ubuntukylin
     spins:
-    - name: kylin
-      image_type: desktop
-      version: 25.04
-      release: noble
-      release_codename: Plucky Puffin
-      release_title: '25.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: ba76abf526b4c7ab22e8125cca69547f76559f703bd357c54bdf5d74be0bfd2b
-          size: 4242739200
-    - name: kylin
-      image_type: desktop
-      version: 24.04.2
-      release: noble
-      release_codename: Noble Numbat
-      release_title: '24.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: ba76abf526b4c7ab22e8125cca69547f76559f703bd357c54bdf5d74be0bfd2b
-          size: 4242739200
+      - name: kylin
+        <<: *base_spin
+        <<: *noble_current
+      - name: kylin
+        <<: *base_spin
+        <<: *noble_lts
+
   ubuntu-budgie:
     content_id: org.ubuntubudgie:ubuntu-budgie
     spins:
-    - name: ubuntu-budgie
-      image_type: desktop
-      version: 25.04
-      release: noble
-      release_codename: Plucky Puffin
-      release_title: '25.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: 0b9fd288f7ad2d3936187c7f9ebf74aa755068fa5c5dc33520f40b9ba88403a1
-          size: 4248414208
-    - name: ubuntu-budgie
-      image_type: desktop
-      version: 24.04.2
-      release: noble
-      release_codename: Noble Numbat
-      release_title: '24.04.2'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: 0b9fd288f7ad2d3936187c7f9ebf74aa755068fa5c5dc33520f40b9ba88403a1
-          size: 4248414208
+      - name: ubuntu-budgie
+        <<: *base_spin
+        <<: *noble_current
+      - name: ubuntu-budgie
+        <<: *base_spin
+        <<: *noble_lts
+
   lubuntu:
     content_id: me.lubuntu:lubuntu
     spins:
-    - name: lubuntu
-      image_type: desktop
-      version: 25.04
-      release: noble
-      release_codename: Plucky Puffin
-      release_title: '25.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: d29e07f791eec68f76521bd8fecd2fb15507c9aab9f8197979cbc70e117dacb1
-          size: 3352426496
-    - name: lubuntu
-      image_type: desktop
-      version: 24.04.2
-      release: noble
-      release_codename: Noble Numbat
-      release_title: '24.04.2'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: d29e07f791eec68f76521bd8fecd2fb15507c9aab9f8197979cbc70e117dacb1
-          size: 3352426496
-  kbuntu:
+      - name: lubuntu
+        <<: *base_spin
+        <<: *noble_current
+      - name: lubuntu
+        <<: *base_spin
+        <<: *noble_lts
+
+  kubuntu:
     content_id: org.kubuntu:kubuntu
     spins:
-    - name: kubuntu
-      image_type: desktop
-      version: 25.04
-      release: noble
-      release_codename: Plucky Puffin
-      release_title: '25.04'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: e84c3cb8a9e91504fabbc4763adaacfee0ebd27ef988529dadafb9c53276fb4b
-          size: 4527759360
-    - name: kubuntu
-      image_type: desktop
-      version: 24.04.2
-      release: noble
-      release_codename: Noble Numbat
-      release_title: '24.04.2'
-      architectures:
-      - amd64
-      files:
-        iso:
-          path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type
-            }}-{{ arch }}.iso'
-          sha256: e84c3cb8a9e91504fabbc4763adaacfee0ebd27ef988529dadafb9c53276fb4b
-          size: 4527759360
+      - name: kubuntu
+        <<: *base_spin
+        <<: *noble_current
+      - name: kubuntu
+        <<: *base_spin
+        <<: *noble_lts
