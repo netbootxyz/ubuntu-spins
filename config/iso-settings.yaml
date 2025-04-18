@@ -149,7 +149,7 @@ spin_groups:
       version: 24.04.2
       release: noble
       release_codename: Noble Numbat
-      release_title: '24.02'
+      release_title: '24.04'
       architectures:
       - amd64
       files:
@@ -166,7 +166,7 @@ spin_groups:
       version: 25.04
       release: noble
       release_codename: Plucky Puffin
-      release_title: 25.04
+      release_title: '25.04'
       architectures:
       - amd64
       files:
@@ -180,7 +180,7 @@ spin_groups:
       version: 24.04.2
       release: noble
       release_codename: Noble Numbat
-      release_title: 24.04.2
+      release_title: '24.04.2'
       architectures:
       - amd64
       files:
@@ -228,7 +228,7 @@ spin_groups:
       version: 25.04
       release: noble
       release_codename: Plucky Puffin
-      release_title: 25.04
+      release_title: '25.04'
       architectures:
       - amd64
       files:
@@ -242,7 +242,7 @@ spin_groups:
       version: 24.04.2
       release: noble
       release_codename: Noble Numbat
-      release_title: 24.04.2
+      release_title: '24.04.2'
       architectures:
       - amd64
       files:
@@ -259,7 +259,7 @@ spin_groups:
       version: 25.04
       release: noble
       release_codename: Plucky Puffin
-      release_title: 25.04
+      release_title: '25.04'
       architectures:
       - amd64
       files:
@@ -273,7 +273,7 @@ spin_groups:
       version: 24.04.2
       release: noble
       release_codename: Noble Numbat
-      release_title: 24.04.2
+      release_title: '24.04.2'
       architectures:
       - amd64
       files:
@@ -290,7 +290,7 @@ spin_groups:
       version: 25.04
       release: noble
       release_codename: Plucky Puffin
-      release_title: 25.04
+      release_title: '25.04'
       architectures:
       - amd64
       files:
@@ -304,7 +304,7 @@ spin_groups:
       version: 24.04.2
       release: noble
       release_codename: Noble Numbat
-      release_title: 24.04.2
+      release_title: '24.04.2'
       architectures:
       - amd64
       files:
