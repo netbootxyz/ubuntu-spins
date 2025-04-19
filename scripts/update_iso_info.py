@@ -38,40 +38,50 @@ def save_yaml_config(config_file, config_data):
     with open(config_file, 'r') as f:
         lines = f.readlines()
 
-    # Track indentation levels and paths to help with matching
     current_path = []
     indent_level = 0
     in_spin = False
     current_spin = None
+    current_version = None
     updated_lines = []
 
     for line in lines:
         stripped = line.lstrip()
         indent = len(line) - len(stripped)
         
-        # Track path based on indentation
+        # Reset state when indentation decreases
         if indent < indent_level:
             while current_path and len(current_path) * 2 > indent:
                 current_path.pop()
                 in_spin = False
                 current_spin = None
+                current_version = None
         
+        indent_level = indent
+        
+        # Track current context
         if stripped.startswith('spin_groups:'):
             current_path = ['spin_groups']
         elif stripped.startswith('- name:'):
             spin_name = stripped.split(':')[1].strip()
             in_spin = True
             current_spin = None
+            current_version = None
+        elif in_spin and (stripped.startswith('version:') or stripped.startswith('release_title:')):
+            version = stripped.split(':')[1].strip()
+            current_version = version.strip("'\"")
+            # Find matching spin with correct version
             for group in config_data['spin_groups'].values():
                 for spin in group['spins']:
-                    if spin['name'] == spin_name and 'files' in spin and 'iso' in spin['files']:
+                    spin_version = spin.get('version') or spin.get('release_title')
+                    if spin['name'] == current_spin and spin_version == current_version:
                         current_spin = spin
                         break
-                if current_spin:
+                if isinstance(current_spin, dict):
                     break
         
         # Update SHA256 and size if we're at those lines and have a matching spin
-        if in_spin and current_spin and 'files' in current_spin and 'iso' in current_spin['files']:
+        if in_spin and isinstance(current_spin, dict) and current_version and 'files' in current_spin and 'iso' in current_spin['files']:
             if stripped.startswith('sha256:'):
                 line = line[:indent] + f"sha256: '{current_spin['files']['iso']['sha256']}'\n"
             elif stripped.startswith('size:'):
@@ -135,27 +145,33 @@ def update_spin_info(config_data, spin_name, version, iso_path):
     updated = False
     for group in config_data["spin_groups"].values():
         for spin in group.get("spins", []):
-            # Match both spin name and specific version
-            if spin["name"] == spin_name:
-                current_version = spin.get("version") or spin.get("release_title")
-                if current_version != version:
-                    continue
+            if spin["name"] != spin_name:
+                continue
                 
-                if "files" not in spin:
-                    spin["files"] = {}
-                if "iso" not in spin["files"]:
-                    spin["files"]["iso"] = {}
-                
-                spin["files"]["iso"].update({
-                    "size": size_gb,
-                    "sha256": sha256
-                })
-                logger.info(f"Updated {spin_name} {version}")
-                updated = True
-                break
-        if updated:
-            break
-    
+            # Check version match using release_title
+            spin_version = None
+            if "release_title" in spin:
+                spin_version = spin["release_title"]
+            elif "version" in spin:
+                spin_version = spin["version"]
+            
+            # Skip if versions don't match
+            if not spin_version or spin_version.lower() != version.lower():
+                continue
+            
+            # Update the ISO information
+            if "files" not in spin:
+                spin["files"] = {}
+            if "iso" not in spin["files"]:
+                spin["files"]["iso"] = {}
+            
+            spin["files"]["iso"].update({
+                "size": size_gb,
+                "sha256": sha256
+            })
+            logger.info(f"Updated {spin_name} {version}")
+            updated = True
+            
     if not updated:
         logger.warning(f"No matching spin found for {spin_name} {version}")
     
