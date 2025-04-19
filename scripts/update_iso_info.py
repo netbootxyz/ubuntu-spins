@@ -191,8 +191,6 @@ def download_torrent(url, output_dir):
             '-w', output_dir,
             '-f', kill_file,
             '--no-portmap',  # Disable port mapping
-            '--no-dht',      # Disable DHT
-            '--no-uplimit',  # No upload limit
             torrent_file
         ]
         process = subprocess.Popen(cmd)
