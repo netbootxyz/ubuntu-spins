@@ -33,8 +33,53 @@ def load_yaml_config(config_file):
         return yaml.safe_load(f)
 
 def save_yaml_config(config_file, config_data):
+    """Save only the modified fields in the YAML configuration file."""
+    with open(config_file, 'r') as f:
+        lines = f.readlines()
+
+    # Track indentation levels and paths to help with matching
+    current_path = []
+    indent_level = 0
+    in_spin = False
+    current_spin = None
+    updated_lines = []
+
+    for line in lines:
+        stripped = line.lstrip()
+        indent = len(line) - len(stripped)
+        
+        # Track path based on indentation
+        if indent < indent_level:
+            while current_path and len(current_path) * 2 > indent:
+                current_path.pop()
+                in_spin = False
+                current_spin = None
+        
+        if stripped.startswith('spin_groups:'):
+            current_path = ['spin_groups']
+        elif stripped.startswith('- name:'):
+            spin_name = stripped.split(':')[1].strip()
+            in_spin = True
+            current_spin = None
+            for group in config_data['spin_groups'].values():
+                for spin in group['spins']:
+                    if spin['name'] == spin_name and 'files' in spin and 'iso' in spin['files']:
+                        current_spin = spin
+                        break
+                if current_spin:
+                    break
+        
+        # Update SHA256 and size if we're at those lines and have a matching spin
+        if in_spin and current_spin and 'files' in current_spin and 'iso' in current_spin['files']:
+            if stripped.startswith('sha256:'):
+                line = line[:indent] + f"sha256: '{current_spin['files']['iso']['sha256']}'\n"
+            elif stripped.startswith('size:'):
+                line = line[:indent] + f"size: {current_spin['files']['iso']['size']}\n"
+        
+        updated_lines.append(line)
+    
     with open(config_file, 'w') as f:
-        yaml.dump(config_data, f, default_flow_style=False, sort_keys=False)
+        f.writelines(updated_lines)
     logger.info(f"Updated configuration saved to {config_file}")
 
 def get_file_info(url):
@@ -77,9 +122,11 @@ def calculate_sha256(file_path):
     return sha256_hash.hexdigest()
 
 def update_spin_info(config_data, spin_name, version, iso_path):
-    """Update spin information with new ISO details"""
+    """Update spin information with new ISO details."""
     file_size = os.path.getsize(iso_path)
     sha256 = calculate_sha256(iso_path)
+    
+    # Format size as GB with one decimal place
     size_gb = f"{file_size / (1024*1024*1024):.1f}G"
     
     logger.info(f"New ISO information for {spin_name}:")
@@ -90,16 +137,11 @@ def update_spin_info(config_data, spin_name, version, iso_path):
     for group in config_data["spin_groups"].values():
         for spin in group.get("spins", []):
             if spin["name"] == spin_name and spin.get("version") == version:
-                if "files" not in spin:
-                    spin["files"] = {}
-                if "iso" not in spin["files"]:
-                    spin["files"]["iso"] = {}
-                
-                spin["files"]["iso"].update({
-                    "size": size_gb,
-                    "sha256": sha256
-                })
-                updated = True
+                # Only update the size and sha256 fields
+                if "files" in spin and "iso" in spin["files"]:
+                    spin["files"]["iso"]["size"] = size_gb
+                    spin["files"]["iso"]["sha256"] = sha256
+                    updated = True
     
     return updated
 
