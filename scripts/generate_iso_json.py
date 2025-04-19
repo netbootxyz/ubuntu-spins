@@ -34,7 +34,7 @@ def generate_json_for_spin_group(group_name, group_data, default_settings, outpu
                         .replace("{{ image_type }}", spin["image_type"])
                         .replace("{{ arch }}", arch),
                     "sha256": iso_info["sha256"],
-                    "size": iso_info["size"]
+                    "size": int(iso_info["size"])  # Ensure size is an integer
                 }
             }
             

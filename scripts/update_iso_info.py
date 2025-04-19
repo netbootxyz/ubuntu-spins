@@ -126,11 +126,8 @@ def update_spin_info(config_data, spin_name, version, iso_path):
     file_size = os.path.getsize(iso_path)
     sha256 = calculate_sha256(iso_path)
     
-    # Format size as GB with one decimal place
-    size_gb = f"{file_size / (1024*1024*1024):.1f}G"
-    
     logger.info(f"New ISO information for {spin_name}:")
-    logger.info(f"  Size: {size_gb}")
+    logger.info(f"  Size: {file_size} bytes")
     logger.info(f"  SHA256: {sha256}")
     
     updated = False
@@ -139,7 +136,7 @@ def update_spin_info(config_data, spin_name, version, iso_path):
             if spin["name"] == spin_name and spin.get("version") == version:
                 # Only update the size and sha256 fields
                 if "files" in spin and "iso" in spin["files"]:
-                    spin["files"]["iso"]["size"] = size_gb
+                    spin["files"]["iso"]["size"] = str(file_size)
                     spin["files"]["iso"]["sha256"] = sha256
                     updated = True
     
