@@ -123,23 +123,41 @@ def calculate_sha256(file_path):
     return sha256_hash.hexdigest()
 
 def update_spin_info(config_data, spin_name, version, iso_path):
-    """Update spin information with new ISO details."""
+    """Update spin information with new ISO details"""
     file_size = os.path.getsize(iso_path)
     sha256 = calculate_sha256(iso_path)
+    size_gb = f"{file_size / (1024*1024*1024):.1f}G"
     
-    logger.info(f"New ISO information for {spin_name}:")
-    logger.info(f"  Size: {file_size} bytes")
+    logger.info(f"New ISO information for {spin_name} {version}:")
+    logger.info(f"  Size: {size_gb}")
     logger.info(f"  SHA256: {sha256}")
     
     updated = False
     for group in config_data["spin_groups"].values():
         for spin in group.get("spins", []):
-            if spin["name"] == spin_name and spin.get("version") == version:
-                # Only update the size and sha256 fields
-                if "files" in spin and "iso" in spin["files"]:
-                    spin["files"]["iso"]["size"] = str(file_size)
-                    spin["files"]["iso"]["sha256"] = sha256
-                    updated = True
+            # Match both spin name and specific version
+            if spin["name"] == spin_name:
+                current_version = spin.get("version") or spin.get("release_title")
+                if current_version != version:
+                    continue
+                
+                if "files" not in spin:
+                    spin["files"] = {}
+                if "iso" not in spin["files"]:
+                    spin["files"]["iso"] = {}
+                
+                spin["files"]["iso"].update({
+                    "size": size_gb,
+                    "sha256": sha256
+                })
+                logger.info(f"Updated {spin_name} {version}")
+                updated = True
+                break
+        if updated:
+            break
+    
+    if not updated:
+        logger.warning(f"No matching spin found for {spin_name} {version}")
     
     return updated
 
