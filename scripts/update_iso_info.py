@@ -148,15 +148,19 @@ def update_spin_info(config_data, spin_name, version, iso_path):
             if spin["name"] != spin_name:
                 continue
                 
-            # Check version match using release_title
+            # Get version from spin
             spin_version = None
             if "release_title" in spin:
                 spin_version = spin["release_title"]
             elif "version" in spin:
                 spin_version = spin["version"]
             
+            # Convert versions to strings for comparison
+            spin_version_str = str(spin_version) if spin_version is not None else ""
+            version_str = str(version) if version is not None else ""
+            
             # Skip if versions don't match
-            if not spin_version or spin_version.lower() != version.lower():
+            if not spin_version_str or spin_version_str != version_str:
                 continue
             
             # Update the ISO information
@@ -186,10 +190,15 @@ def resolve_iso_url(spin):
     if spin["name"] == "ubuntu":
         return urljoin(base_url, "noble-mini-iso-amd64.iso")
     
+    # Get version, preferring release_title over version
+    version = spin.get("release_title") or spin.get("version")
+    if version is not None:
+        version = str(version)
+        
     path = spin["files"]["iso"]["path_template"] \
         .replace("{{ release }}", spin["release"]) \
         .replace("{{ name }}", spin["name"]) \
-        .replace("{{ version }}", spin["release_title"]) \
+        .replace("{{ version }}", version) \
         .replace("{{ image_type }}", spin["image_type"]) \
         .replace("{{ arch }}", "amd64")
     
@@ -283,10 +292,15 @@ def resolve_torrent_url(spin):
     if not base_url:
         return None
     
+    # Get version, preferring release_title over version
+    version = spin.get("release_title") or spin.get("version")
+    if version is not None:
+        version = str(version)  # Convert to string to handle float versions
+    
     path = spin["files"]["iso"]["path_template"] \
         .replace("{{ release }}", spin["release"]) \
         .replace("{{ name }}", spin["name"]) \
-        .replace("{{ version }}", spin["release_title"]) \
+        .replace("{{ version }}", version) \
         .replace("{{ image_type }}", spin["image_type"]) \
         .replace("{{ arch }}", "amd64")
     
