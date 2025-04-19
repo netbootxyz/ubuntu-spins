@@ -12,7 +12,7 @@ versions:
   
   noble_current: &noble_current
     version: 25.04
-    release: noble
+    release: plucky
     release_codename: Plucky Puffin
     release_title: '25.04'
 
