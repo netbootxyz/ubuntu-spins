@@ -43,16 +43,16 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.6G'
-            sha256: 'b6c7d8e9f0a'
+            size: 3829084160
+            sha256: 'e2d9abbaecded7f7058699354afbb72eaa7200e902e8a2aefec915b3b00dcf38'
       - name: ubuntu-unity
         <<: *base_spin
         <<: *noble_lts
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.5G'
-            sha256: 'a5b0c3d7e9f8'
+            size: 3829084160
+            sha256: 'e2d9abbaecded7f7058699354afbb72eaa7200e902e8a2aefec915b3b00dcf38'
 
   ubuntu-studio:
     content_id: org.ubuntustudio:ubuntu-studio
@@ -63,7 +63,7 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.6G'
+            size: 3.6G
             sha256: 'b6c7d8e9f0a'
       - name: ubuntustudio
         <<: *base_spin
@@ -71,8 +71,8 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.5G'
-            sha256: 'a5b0c3d7e9f8'
+            size: 3.6G
+            sha256: 'b6c7d8e9f0a'
 
   ubuntu-mate:
     content_id: org.ubuntu-mate:ubuntu-mate
@@ -83,16 +83,16 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.6G'
-            sha256: 'b6c7d8e9f0a'
+            size: 3724666880
+            sha256: '08d49a03c5c90f9a8fbb522e7d0e9097ba99431fb43df96b9e4c07458c0969d9'
       - name: ubuntu-mate
         <<: *base_spin
         <<: *noble_lts
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.5G'
-            sha256: 'a5b0c3d7e9f8'
+            size: 3724666880
+            sha256: '08d49a03c5c90f9a8fbb522e7d0e9097ba99431fb43df96b9e4c07458c0969d9'
 
   edubuntu:
     content_id: org.edubuntu:edubuntu
@@ -103,7 +103,7 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.6G'
+            size: 3.6G
             sha256: 'b6c7d8e9f0a'
       - name: edubuntu
         <<: *base_spin
@@ -111,8 +111,8 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.5G'
-            sha256: 'a5b0c3d7e9f8'
+            size: 3.6G
+            sha256: 'b6c7d8e9f0a'
 
   ubuntu:
     content_id: com.ubuntu.releases:ubuntu
@@ -123,16 +123,16 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.8G'
-            sha256: 'abc123'
+            size: 94777344
+            sha256: 'cb553e7752646bf1dbe7a87aabb98e86e39a1f2e5fc85262bcc5920bd314fff2'
       - name: ubuntu
         <<: *base_spin
         <<: *noble_lts
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.6G'
-            sha256: 'def456'
+            size: 94777344
+            sha256: 'cb553e7752646bf1dbe7a87aabb98e86e39a1f2e5fc85262bcc5920bd314fff2'
 
   xubuntu:
     content_id: org.xubuntu:xubuntu
@@ -143,16 +143,16 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.6G'
-            sha256: 'b6c7d8e9f0a'
+            size: 4557887488
+            sha256: 'c31de06ea12843a72190f5277f95378b6d921e9c1bb69b1888c6d15c8937a98a'
       - name: xubuntu
         <<: *base_spin
         <<: *noble_lts
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.5G'
-            sha256: 'a5b0c3d7e9f8'
+            size: 4557887488
+            sha256: 'c31de06ea12843a72190f5277f95378b6d921e9c1bb69b1888c6d15c8937a98a'
 
   ubuntu-kylin:
     content_id: com.ubuntukylin:ubuntukylin
@@ -163,7 +163,7 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.6G'
+            size: 3.6G
             sha256: 'b6c7d8e9f0a'
       - name: kylin
         <<: *base_spin
@@ -171,8 +171,8 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.5G'
-            sha256: 'a5b0c3d7e9f8'
+            size: 3.6G
+            sha256: 'b6c7d8e9f0a'
 
   ubuntu-budgie:
     content_id: org.ubuntubudgie:ubuntu-budgie
@@ -183,16 +183,16 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.6G'
-            sha256: 'b6c7d8e9f0a'
+            size: 3530133504
+            sha256: 'dcc74c1c9b9bf00abab35385c21ec5a207f68eb59ef57689c13d591b945f7962'
       - name: ubuntu-budgie
         <<: *base_spin
         <<: *noble_lts
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.5G'
-            sha256: 'a5b0c3d7e9f8'
+            size: 3530133504
+            sha256: 'dcc74c1c9b9bf00abab35385c21ec5a207f68eb59ef57689c13d591b945f7962'
 
   lubuntu:
     content_id: me.lubuntu:lubuntu
@@ -203,16 +203,16 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.6G'
-            sha256: 'b6c7d8e9f0a'
+            size: 3344099328
+            sha256: 'da49827ab8bce6b78214d6fd44c4334a5194e5c87534906e4f272492de4fd14e'
       - name: lubuntu
         <<: *base_spin
         <<: *noble_lts
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.5G'
-            sha256: 'a5b0c3d7e9f8'
+            size: 3344099328
+            sha256: 'da49827ab8bce6b78214d6fd44c4334a5194e5c87534906e4f272492de4fd14e'
 
   kubuntu:
     content_id: org.kubuntu:kubuntu
@@ -223,13 +223,13 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.6G'
-            sha256: 'b6c7d8e9f0a'
+            size: 4699852800
+            sha256: '701f1fd796ed6d5867f54af0e2dceac7b7f01a9f975fda3423e9d0e97da10ba8'
       - name: kubuntu
         <<: *base_spin
         <<: *noble_lts
         files:
           iso:
             <<: *desktop_iso_template
-            size: '3.5G'
-            sha256: 'a5b0c3d7e9f8'
+            size: 4699852800
+            sha256: '701f1fd796ed6d5867f54af0e2dceac7b7f01a9f975fda3423e9d0e97da10ba8'
