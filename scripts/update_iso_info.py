@@ -237,15 +237,17 @@ def update_spin_info(config_data, spin_group, spin, iso_file):
     logger.info(f"  - SHA256: {sha256}")
     logger.info(f"  - Size: {file_size} bytes")
     
-    # Update the configuration
     spin_group_data = config_data["spin_groups"][spin_group]
     for s in spin_group_data["spins"]:
-        if s["name"] == spin["name"]:
-            s["files"]["iso"]["sha256"] = sha256
-            s["files"]["iso"]["size"] = file_size
-            
+        if (s["name"] == spin["name"] and 
+            s["version"] == spin["version"] and 
+            s["release"] == spin["release"]):
+            # Update ISO file information
+            s["files"]["iso"].update({
+                "size": f"{file_size / (1024*1024*1024):.1f}G",
+                "sha256": sha256
+            })
             return True
-    
     return False
 
 def create_git_pr(config_file, branches):
@@ -277,17 +279,21 @@ def create_git_pr(config_file, branches):
         logger.error(f"Git operation failed: {e}")
         return None
 
-def resolve_iso_url(spin, latest_version):
-    """Construct the URL for the ISO file."""
+def resolve_iso_url(spin, target_version):
+    """Construct the URL for the ISO file using template."""
     base_url = MIRROR_URLS[spin["name"]]
     
-    # Create the path from the template
-    path = spin["files"]["iso"]["path_template"]
-    path = path.replace("{{ release }}", latest_version)
-    path = path.replace("{{ name }}", spin["name"])
-    path = path.replace("{{ version }}", latest_version)
-    path = path.replace("{{ image_type }}", spin["image_type"])
-    path = path.replace("{{ arch }}", spin["architectures"][0])  # Using first architecture
+    if "files" not in spin or "iso" not in spin["files"]:
+        logger.error(f"Missing file template for {spin['name']}")
+        return None
+    
+    template = spin["files"]["iso"]["path_template"]
+    path = (template
+        .replace("{{ release }}", spin["release"])
+        .replace("{{ name }}", spin["name"])
+        .replace("{{ version }}", spin["release_title"])
+        .replace("{{ image_type }}", spin["image_type"])
+        .replace("{{ arch }}", spin["architectures"][0]))
     
     return urljoin(base_url, path)
 
