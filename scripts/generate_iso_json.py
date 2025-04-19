@@ -11,6 +11,33 @@ def load_yaml_config(config_file):
         return yaml.safe_load(f)
 
 def generate_json_for_spin_group(group_name, group_data, default_settings, output_dir):
+    group_output = {**default_settings}
+    group_output.update({"products": []})
+
+    for spin in group_data["spins"]:
+        product = {
+            "name": spin["name"],
+            "release": spin["release"],
+            "release_codename": spin["release_codename"],
+            "version": spin["version"],
+            "architectures": spin.get("architectures", []),
+            "files": {}
+        }
+
+        for file_type, file_info in spin.get("files", {}).items():
+            file_path = file_info["path_template"] \
+                .replace("{{ name }}", spin["name"]) \
+                .replace("{{ version }}", spin["release_title"]) \
+                .replace("{{ release }}", spin["release"]) \
+                .replace("{{ image_type }}", spin["image_type"]) \
+                .replace("{{ arch }}", "amd64")  # Assuming amd64 for now
+            
+            product["files"][file_type] = {
+                "path": file_path,
+                "size": spin.get("size", ""),
+                "sha256": spin.get("sha256", "")
+            }
+
     data = {
         "content_id": group_data["content_id"],
         "datatype": default_settings["datatype"],

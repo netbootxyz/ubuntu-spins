@@ -9,6 +9,7 @@ versions:
     release: noble
     release_codename: Noble Numbat
     release_title: '24.04.2'
+  
   noble_current: &noble_current
     version: 25.04
     release: noble
@@ -39,9 +40,19 @@ spin_groups:
       - name: ubuntu-unity
         <<: *base_spin
         <<: *noble_current
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.6G'
+            sha256: 'b6c7d8e9f0a'
       - name: ubuntu-unity
         <<: *base_spin
         <<: *noble_lts
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.5G'
+            sha256: 'a5b0c3d7e9f8'
 
   ubuntu-studio:
     content_id: org.ubuntustudio:ubuntu-studio
@@ -49,9 +60,19 @@ spin_groups:
       - name: ubuntustudio
         <<: *base_spin
         <<: *noble_current
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.6G'
+            sha256: 'b6c7d8e9f0a'
       - name: ubuntustudio
         <<: *base_spin
         <<: *noble_lts
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.5G'
+            sha256: 'a5b0c3d7e9f8'
 
   ubuntu-mate:
     content_id: org.ubuntu-mate:ubuntu-mate
@@ -59,9 +80,19 @@ spin_groups:
       - name: ubuntu-mate
         <<: *base_spin
         <<: *noble_current
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.6G'
+            sha256: 'b6c7d8e9f0a'
       - name: ubuntu-mate
         <<: *base_spin
         <<: *noble_lts
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.5G'
+            sha256: 'a5b0c3d7e9f8'
 
   edubuntu:
     content_id: org.edubuntu:edubuntu
@@ -69,9 +100,19 @@ spin_groups:
       - name: edubuntu
         <<: *base_spin
         <<: *noble_current
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.6G'
+            sha256: 'b6c7d8e9f0a'
       - name: edubuntu
         <<: *base_spin
         <<: *noble_lts
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.5G'
+            sha256: 'a5b0c3d7e9f8'
 
   ubuntu:
     content_id: com.ubuntu.releases:ubuntu
@@ -79,9 +120,19 @@ spin_groups:
       - name: ubuntu
         <<: *base_spin
         <<: *noble_current
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.8G'
+            sha256: 'abc123'
       - name: ubuntu
         <<: *base_spin
         <<: *noble_lts
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.6G'
+            sha256: 'def456'
 
   xubuntu:
     content_id: org.xubuntu:xubuntu
@@ -89,9 +140,19 @@ spin_groups:
       - name: xubuntu
         <<: *base_spin
         <<: *noble_current
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.6G'
+            sha256: 'b6c7d8e9f0a'
       - name: xubuntu
         <<: *base_spin
         <<: *noble_lts
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.5G'
+            sha256: 'a5b0c3d7e9f8'
 
   ubuntu-kylin:
     content_id: com.ubuntukylin:ubuntukylin
@@ -99,9 +160,19 @@ spin_groups:
       - name: kylin
         <<: *base_spin
         <<: *noble_current
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.6G'
+            sha256: 'b6c7d8e9f0a'
       - name: kylin
         <<: *base_spin
         <<: *noble_lts
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.5G'
+            sha256: 'a5b0c3d7e9f8'
 
   ubuntu-budgie:
     content_id: org.ubuntubudgie:ubuntu-budgie
@@ -109,9 +180,19 @@ spin_groups:
       - name: ubuntu-budgie
         <<: *base_spin
         <<: *noble_current
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.6G'
+            sha256: 'b6c7d8e9f0a'
       - name: ubuntu-budgie
         <<: *base_spin
         <<: *noble_lts
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.5G'
+            sha256: 'a5b0c3d7e9f8'
 
   lubuntu:
     content_id: me.lubuntu:lubuntu
@@ -119,9 +200,19 @@ spin_groups:
       - name: lubuntu
         <<: *base_spin
         <<: *noble_current
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.6G'
+            sha256: 'b6c7d8e9f0a'
       - name: lubuntu
         <<: *base_spin
         <<: *noble_lts
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.5G'
+            sha256: 'a5b0c3d7e9f8'
 
   kubuntu:
     content_id: org.kubuntu:kubuntu
@@ -129,6 +220,16 @@ spin_groups:
       - name: kubuntu
         <<: *base_spin
         <<: *noble_current
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.6G'
+            sha256: 'b6c7d8e9f0a'
       - name: kubuntu
         <<: *base_spin
         <<: *noble_lts
+        files:
+          iso:
+            <<: *desktop_iso_template
+            size: '3.5G'
+            sha256: 'a5b0c3d7e9f8'
