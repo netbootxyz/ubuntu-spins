@@ -122,8 +122,14 @@ def resolve_iso_url(spin):
     return urljoin(base_url, path)
 
 def download_torrent(url, output_dir):
-    """Download ISO using transmission-cli"""
+    """Download ISO using transmission-cli with proper cleanup"""
+    torrent_file = None
+    exit_file = None
+    process = None
+    downloaded_iso = None
+    
     try:
+        # Download and save torrent file
         torrent_file = os.path.join(output_dir, "temp.torrent")
         response = requests.get(url)
         response.raise_for_status()
@@ -142,27 +148,58 @@ def download_torrent(url, output_dir):
             'transmission-cli',
             '-w', output_dir,
             '-f', exit_file,
+            '--finish-script', exit_file,
+            '--no-portmap',  # Disable port mapping
+            '--no-dht',      # Disable DHT
+            '--no-uplimit',  # No upload limit
             torrent_file
         ]
         process = subprocess.Popen(cmd)
         
-        # Wait for download to complete
+        # Wait for download to complete with timeout
+        timeout = 3600  # 1 hour timeout
+        start_time = time.time()
         while not os.path.exists(os.path.join(output_dir, "done")):
+            if time.time() - start_time > timeout:
+                raise TimeoutError("Torrent download timed out")
             time.sleep(1)
-        
-        # Cleanup
-        process.terminate()
-        os.unlink(torrent_file)
-        os.unlink(exit_file)
-        os.unlink(os.path.join(output_dir, "done"))
         
         # Find downloaded ISO
         isos = [f for f in os.listdir(output_dir) if f.endswith('.iso')]
         if isos:
-            return os.path.join(output_dir, isos[0])
+            downloaded_iso = os.path.join(output_dir, isos[0])
+            return downloaded_iso
+            
     except Exception as e:
         logger.error(f"Torrent download failed: {e}")
-    return None
+        return None
+        
+    finally:
+        # Cleanup processes
+        if process:
+            try:
+                process.terminate()
+                process.wait(timeout=5)  # Wait up to 5 seconds for process to terminate
+                if process.poll() is None:
+                    process.kill()  # Force kill if still running
+            except Exception as e:
+                logger.error(f"Error terminating transmission-cli: {e}")
+        
+        # Cleanup files
+        for file_to_remove in [torrent_file, exit_file, os.path.join(output_dir, "done")]:
+            if file_to_remove and os.path.exists(file_to_remove):
+                try:
+                    os.unlink(file_to_remove)
+                except Exception as e:
+                    logger.error(f"Error removing {file_to_remove}: {e}")
+        
+        # Remove any .part files
+        for file in os.listdir(output_dir):
+            if file.endswith('.part'):
+                try:
+                    os.unlink(os.path.join(output_dir, file))
+                except Exception as e:
+                    logger.error(f"Error removing partial download {file}: {e}")
 
 def resolve_torrent_url(spin):
     """Generate torrent URL from spin information"""
@@ -209,8 +246,12 @@ def main():
                         logger.info(f"Using torrent for {spin['name']}: {torrent_url}")
                         iso_path = download_torrent(torrent_url, args.work_dir)
                         if iso_path:
-                            if update_spin_info(config_data, spin["name"], spin.get("version"), iso_path):
-                                updated = True
+                            try:
+                                if update_spin_info(config_data, spin["name"], spin.get("version"), iso_path):
+                                    updated = True
+                            finally:
+                                if os.path.exists(iso_path):
+                                    os.unlink(iso_path)
                             continue
 
                 # Fall back to direct download if torrent fails or isn't available
