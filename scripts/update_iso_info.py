@@ -6,21 +6,23 @@ import hashlib
 import os
 import tempfile
 import logging
-import subprocess
 from urllib.parse import urljoin
 import re
+import argparse
+import shutil
+import subprocess
 import time
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 MIRROR_URLS = {
-    "ubuntu": "https://releases.ubuntu.com/",
+    "ubuntu": "https://cdimage.ubuntu.com/ubuntu-mini-iso/noble/daily-live/current/",
+    "kubuntu": "https://cdimage.ubuntu.com/kubuntu/releases/",
     "xubuntu": "https://cdimage.ubuntu.com/xubuntu/releases/",
     "lubuntu": "https://cdimage.ubuntu.com/lubuntu/releases/",
-    "kubuntu": "https://cdimage.ubuntu.com/kubuntu/releases/",
-    "ubuntu-budgie": "https://cdimage.ubuntu.com/ubuntu-budgie/releases/",
     "ubuntu-mate": "https://cdimage.ubuntu.com/ubuntu-mate/releases/",
+    "ubuntu-budgie": "https://cdimage.ubuntu.com/ubuntu-budgie/releases/",
     "ubuntu-studio": "https://cdimage.ubuntu.com/ubuntustudio/releases/",
     "ubuntu-unity": "https://cdimage.ubuntu.com/ubuntu-unity/releases/",
     "ubuntu-kylin": "https://cdimage.ubuntu.com/ubuntukylin/releases/"
@@ -35,69 +37,37 @@ def save_yaml_config(config_file, config_data):
         yaml.dump(config_data, f, default_flow_style=False, sort_keys=False)
     logger.info(f"Updated configuration saved to {config_file}")
 
-def get_latest_release_info(spin_name):
-    if spin_name not in MIRROR_URLS:
-        return None
-    
-    url = MIRROR_URLS[spin_name]
+def get_file_info(url):
     try:
-        response = requests.get(url)
+        response = requests.head(url, allow_redirects=True)
         response.raise_for_status()
-        versions = re.findall(r'href="(\d+\.\d+(?:\.\d+)?)"', response.text)
-        if versions:
-            latest = sorted(versions, key=lambda v: [int(x) for x in v.split('.')], reverse=True)[0]
-            return latest
-    except requests.RequestException as e:
-        logger.error(f"Error fetching version for {spin_name}: {e}")
-    return None
+        return {
+            'size': int(response.headers.get('content-length', 0)),
+            'exists': response.status_code == 200
+        }
+    except:
+        return {'size': 0, 'exists': False}
 
-def download_iso(url):
+def download_file(url, output_path):
     try:
         response = requests.get(url, stream=True)
         response.raise_for_status()
         total_size = int(response.headers.get('content-length', 0))
         
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        with open(output_path, 'wb') as f:
             downloaded = 0
             for chunk in response.iter_content(chunk_size=8192):
                 if chunk:
-                    temp_file.write(chunk)
+                    f.write(chunk)
                     downloaded += len(chunk)
                     if total_size > 0:
                         percent = int(100 * downloaded / total_size)
                         if percent % 10 == 0:
                             logger.info(f"Download progress: {percent}%")
-            return temp_file.name
+        return True
     except Exception as e:
-        logger.error(f"Error downloading ISO: {e}")
-        return None
-
-def download_torrent(url, output_dir):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        
-        with tempfile.NamedTemporaryFile(suffix='.torrent', delete=False) as temp_file:
-            temp_file.write(response.content)
-            torrent_file = temp_file.name
-        
-        command = ['transmission-cli', '-w', output_dir, '-f', 'exit.sh', torrent_file]
-        subprocess.run(command, check=True)
-        
-        # Wait for download to complete
-        while not os.path.exists(os.path.join(output_dir, 'exit.sh')):
-            time.sleep(1)
-        
-        os.unlink(os.path.join(output_dir, 'exit.sh'))
-        os.unlink(torrent_file)
-        
-        # Find the ISO file
-        iso_files = [f for f in os.listdir(output_dir) if f.endswith('.iso')]
-        if iso_files:
-            return os.path.join(output_dir, iso_files[0])
-    except Exception as e:
-        logger.error(f"Error downloading torrent: {e}")
-    return None
+        logger.error(f"Error downloading file: {e}")
+        return False
 
 def calculate_sha256(file_path):
     sha256_hash = hashlib.sha256()
@@ -107,6 +77,7 @@ def calculate_sha256(file_path):
     return sha256_hash.hexdigest()
 
 def update_spin_info(config_data, spin_name, version, iso_path):
+    """Update spin information with new ISO details"""
     file_size = os.path.getsize(iso_path)
     sha256 = calculate_sha256(iso_path)
     size_gb = f"{file_size / (1024*1024*1024):.1f}G"
@@ -117,76 +88,159 @@ def update_spin_info(config_data, spin_name, version, iso_path):
     
     updated = False
     for group in config_data["spin_groups"].values():
-        for spin in group["spins"]:
-            if spin["name"] == spin_name and spin["version"] == version:
+        for spin in group.get("spins", []):
+            if spin["name"] == spin_name and spin.get("version") == version:
+                if "files" not in spin:
+                    spin["files"] = {}
+                if "iso" not in spin["files"]:
+                    spin["files"]["iso"] = {}
+                
                 spin["files"]["iso"].update({
                     "size": size_gb,
                     "sha256": sha256
                 })
                 updated = True
+    
     return updated
 
 def resolve_iso_url(spin):
-    base_url = MIRROR_URLS[spin["name"]]
+    """Generate ISO URL from spin information"""
+    base_url = MIRROR_URLS.get(spin["name"])
+    if not base_url:
+        return None
+        
+    if spin["name"] == "ubuntu":
+        return urljoin(base_url, "noble-mini-iso-amd64.iso")
+    
     path = spin["files"]["iso"]["path_template"] \
         .replace("{{ release }}", spin["release"]) \
         .replace("{{ name }}", spin["name"]) \
         .replace("{{ version }}", spin["release_title"]) \
         .replace("{{ image_type }}", spin["image_type"]) \
-        .replace("{{ arch }}", spin["architectures"][0])
+        .replace("{{ arch }}", "amd64")
+    
     return urljoin(base_url, path)
 
+def download_torrent(url, output_dir):
+    """Download ISO using transmission-cli"""
+    try:
+        torrent_file = os.path.join(output_dir, "temp.torrent")
+        response = requests.get(url)
+        response.raise_for_status()
+        
+        with open(torrent_file, 'wb') as f:
+            f.write(response.content)
+        
+        # Create exit file to monitor completion
+        exit_file = os.path.join(output_dir, "exit.sh")
+        with open(exit_file, 'w') as f:
+            f.write("#!/bin/sh\ntouch done")
+        os.chmod(exit_file, 0o755)
+        
+        # Start transmission-cli
+        cmd = [
+            'transmission-cli',
+            '-w', output_dir,
+            '-f', exit_file,
+            torrent_file
+        ]
+        process = subprocess.Popen(cmd)
+        
+        # Wait for download to complete
+        while not os.path.exists(os.path.join(output_dir, "done")):
+            time.sleep(1)
+        
+        # Cleanup
+        process.terminate()
+        os.unlink(torrent_file)
+        os.unlink(exit_file)
+        os.unlink(os.path.join(output_dir, "done"))
+        
+        # Find downloaded ISO
+        isos = [f for f in os.listdir(output_dir) if f.endswith('.iso')]
+        if isos:
+            return os.path.join(output_dir, isos[0])
+    except Exception as e:
+        logger.error(f"Torrent download failed: {e}")
+    return None
+
 def resolve_torrent_url(spin):
-    base_url = MIRROR_URLS[spin["name"]]
+    """Generate torrent URL from spin information"""
+    if spin["name"] == "ubuntu":
+        return None  # mini.iso doesn't have torrents
+    
+    base_url = MIRROR_URLS.get(spin["name"])
+    if not base_url:
+        return None
+    
     path = spin["files"]["iso"]["path_template"] \
         .replace("{{ release }}", spin["release"]) \
         .replace("{{ name }}", spin["name"]) \
         .replace("{{ version }}", spin["release_title"]) \
         .replace("{{ image_type }}", spin["image_type"]) \
-        .replace("{{ arch }}", spin["architectures"][0])
-    return urljoin(base_url, path.replace('.iso', '.iso.torrent'))
+        .replace("{{ arch }}", "amd64")
+    
+    return urljoin(base_url, path + ".torrent")
 
 def main():
-    import argparse
     parser = argparse.ArgumentParser(description='Update Ubuntu spin ISO information')
-    parser.add_argument('--config', default='config/iso-settings.yaml', help='Path to YAML config file')
+    parser.add_argument('--config', required=True, help='Path to YAML config file')
     parser.add_argument('--dry-run', action='store_true', help='Check for updates without making changes')
     parser.add_argument('--spin', help='Update specific spin only')
+    parser.add_argument('--work-dir', default='/tmp/iso-work', help='Working directory for ISO downloads')
     parser.add_argument('--use-torrent', action='store_true', help='Use torrent for downloading')
-    parser.add_argument('--download-dir', default='/tmp', help='Directory for temporary downloads')
     args = parser.parse_args()
+
+    if not os.path.exists(args.work_dir):
+        os.makedirs(args.work_dir)
 
     config_data = load_yaml_config(args.config)
     updated = False
 
-    for group_name, group in config_data["spin_groups"].items():
-        for spin in group["spins"]:
-            if args.spin and spin["name"] != args.spin:
-                continue
+    try:
+        for group_name, group in config_data["spin_groups"].items():
+            for spin in group.get("spins", []):
+                if args.spin and spin["name"] != args.spin:
+                    continue
 
-            latest_version = get_latest_release_info(spin["name"])
-            if not latest_version:
-                continue
+                if args.use_torrent:
+                    torrent_url = resolve_torrent_url(spin)
+                    if torrent_url:
+                        logger.info(f"Using torrent for {spin['name']}: {torrent_url}")
+                        iso_path = download_torrent(torrent_url, args.work_dir)
+                        if iso_path:
+                            if update_spin_info(config_data, spin["name"], spin.get("version"), iso_path):
+                                updated = True
+                            continue
 
-            if latest_version != spin["version"]:
-                logger.info(f"Updating {spin['name']} from {spin['version']} to {latest_version}")
+                # Fall back to direct download if torrent fails or isn't available
+                iso_url = resolve_iso_url(spin)
+                if not iso_url:
+                    logger.warning(f"Could not resolve URL for {spin['name']}")
+                    continue
+
+                logger.info(f"Checking {spin['name']} ISO at {iso_url}")
+                file_info = get_file_info(iso_url)
+                
+                if not file_info['exists']:
+                    logger.warning(f"ISO not found at {iso_url}")
+                    continue
+
                 if not args.dry_run:
-                    if args.use_torrent:
-                        torrent_url = resolve_torrent_url(spin)
-                        iso_path = download_torrent(torrent_url, args.download_dir)
-                    else:
-                        iso_url = resolve_iso_url(spin)
-                        iso_path = download_iso(iso_url)
-
-                    if iso_path:
+                    iso_path = os.path.join(args.work_dir, f"{spin['name']}.iso")
+                    if download_file(iso_url, iso_path):
                         try:
-                            if update_spin_info(config_data, spin["name"], spin["version"], iso_path):
+                            if update_spin_info(config_data, spin["name"], spin.get("version"), iso_path):
                                 updated = True
                         finally:
                             os.unlink(iso_path)
 
-    if updated and not args.dry_run:
-        save_yaml_config(args.config, config_data)
+        if updated and not args.dry_run:
+            save_yaml_config(args.config, config_data)
+
+    finally:
+        if os.path.exists(args.work_dir):
+            shutil.rmtree(args.work_dir)
 
 if __name__ == '__main__':
     main()
