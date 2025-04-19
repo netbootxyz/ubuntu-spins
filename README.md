@@ -1,4 +1,4 @@
-# Ubuntu Spins
+# Ubuntu Spins by netboot.xyz
 
 This project extends netboot.xyz's Ubuntu support by adding various Ubuntu-based distributions and live images. While the original Ubuntu mini.iso provides a minimal network installer, this project adds support for:
 
