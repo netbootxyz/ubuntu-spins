@@ -124,7 +124,7 @@ def resolve_iso_url(spin):
 def download_torrent(url, output_dir):
     """Download ISO using transmission-cli with proper cleanup"""
     torrent_file = None
-    exit_file = None
+    kill_file = None
     process = None
     downloaded_iso = None
     
@@ -137,18 +137,17 @@ def download_torrent(url, output_dir):
         with open(torrent_file, 'wb') as f:
             f.write(response.content)
         
-        # Create exit file to monitor completion
-        exit_file = os.path.join(output_dir, "exit.sh")
-        with open(exit_file, 'w') as f:
-            f.write("#!/bin/sh\ntouch done")
-        os.chmod(exit_file, 0o755)
+        # Create kill file
+        kill_file = os.path.join(output_dir, "kill.sh")
+        with open(kill_file, 'w') as f:
+            f.write("killall transmission-cli")
+        os.chmod(kill_file, 0o755)
         
-        # Start transmission-cli
+        # Start transmission-cli with kill file
         cmd = [
             'transmission-cli',
             '-w', output_dir,
-            '-f', exit_file,
-            '--finish-script', exit_file,
+            '-f', kill_file,
             '--no-portmap',  # Disable port mapping
             '--no-dht',      # Disable DHT
             '--no-uplimit',  # No upload limit
@@ -159,7 +158,9 @@ def download_torrent(url, output_dir):
         # Wait for download to complete with timeout
         timeout = 3600  # 1 hour timeout
         start_time = time.time()
-        while not os.path.exists(os.path.join(output_dir, "done")):
+        
+        # Monitor process status
+        while process.poll() is None:
             if time.time() - start_time > timeout:
                 raise TimeoutError("Torrent download timed out")
             time.sleep(1)
@@ -176,17 +177,17 @@ def download_torrent(url, output_dir):
         
     finally:
         # Cleanup processes
-        if process:
+        if process and process.poll() is None:
             try:
-                process.terminate()
-                process.wait(timeout=5)  # Wait up to 5 seconds for process to terminate
+                subprocess.run([kill_file], check=True)
+                process.wait(timeout=5)
                 if process.poll() is None:
-                    process.kill()  # Force kill if still running
+                    process.kill()
             except Exception as e:
                 logger.error(f"Error terminating transmission-cli: {e}")
         
         # Cleanup files
-        for file_to_remove in [torrent_file, exit_file, os.path.join(output_dir, "done")]:
+        for file_to_remove in [torrent_file, kill_file]:
             if file_to_remove and os.path.exists(file_to_remove):
                 try:
                     os.unlink(file_to_remove)
