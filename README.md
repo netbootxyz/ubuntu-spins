@@ -68,10 +68,13 @@ python3 scripts/update_iso_info.py --config config/iso-settings.yaml --dry-run
 python3 scripts/update_iso_info.py --config config/iso-settings.yaml --spin ubuntu
 
 # Update specific version
-python3 scripts/update_iso_info.py --config config/iso-settings.yaml --version 24.04
+python3 scripts.update_iso_info.py --config config/iso-settings.yaml --version 24.04
 
 # Use torrent for downloads (requires transmission-cli)
-python3 scripts/update_iso_info.py --config config/iso-settings.yaml --use-torrent
+python3 scripts/update_iso_info.py --config config/iso-settings.yaml --use-torrent --download-dir /tmp
+
+# Update specific spin using torrent
+python3 scripts.update_iso_info.py --config config/iso-settings.yaml --spin ubuntu --use-torrent
 ```
 
 ## Configuration
@@ -135,3 +138,17 @@ The generated JSON files are compatible with netboot.xyz's menu system and can b
 - Provide live boot capabilities
 - Enable network installation
 - Support multiple Ubuntu variants
+
+## Modifying initrd
+
+To include transmission-cli in the initrd for torrent downloads:
+
+```bash
+# Make the script executable
+chmod +x scripts/inject_transmission_cli.sh
+
+# Run with sudo to modify initrd
+sudo ./scripts/inject_transmission_cli.sh
+```
+
+This will create a new initrd.gz with transmission-cli and its dependencies included.

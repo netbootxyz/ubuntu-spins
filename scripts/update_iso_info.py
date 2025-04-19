@@ -6,8 +6,10 @@ import hashlib
 import os
 import tempfile
 import logging
+import subprocess
 from urllib.parse import urljoin
 import re
+import time
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -70,6 +72,33 @@ def download_iso(url):
         logger.error(f"Error downloading ISO: {e}")
         return None
 
+def download_torrent(url, output_dir):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        
+        with tempfile.NamedTemporaryFile(suffix='.torrent', delete=False) as temp_file:
+            temp_file.write(response.content)
+            torrent_file = temp_file.name
+        
+        command = ['transmission-cli', '-w', output_dir, '-f', 'exit.sh', torrent_file]
+        subprocess.run(command, check=True)
+        
+        # Wait for download to complete
+        while not os.path.exists(os.path.join(output_dir, 'exit.sh')):
+            time.sleep(1)
+        
+        os.unlink(os.path.join(output_dir, 'exit.sh'))
+        os.unlink(torrent_file)
+        
+        # Find the ISO file
+        iso_files = [f for f in os.listdir(output_dir) if f.endswith('.iso')]
+        if iso_files:
+            return os.path.join(output_dir, iso_files[0])
+    except Exception as e:
+        logger.error(f"Error downloading torrent: {e}")
+    return None
+
 def calculate_sha256(file_path):
     sha256_hash = hashlib.sha256()
     with open(file_path, "rb") as f:
@@ -107,12 +136,24 @@ def resolve_iso_url(spin):
         .replace("{{ arch }}", spin["architectures"][0])
     return urljoin(base_url, path)
 
+def resolve_torrent_url(spin):
+    base_url = MIRROR_URLS[spin["name"]]
+    path = spin["files"]["iso"]["path_template"] \
+        .replace("{{ release }}", spin["release"]) \
+        .replace("{{ name }}", spin["name"]) \
+        .replace("{{ version }}", spin["release_title"]) \
+        .replace("{{ image_type }}", spin["image_type"]) \
+        .replace("{{ arch }}", spin["architectures"][0])
+    return urljoin(base_url, path.replace('.iso', '.iso.torrent'))
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description='Update Ubuntu spin ISO information')
     parser.add_argument('--config', default='config/iso-settings.yaml', help='Path to YAML config file')
     parser.add_argument('--dry-run', action='store_true', help='Check for updates without making changes')
     parser.add_argument('--spin', help='Update specific spin only')
+    parser.add_argument('--use-torrent', action='store_true', help='Use torrent for downloading')
+    parser.add_argument('--download-dir', default='/tmp', help='Directory for temporary downloads')
     args = parser.parse_args()
 
     config_data = load_yaml_config(args.config)
@@ -130,8 +171,13 @@ def main():
             if latest_version != spin["version"]:
                 logger.info(f"Updating {spin['name']} from {spin['version']} to {latest_version}")
                 if not args.dry_run:
-                    iso_url = resolve_iso_url(spin)
-                    iso_path = download_iso(iso_url)
+                    if args.use_torrent:
+                        torrent_url = resolve_torrent_url(spin)
+                        iso_path = download_torrent(torrent_url, args.download_dir)
+                    else:
+                        iso_url = resolve_iso_url(spin)
+                        iso_path = download_iso(iso_url)
+
                     if iso_path:
                         try:
                             if update_spin_info(config_data, spin["name"], spin["version"], iso_path):
