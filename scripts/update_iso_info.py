@@ -18,12 +18,13 @@ logger = logging.getLogger(__name__)
 
 MIRROR_URLS = {
     "ubuntu": "https://cdimage.ubuntu.com/ubuntu-mini-iso/noble/daily-live/current/",
+    "edubuntu": "https://cdimage.ubuntu.com/edubuntu/releases/",
     "kubuntu": "https://cdimage.ubuntu.com/kubuntu/releases/",
     "xubuntu": "https://cdimage.ubuntu.com/xubuntu/releases/",
     "lubuntu": "https://cdimage.ubuntu.com/lubuntu/releases/",
     "ubuntu-mate": "https://cdimage.ubuntu.com/ubuntu-mate/releases/",
     "ubuntu-budgie": "https://cdimage.ubuntu.com/ubuntu-budgie/releases/",
-    "ubuntu-studio": "https://cdimage.ubuntu.com/ubuntustudio/releases/",
+    "ubuntustudio": "https://cdimage.ubuntu.com/ubuntustudio/releases/",
     "ubuntu-unity": "https://cdimage.ubuntu.com/ubuntu-unity/releases/",
     "ubuntu-kylin": "https://cdimage.ubuntu.com/ubuntukylin/releases/"
 }
