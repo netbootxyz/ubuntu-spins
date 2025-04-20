@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruamel.yaml requests beautifulsoup4 transmission-cli
+          pip install requests beautifulsoup4
 
       - name: Install required packages
         run: |
