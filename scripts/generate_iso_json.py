@@ -17,6 +17,21 @@ def load_yaml_config(config_file):
             }
         return config
 
+def load_release_codenames():
+    """Load release codenames mapping"""
+    with open('config/release_codenames.yaml', 'r') as f:
+        return yaml.safe_load(f)['release_codenames']
+
+def get_release_info(version):
+    """Get release and codename for a version"""
+    codenames = load_release_codenames()
+    base_version = '.'.join(version.split('.')[:2])  # Convert 24.04.2 to 24.04
+    version_info = codenames.get(base_version, {})
+    return {
+        'release': version_info.get('release', ''),
+        'release_codename': version_info.get('codename', '')
+    }
+
 def aggregate_versions(versions_dir):
     """Load and aggregate all version YAMLs from the directory."""
     aggregated_spins = defaultdict(lambda: {
@@ -43,12 +58,14 @@ def aggregate_versions(versions_dir):
                    not spin.get("files", {}).get("iso", {}).get("size", 0) > 0:
                     continue
 
+                release_info = get_release_info(spin.get("version", ""))
+                
                 spin_data = {
                     "architectures": spin.get("architectures", ["amd64"]),
                     "image_type": spin.get("image_type", "desktop"),
                     "version": spin.get("version", spin.get("release_title", "")),
-                    "release": spin.get("release", ""),
-                    "release_codename": spin.get("release_codename", ""),
+                    "release": release_info["release"],
+                    "release_codename": release_info["release_codename"],
                     "release_title": spin.get("release_title", spin.get("version", ""))
                 }
                 
@@ -61,30 +78,30 @@ def aggregate_versions(versions_dir):
                         path = iso_info["path_template"] \
                             .replace("{{ release }}", spin_data["release"]) \
                             .replace("{{ name }}", spin["name"]) \
-                            .replace("{{ version }}", spin_data["release_title"]) \
+                            .replace("{{ version }}", spin_data["version"]) \
                             .replace("{{ image_type }}", spin_data["image_type"]) \
                             .replace("{{ arch }}", arch)
                         
                         if product_key not in aggregated_spins[group_name]["products"]:
+                            # Create aliases including release name for main versions
+                            aliases = [spin_data["version"]]
+                            if release_info["release"]:
+                                aliases.append(release_info["release"])
+                            
                             aggregated_spins[group_name]["products"][product_key] = {
-                                "aliases": [],
+                                "aliases": ",".join(aliases),
                                 "arch": arch,
                                 "image_type": spin_data["image_type"],
                                 "os": spin["name"],
-                                "release": spin_data["release"],
-                                "release_codename": spin_data["release_codename"],
+                                "release": release_info["release"],
+                                "release_codename": release_info["release_codename"],
                                 "release_title": spin_data["release_title"],
                                 "version": spin_data["version"],
                                 "versions": {}
                             }
                         
-                        # Add version alias if not already present
-                        alias = f"{spin_data['version']},{spin_data['release']}"
-                        if alias not in aggregated_spins[group_name]["products"][product_key]["aliases"]:
-                            aggregated_spins[group_name]["products"][product_key]["aliases"].append(alias)
-                        
                         # Add version information
-                        aggregated_spins[group_name]["products"][product_key]["versions"][spin_data["release_title"]] = {
+                        aggregated_spins[group_name]["products"][product_key]["versions"][spin_data["version"]] = {
                             "items": {
                                 "iso": {
                                     "ftype": "iso",
@@ -98,11 +115,6 @@ def aggregate_versions(versions_dir):
                     except KeyError as e:
                         print(f"Warning: Missing required field {e} in spin {spin.get('name', 'unknown')}")
                         continue
-    
-    # Convert aliases lists to comma-separated strings
-    for group_data in aggregated_spins.values():
-        for product in group_data["products"].values():
-            product["aliases"] = ",".join(product["aliases"])
     
     return dict(aggregated_spins)
 

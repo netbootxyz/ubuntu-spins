@@ -87,11 +87,25 @@ def has_valid_data(spin):
     except:
         return False
 
+def load_release_codenames():
+    """Load release codenames mapping"""
+    try:
+        with open('config/release_codenames.yaml', 'r') as f:
+            return yaml.safe_load(f)['release_codenames']
+    except:
+        logger.warning("Could not load release codenames")
+        return {}
+
 def process_version(version):
     """Process a specific Ubuntu version"""
     logger.info(f"Processing Ubuntu version: {version}")
     config_dir = os.path.join('config', 'versions')
     version_file = os.path.join(config_dir, f'{version}.yaml')
+    
+    codenames = load_release_codenames()
+    version_info = codenames.get(version, {})
+    release_codename = version_info.get('codename', '')
+    release = version_info.get('release', '')
     
     # Generate template first if not exists
     if not os.path.exists(version_file):
@@ -102,6 +116,12 @@ def process_version(version):
     # Load and validate the template
     with open(version_file, 'r') as f:
         config = yaml.safe_load(f)
+    
+    # Add release codename and release to all spins
+    for group in config['spin_groups'].values():
+        for spin in group['spins']:
+            spin['release_codename'] = release_codename
+            spin['release'] = release
     
     # Filter spins based on ISO availability
     valid_spins = {}

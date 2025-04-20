@@ -15,6 +15,13 @@ def load_spins_config():
     with open(spins_file, 'r') as f:
         return yaml.load(f)['spins']
 
+def load_release_codenames():
+    """Load release codenames from YAML file"""
+    yaml = YAML()
+    codenames_file = os.path.join('config', 'release_codenames.yaml')
+    with open(codenames_file, 'r') as f:
+        return yaml.load(f)['release_codenames']
+
 def create_version_template(version):
     """Create a template for a specific Ubuntu version with configured spins"""
     template = {
@@ -26,6 +33,12 @@ def create_version_template(version):
         'spin_groups': {}
     }
     
+    # Load release information
+    codenames = load_release_codenames()
+    version_info = codenames.get(version, {})
+    release_codename = version_info.get('codename', '')
+    release = version_info.get('release', '')
+    
     spins = load_spins_config()
     for spin_id, spin_info in spins.items():
         group = {
@@ -33,10 +46,10 @@ def create_version_template(version):
             'content_id': spin_info['content_id'],
             'spins': [{
                 'name': spin_id,
-                'release': version,
+                'release': release,
                 'version': version,
                 'release_title': version,
-                'release_codename': '',
+                'release_codename': release_codename,
                 'image_type': 'desktop',
                 'architectures': ['amd64'],
                 'files': {

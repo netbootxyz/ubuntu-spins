@@ -10,7 +10,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/edubuntu/releases/25.04/release/
       image_type: desktop
       name: edubuntu
-      release: '25.04'
+      release: plucky
+      release_codename: Plucky Puffin
       release_title: '25.04'
       version: '25.04'
   kubuntu:
@@ -24,7 +25,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/kubuntu/releases/25.04/release/
       image_type: desktop
       name: kubuntu
-      release: '25.04'
+      release: plucky
+      release_codename: Plucky Puffin
       release_title: '25.04'
       version: '25.04'
   lubuntu:
@@ -38,7 +40,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/lubuntu/releases/25.04/release/
       image_type: desktop
       name: lubuntu
-      release: '25.04'
+      release: plucky
+      release_codename: Plucky Puffin
       release_title: '25.04'
       version: '25.04'
   ubuntu-budgie:
@@ -52,7 +55,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/ubuntu-budgie/releases/25.04/release/
       image_type: desktop
       name: ubuntu-budgie
-      release: '25.04'
+      release: plucky
+      release_codename: Plucky Puffin
       release_title: '25.04'
       version: '25.04'
   ubuntu-mate:
@@ -66,7 +70,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/ubuntu-mate/releases/25.04/release/
       image_type: desktop
       name: ubuntu-mate
-      release: '25.04'
+      release: plucky
+      release_codename: Plucky Puffin
       release_title: '25.04'
       version: '25.04'
   ubuntu-studio:
@@ -80,7 +85,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/ubuntustudio/releases/25.04/release/
       image_type: desktop
       name: ubuntu-studio
-      release: '25.04'
+      release: plucky
+      release_codename: Plucky Puffin
       release_title: '25.04'
       version: '25.04'
   xubuntu:
@@ -94,7 +100,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/xubuntu/releases/25.04/release/
       image_type: desktop
       name: xubuntu
-      release: '25.04'
+      release: plucky
+      release_codename: Plucky Puffin
       release_title: '25.04'
       version: '25.04'
 version: '25.04'

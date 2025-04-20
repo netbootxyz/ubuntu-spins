@@ -10,7 +10,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/edubuntu/releases/24.10/release/
       image_type: desktop
       name: edubuntu
-      release: '24.10'
+      release: oracular
+      release_codename: Oracular Oriole
       release_title: '24.10'
       version: '24.10'
   kubuntu:
@@ -24,7 +25,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/kubuntu/releases/24.10/release/
       image_type: desktop
       name: kubuntu
-      release: '24.10'
+      release: oracular
+      release_codename: Oracular Oriole
       release_title: '24.10'
       version: '24.10'
   lubuntu:
@@ -38,7 +40,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/lubuntu/releases/24.10/release/
       image_type: desktop
       name: lubuntu
-      release: '24.10'
+      release: oracular
+      release_codename: Oracular Oriole
       release_title: '24.10'
       version: '24.10'
   ubuntu-budgie:
@@ -52,7 +55,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/ubuntu-budgie/releases/24.10/release/
       image_type: desktop
       name: ubuntu-budgie
-      release: '24.10'
+      release: oracular
+      release_codename: Oracular Oriole
       release_title: '24.10'
       version: '24.10'
   ubuntu-mate:
@@ -66,7 +70,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/ubuntu-mate/releases/24.10/release/
       image_type: desktop
       name: ubuntu-mate
-      release: '24.10'
+      release: oracular
+      release_codename: Oracular Oriole
       release_title: '24.10'
       version: '24.10'
   ubuntu-studio:
@@ -80,7 +85,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/ubuntustudio/releases/24.10/release/
       image_type: desktop
       name: ubuntu-studio
-      release: '24.10'
+      release: oracular
+      release_codename: Oracular Oriole
       release_title: '24.10'
       version: '24.10'
   xubuntu:
@@ -94,7 +100,8 @@ spin_groups:
           url: https://cdimage.ubuntu.com/xubuntu/releases/24.10/release/
       image_type: desktop
       name: xubuntu
-      release: '24.10'
+      release: oracular
+      release_codename: Oracular Oriole
       release_title: '24.10'
       version: '24.10'
 version: '24.10'
