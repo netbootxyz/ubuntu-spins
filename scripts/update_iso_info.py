@@ -83,15 +83,22 @@ def download_torrent(url, output_dir):
         if not download_with_progress(url, torrent_path):
             return None
         
-        # Create kill script
+        # Create kill script that waits for download completion
         with open(kill_script, 'w') as f:
-            f.write("#!/bin/bash\nkillall transmission-cli\n")
+            f.write("""#!/bin/bash
+sleep 5  # Give transmission time to start
+while transmission-remote -l | grep -q '% Done'; do
+    sleep 2
+done
+killall transmission-cli
+""")
         os.chmod(kill_script, 0o755)
             
         subprocess.run(['transmission-cli', 
                        '-f', kill_script,
                        '-w', output_dir,
                        '--no-portmap',
+                       '--download-dir', output_dir,
                        torrent_path], 
                       check=True,
                       timeout=3600)  # 1 hour timeout
