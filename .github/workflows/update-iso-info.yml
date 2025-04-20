@@ -20,6 +20,11 @@ on:
         required: false
         type: boolean
         default: false
+      sha256_only:
+        description: 'Only update SHA256 and size values'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   update-iso-info:
@@ -72,6 +77,11 @@ jobs:
           # Use torrent if requested
           if [ "${{ github.event.inputs.use_torrent }}" == "true" ]; then
             COMMAND="$COMMAND --use-torrent"
+          fi
+
+          # Only update SHA256 and size by default
+          if [ "${{ github.event.inputs.sha256_only }}" != "false" ]; then
+            COMMAND="$COMMAND --sha256-only"
           fi
           
           echo "Running command: $COMMAND"

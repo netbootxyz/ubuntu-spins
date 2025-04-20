@@ -44,11 +44,10 @@ def load_yaml_config(config_file):
 
 def save_yaml_config(config_file, config_data):
     """Save the updated YAML configuration file while preserving template structure."""
-    # Read existing file to preserve formatting and anchors
     with open(config_file, 'r') as f:
         existing_data = yaml.safe_load(f)
         
-    # Only update the size and sha256 values in existing structure
+    # Only update sha256 and size values, preserve everything else
     for group_name, group in existing_data["spin_groups"].items():
         if group_name in config_data["spin_groups"]:
             new_group = config_data["spin_groups"][group_name]
