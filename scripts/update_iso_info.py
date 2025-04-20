@@ -78,10 +78,18 @@ def download_torrent(url, output_dir):
     """Download using transmission-cli."""
     try:
         torrent_path = os.path.join(output_dir, "temp.torrent")
+        kill_script = os.path.join(output_dir, "kill_transmission.sh")
+        
         if not download_with_progress(url, torrent_path):
             return None
+        
+        # Create kill script
+        with open(kill_script, 'w') as f:
+            f.write("#!/bin/bash\nkillall transmission-cli\n")
+        os.chmod(kill_script, 0o755)
             
         subprocess.run(['transmission-cli', 
+                       '-f', kill_script,
                        '-w', output_dir,
                        '--no-portmap',
                        torrent_path], 
@@ -97,6 +105,8 @@ def download_torrent(url, output_dir):
     finally:
         if os.path.exists(torrent_path):
             os.unlink(torrent_path)
+        if os.path.exists(kill_script):
+            os.unlink(kill_script)
 
 def update_iso_info(config_data, iso_path):
     """Update ISO information in config."""
@@ -114,11 +124,8 @@ def update_iso_info(config_data, iso_path):
 def get_iso_url(spin, version):
     """Get the correct ISO URL based on spin type"""
     base_url = spin['files']['iso']['url']
-    if spin['name'] == 'ubuntu':
-        return urljoin(base_url, 'mini.iso')
-    else:
-        path = spin['files']['iso']['path_template'].replace('{{ version }}', version)
-        return urljoin(base_url, path)
+    path = spin['files']['iso']['path_template'].replace('{{ version }}', version)
+    return urljoin(base_url, path)
 
 def main():
     parser = argparse.ArgumentParser(description='Update Ubuntu ISO information')

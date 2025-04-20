@@ -75,13 +75,25 @@ def verify_iso_availability(version, spin_name):
     except:
         return False
 
+def has_valid_data(spin):
+    """Check if spin already has valid SHA256 and size values"""
+    try:
+        iso_info = spin['files']['iso']
+        return (
+            iso_info.get('sha256') and 
+            isinstance(iso_info.get('size'), (int, float)) and 
+            iso_info['size'] > 0
+        )
+    except:
+        return False
+
 def process_version(version):
     """Process a specific Ubuntu version"""
     logger.info(f"Processing Ubuntu version: {version}")
     config_dir = os.path.join('config', 'versions')
     version_file = os.path.join(config_dir, f'{version}.yaml')
     
-    # Generate template first
+    # Generate template first if not exists
     if not os.path.exists(version_file):
         logger.info(f"Generating template for {version}")
         subprocess.run(['python3', 'scripts/generate_version_template.py', version],
@@ -93,9 +105,18 @@ def process_version(version):
     
     # Filter spins based on ISO availability
     valid_spins = {}
+    needs_update = False
+    
     for spin_name, spin_data in config['spin_groups'].items():
-        if verify_iso_availability(version, spin_name):
+        spin = spin_data['spins'][0]  # Get first spin configuration
+        
+        if has_valid_data(spin):
+            logger.info(f"Using existing data for {spin_name} {version}")
             valid_spins[spin_name] = spin_data
+        elif verify_iso_availability(version, spin_name):
+            needs_update = True
+            valid_spins[spin_name] = spin_data
+            logger.info(f"Will update {spin_name} {version}")
         else:
             logger.warning(f"ISO not available for {spin_name} {version}, skipping")
     
@@ -109,21 +130,22 @@ def process_version(version):
     with open(version_file, 'w') as f:
         yaml.dump(config, f)
     
-    # Update ISO information for valid spins
-    subprocess.run(['python3', 'scripts/update_iso_info.py',
-                   '--config', version_file,
-                   '--use-torrent',
-                   '-v'],
-                  check=True)
+    # Only run update if needed
+    if needs_update:
+        subprocess.run(['python3', 'scripts/update_iso_info.py',
+                       '--config', version_file,
+                       '--use-torrent',
+                       '-v'],
+                      check=True)
     
-    # Verify SHA256 and size were obtained
+    # Final validation of SHA256 and size
     with open(version_file, 'r') as f:
         config = yaml.safe_load(f)
         
     valid_spins = {}
     for spin_name, spin_data in config['spin_groups'].items():
         for spin in spin_data['spins']:
-            if spin['files']['iso']['sha256'] and spin['files']['iso']['size'] > 0:
+            if has_valid_data(spin):
                 valid_spins[spin_name] = spin_data
             else:
                 logger.warning(f"Missing SHA256 or size for {spin_name} {version}, skipping")
