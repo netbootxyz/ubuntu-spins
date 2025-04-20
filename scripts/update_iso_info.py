@@ -34,62 +34,9 @@ def load_yaml_config(config_file):
         return yaml.safe_load(f)
 
 def save_yaml_config(config_file, config_data):
-    """Save only the modified fields in the YAML configuration file."""
-    with open(config_file, 'r') as f:
-        lines = f.readlines()
-
-    updated_lines = []
-    current_spin = None
-    current_version = None
-    in_files_block = False
-
-    for line in lines:
-        stripped = line.lstrip()
-        indent = len(line) - len(stripped)
-        
-        # Track current context
-        if stripped.startswith('- name:'):
-            current_spin = stripped.split(':')[1].strip().strip('"\'')
-        elif stripped.startswith('files:'):
-            in_files_block = True
-        elif indent == 0 or (stripped.startswith('-') and indent <= 2):
-            current_spin = None
-            current_version = None
-            in_files_block = False
-        
-        # Handle YAML anchors and version tracking
-        if current_spin and stripped.startswith('<<:'):
-            if '*plucky' in stripped:
-                current_version = '24.04'
-            elif '*noble' in stripped:
-                current_version = '25.04'
-            # Keep anchor references as is
-            updated_lines.append(line)
-            continue
-        
-        # Update only size and sha256 values within files block
-        if current_spin and in_files_block:
-            matching_spin = None
-            for group in config_data['spin_groups'].values():
-                for spin in group['spins']:
-                    spin_version = str(spin.get('version') or spin.get('release_title'))
-                    if spin['name'] == current_spin and str(current_version) == spin_version:
-                        matching_spin = spin
-                        break
-                if matching_spin:
-                    break
-            
-            if matching_spin and 'files' in matching_spin and 'iso' in matching_spin['files']:
-                if stripped.startswith('size:'):
-                    line = ' ' * indent + f"size: {matching_spin['files']['iso']['size']}\n"
-                elif stripped.startswith('sha256:'):
-                    line = ' ' * indent + f"sha256: '{matching_spin['files']['iso']['sha256']}'\n"
-        
-        updated_lines.append(line)
-    
+    """Save the updated YAML configuration file."""
     with open(config_file, 'w') as f:
-        f.writelines(updated_lines)
-
+        yaml.dump(config_data, f, default_flow_style=False)
     logger.info(f"Updated configuration saved to {config_file}")
 
 def get_file_info(url):
@@ -135,49 +82,38 @@ def update_spin_info(config_data, spin_name, version, iso_path):
     """Update spin information with new ISO details"""
     file_size = os.path.getsize(iso_path)
     sha256 = calculate_sha256(iso_path)
-    size_gb = f"{file_size / (1024*1024*1024):.1f}G"
     
     logger.info(f"New ISO information for {spin_name} {version}:")
-    logger.info(f"  Size: {size_gb}")
+    logger.info(f"  Size: {file_size} bytes")
     logger.info(f"  SHA256: {sha256}")
     
     updated = False
     for group in config_data["spin_groups"].values():
         for spin in group.get("spins", []):
-            if spin["name"] != spin_name:
+            if spin_name and spin["name"] != spin_name:
                 continue
-                
+
             # Get version from spin
-            spin_version = None
-            if "release_title" in spin:
-                spin_version = spin["release_title"]
-            elif "version" in spin:
-                spin_version = spin["version"]
-            
-            # Convert versions to strings for comparison
-            spin_version_str = str(spin_version) if spin_version is not None else ""
-            version_str = str(version) if version is not None else ""
-            
-            # Skip if versions don't match
-            if not spin_version_str or spin_version_str != version_str:
+            spin_version = spin.get("release_title") or spin.get("version")
+            if version and str(spin_version) != str(version):
                 continue
-            
+
             # Update the ISO information
             if "files" not in spin:
                 spin["files"] = {}
             if "iso" not in spin["files"]:
                 spin["files"]["iso"] = {}
-            
+
             spin["files"]["iso"].update({
-                "size": size_gb,
+                "size": file_size,
                 "sha256": sha256
             })
             logger.info(f"Updated {spin_name} {version}")
             updated = True
-            
+
     if not updated:
         logger.warning(f"No matching spin found for {spin_name} {version}")
-    
+
     return updated
 
 def resolve_iso_url(spin):
