@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import ruamel.yaml
+from ruamel.yaml import YAML
 import requests
 import hashlib
 import os
@@ -30,21 +30,26 @@ MIRROR_URLS = {
 }
 
 def load_yaml_config(config_file):
+    """Load YAML configuration file."""
+    yaml = YAML()
+    yaml.preserve_quotes = True
+    yaml.indent(mapping=2, sequence=4, offset=2)
+    
     logger.info(f"Loading config from: {os.path.abspath(config_file)}")
     if not os.path.exists(config_file):
         raise FileNotFoundError(f"Config file not found: {config_file}")
     with open(config_file, 'r') as f:
         try:
-            config = yaml.safe_load(f)
+            config = yaml.load(f)
             logger.info("Config file loaded successfully")
             return config
-        except yaml.YAMLError as e:
+        except Exception as e:
             logger.error(f"Error parsing YAML config: {e}")
             raise
 
 def save_yaml_config(config_file, config_data):
     """Save the updated YAML configuration file while preserving exact template structure."""
-    yaml = ruamel.yaml.YAML()
+    yaml = YAML()
     yaml.preserve_quotes = True
     yaml.indent(mapping=2, sequence=4, offset=2)
     
