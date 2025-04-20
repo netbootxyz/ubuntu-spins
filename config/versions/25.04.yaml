@@ -1,100 +1,86 @@
-version: '25.04'
 spin_groups:
-  kubuntu:
-    name: Kubuntu
-    spins:
-      - name: kubuntu
-        release: '25.04'
-        version: '25.04'
-        release_title: '25.04'
-        image_type: desktop
-        files:
-          iso:
-            url: https://cdimage.ubuntu.com/kubuntu/releases/25.04/release/
-            path_template: kubuntu-{{ version }}-desktop-amd64.iso
-            sha256: '701f1fd796ed6d5867f54af0e2dceac7b7f01a9f975fda3423e9d0e97da10ba8'
-            size: 4699852800
-  xubuntu:
-    name: Xubuntu
-    spins:
-      - name: xubuntu
-        release: '25.04'
-        version: '25.04'
-        release_title: '25.04'
-        image_type: desktop
-        files:
-          iso:
-            url: https://cdimage.ubuntu.com/xubuntu/releases/25.04/release/
-            path_template: xubuntu-{{ version }}-desktop-amd64.iso
-            sha256: 'c31de06ea12843a72190f5277f95378b6d921e9c1bb69b1888c6d15c8937a98a'
-            size: 4557887488
-  lubuntu:
-    name: Lubuntu
-    spins:
-      - name: lubuntu
-        release: '25.04'
-        version: '25.04'
-        release_title: '25.04'
-        image_type: desktop
-        files:
-          iso:
-            url: https://cdimage.ubuntu.com/lubuntu/releases/25.04/release/
-            path_template: lubuntu-{{ version }}-desktop-amd64.iso
-            sha256: 'da49827ab8bce6b78214d6fd44c4334a5194e5c87534906e4f272492de4fd14e'
-            size: 3344099328
-  ubuntu-mate:
-    name: Ubuntu MATE
-    spins:
-      - name: ubuntu-mate
-        release: '25.04'
-        version: '25.04'
-        release_title: '25.04'
-        image_type: desktop
-        files:
-          iso:
-            url: https://cdimage.ubuntu.com/ubuntu-mate/releases/25.04/release/
-            path_template: ubuntu-mate-{{ version }}-desktop-amd64.iso
-            sha256: '08d49a03c5c90f9a8fbb522e7d0e9097ba99431fb43df96b9e4c07458c0969d9'
-            size: 3724666880
-  ubuntu-budgie:
-    name: Ubuntu Budgie
-    spins:
-      - name: ubuntu-budgie
-        release: '25.04'
-        version: '25.04'
-        release_title: '25.04'
-        image_type: desktop
-        files:
-          iso:
-            url: https://cdimage.ubuntu.com/ubuntu-budgie/releases/25.04/release/
-            path_template: ubuntu-budgie-{{ version }}-desktop-amd64.iso
-            sha256: 'dcc74c1c9b9bf00abab35385c21ec5a207f68eb59ef57689c13d591b945f7962'
-            size: 3530133504
-  ubuntu-studio:
-    name: Ubuntu Studio
-    spins:
-      - name: ubuntu-studio
-        release: '25.04'
-        version: '25.04'
-        release_title: '25.04'
-        image_type: desktop
-        files:
-          iso:
-            url: https://cdimage.ubuntu.com/ubuntustudio/releases/25.04/release/
-            path_template: ubuntustudio-{{ version }}-desktop-amd64.iso
-            sha256: '8986611131c3e607c74891649359d32cc468263d269ba697ab814b5d2bc0a7ee'
-            size: 7001329664
   edubuntu:
     name: Edubuntu
     spins:
-      - name: edubuntu
-        release: '25.04'
-        version: '25.04'
-        release_title: '25.04'
-        image_type: desktop
-        files:
-          iso:
-            url: https://cdimage.ubuntu.com/edubuntu/releases/25.04/release/
-            path_template: edubuntu-{{ version }}-desktop-amd64.iso
-            sha256: '456830b2bc5ccb44e408bb5f8e3e8e84a3d7acc8eb37231a283dbff92ce7e25e'
-            size: 6223695872
+    - files:
+        iso:
+          path_template: edubuntu-{{ version }}-desktop-amd64.iso
+          sha256: 456830b2bc5ccb44e408bb5f8e3e8e84a3d7acc8eb37231a283dbff92ce7e25e
+          size: 6223695872
+          url: https://cdimage.ubuntu.com/edubuntu/releases/25.04/release/
+      image_type: desktop
+      name: edubuntu
+      release: '25.04'
+      release_title: '25.04'
+      version: '25.04'
+  kubuntu:
+    name: Kubuntu
+    spins:
+    - files:
+        iso:
+          path_template: kubuntu-{{ version }}-desktop-amd64.iso
+          sha256: 701f1fd796ed6d5867f54af0e2dceac7b7f01a9f975fda3423e9d0e97da10ba8
+          size: 4699852800
+          url: https://cdimage.ubuntu.com/kubuntu/releases/25.04/release/
+      image_type: desktop
+      name: kubuntu
+      release: '25.04'
+      release_title: '25.04'
+      version: '25.04'
+  lubuntu:
+    name: Lubuntu
+    spins:
+    - files:
+        iso:
+          path_template: lubuntu-{{ version }}-desktop-amd64.iso
+          sha256: da49827ab8bce6b78214d6fd44c4334a5194e5c87534906e4f272492de4fd14e
+          size: 3344099328
+          url: https://cdimage.ubuntu.com/lubuntu/releases/25.04/release/
+      image_type: desktop
+      name: lubuntu
+      release: '25.04'
+      release_title: '25.04'
+      version: '25.04'
+  ubuntu-budgie:
+    name: Ubuntu Budgie
+    spins:
+    - files:
+        iso:
+          path_template: ubuntu-budgie-{{ version }}-desktop-amd64.iso
+          sha256: dcc74c1c9b9bf00abab35385c21ec5a207f68eb59ef57689c13d591b945f7962
+          size: 3530133504
+          url: https://cdimage.ubuntu.com/ubuntu-budgie/releases/25.04/release/
+      image_type: desktop
+      name: ubuntu-budgie
+      release: '25.04'
+      release_title: '25.04'
+      version: '25.04'
+  ubuntu-mate:
+    name: Ubuntu MATE
+    spins:
+    - files:
+        iso:
+          path_template: ubuntu-mate-{{ version }}-desktop-amd64.iso
+          sha256: 08d49a03c5c90f9a8fbb522e7d0e9097ba99431fb43df96b9e4c07458c0969d9
+          size: 3724666880
+          url: https://cdimage.ubuntu.com/ubuntu-mate/releases/25.04/release/
+      image_type: desktop
+      name: ubuntu-mate
+      release: '25.04'
+      release_title: '25.04'
+      version: '25.04'
+  xubuntu:
+    name: Xubuntu
+    spins:
+    - files:
+        iso:
+          path_template: xubuntu-{{ version }}-desktop-amd64.iso
+          sha256: c31de06ea12843a72190f5277f95378b6d921e9c1bb69b1888c6d15c8937a98a
+          size: 4557887488
+          url: https://cdimage.ubuntu.com/xubuntu/releases/25.04/release/
+      image_type: desktop
+      name: xubuntu
+      release: '25.04'
+      release_title: '25.04'
+      version: '25.04'
+version: '25.04'
