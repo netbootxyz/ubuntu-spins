@@ -40,7 +40,7 @@ jobs:
           sudo apt-get install -y transmission-cli
 
       - name: Check for new versions
-        run: python3 scripts/check_new_versions.py -v
+        run: python3 scripts/check_new_versions.py
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
