@@ -30,8 +30,17 @@ MIRROR_URLS = {
 }
 
 def load_yaml_config(config_file):
+    logger.info(f"Loading config from: {os.path.abspath(config_file)}")
+    if not os.path.exists(config_file):
+        raise FileNotFoundError(f"Config file not found: {config_file}")
     with open(config_file, 'r') as f:
-        return yaml.safe_load(f)
+        try:
+            config = yaml.safe_load(f)
+            logger.info("Config file loaded successfully")
+            return config
+        except yaml.YAMLError as e:
+            logger.error(f"Error parsing YAML config: {e}")
+            raise
 
 def save_yaml_config(config_file, config_data):
     """Save the updated YAML configuration file while preserving template structure."""
@@ -71,9 +80,18 @@ def get_file_info(url):
 
 def download_file(url, output_path):
     try:
+        logger.info(f"Starting download from: {url}")
+        logger.info(f"Saving to: {output_path}")
+        
         response = requests.get(url, stream=True)
         response.raise_for_status()
         total_size = int(response.headers.get('content-length', 0))
+        
+        if total_size == 0:
+            logger.error("Content length is 0, possible invalid URL or server error")
+            return False
+            
+        logger.info(f"Total file size to download: {total_size} bytes")
         
         with open(output_path, 'wb') as f:
             downloaded = 0
@@ -85,7 +103,16 @@ def download_file(url, output_path):
                         percent = int(100 * downloaded / total_size)
                         if percent % 10 == 0:
                             logger.info(f"Download progress: {percent}%")
+        
+        if os.path.getsize(output_path) != total_size:
+            logger.error(f"Downloaded file size ({os.path.getsize(output_path)}) doesn't match expected size ({total_size})")
+            return False
+            
+        logger.info("Download completed successfully")
         return True
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Network error during download: {e}")
+        return False
     except Exception as e:
         logger.error(f"Error downloading file: {e}")
         return False
@@ -134,24 +161,39 @@ def resolve_iso_url(spin):
     """Generate ISO URL from spin information"""
     base_url = MIRROR_URLS.get(spin["name"])
     if not base_url:
+        logger.error(f"No base URL found for spin: {spin['name']}")
         return None
         
     if spin["name"] == "ubuntu":
-        return urljoin(base_url, "noble-mini-iso-amd64.iso")
+        url = urljoin(base_url, "noble-mini-iso-amd64.iso")
+        logger.debug(f"Resolved Ubuntu mini.iso URL: {url}")
+        return url
     
     # Get version, preferring release_title over version
     version = spin.get("release_title") or spin.get("version")
-    if version is not None:
-        version = str(version)
+    if version is None:
+        logger.error(f"No version found for spin: {spin['name']}")
+        return None
         
-    path = spin["files"]["iso"]["path_template"] \
-        .replace("{{ release }}", spin["release"]) \
-        .replace("{{ name }}", spin["name"]) \
-        .replace("{{ version }}", version) \
-        .replace("{{ image_type }}", spin["image_type"]) \
-        .replace("{{ arch }}", "amd64")
+    version = str(version)
     
-    return urljoin(base_url, path)
+    try:
+        path = spin["files"]["iso"]["path_template"] \
+            .replace("{{ release }}", spin["release"]) \
+            .replace("{{ name }}", spin["name"]) \
+            .replace("{{ version }}", version) \
+            .replace("{{ image_type }}", spin["image_type"]) \
+            .replace("{{ arch }}", "amd64")
+        
+        url = urljoin(base_url, path)
+        logger.debug(f"Resolved URL for {spin['name']}: {url}")
+        return url
+    except KeyError as e:
+        logger.error(f"Missing required field in spin configuration: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"Error resolving URL for {spin['name']}: {e}")
+        return None
 
 def download_torrent(url, output_dir):
     """Download ISO using transmission-cli with proper cleanup"""
@@ -262,15 +304,38 @@ def main():
     parser.add_argument('--spin', help='Update specific spin only')
     parser.add_argument('--work-dir', default='/tmp/iso-work', help='Working directory for ISO downloads')
     parser.add_argument('--use-torrent', action='store_true', help='Use torrent for downloading')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose logging')
     args = parser.parse_args()
 
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+
+    logger.info("Starting ISO update process")
+    logger.debug(f"Arguments: {args}")
+
     if not os.path.exists(args.work_dir):
+        logger.info(f"Creating working directory: {args.work_dir}")
         os.makedirs(args.work_dir)
 
-    config_data = load_yaml_config(args.config)
-    updated = False
-
     try:
+        config_data = load_yaml_config(args.config)
+        if not config_data or "spin_groups" not in config_data:
+            logger.error("Invalid config file: missing spin_groups")
+            return
+
+        # Get list of all available spins
+        available_spins = []
+        for group in config_data["spin_groups"].values():
+            available_spins.extend(spin["name"] for spin in group.get("spins", []))
+
+        logger.info(f"Found {len(available_spins)} spins in config")
+
+        if args.spin and args.spin not in available_spins:
+            logger.error(f"Spin '{args.spin}' not found. Available spins: {', '.join(sorted(available_spins))}")
+            return
+
+        updated = False
+
         for group_name, group in config_data["spin_groups"].items():
             for spin in group.get("spins", []):
                 if args.spin and spin["name"] != args.spin:
