@@ -19,7 +19,7 @@ versions:
 # Define common file templates
 file_templates:
   desktop_iso: &desktop_iso_template
-    path_template: '{{ release }}/release/{{ name }}-{{ version }}-{{ image_type }}-{{ arch }}.iso'
+    path_template: '{{ name }}-{{ version }}-{{ image_type }}-{{ arch }}.iso'
 
 # Define common architectures
 arch_amd64: &arch_amd64
