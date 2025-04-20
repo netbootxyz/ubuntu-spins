@@ -34,9 +34,28 @@ def load_yaml_config(config_file):
         return yaml.safe_load(f)
 
 def save_yaml_config(config_file, config_data):
-    """Save the updated YAML configuration file."""
+    """Save the updated YAML configuration file while preserving template structure."""
+    # Read existing file to preserve formatting and anchors
+    with open(config_file, 'r') as f:
+        existing_data = yaml.safe_load(f)
+        
+    # Only update the size and sha256 values in existing structure
+    for group_name, group in existing_data["spin_groups"].items():
+        if group_name in config_data["spin_groups"]:
+            new_group = config_data["spin_groups"][group_name]
+            for i, spin in enumerate(group["spins"]):
+                if i < len(new_group["spins"]):
+                    new_spin = new_group["spins"][i]
+                    if "files" in spin and "iso" in spin["files"]:
+                        if "files" in new_spin and "iso" in new_spin["files"]:
+                            # Only update size and sha256
+                            if "size" in new_spin["files"]["iso"]:
+                                spin["files"]["iso"]["size"] = new_spin["files"]["iso"]["size"]
+                            if "sha256" in new_spin["files"]["iso"]:
+                                spin["files"]["iso"]["sha256"] = new_spin["files"]["iso"]["sha256"]
+    
     with open(config_file, 'w') as f:
-        yaml.dump(config_data, f, default_flow_style=False)
+        yaml.dump(existing_data, f, default_flow_style=False)
     logger.info(f"Updated configuration saved to {config_file}")
 
 def get_file_info(url):
@@ -80,7 +99,7 @@ def calculate_sha256(file_path):
 
 def update_spin_info(config_data, spin_name, version, iso_path):
     """Update spin information with new ISO details"""
-    file_size = os.path.getsize(iso_path)
+    file_size = os.path.getsize(iso_path)  # This will be an integer
     sha256 = calculate_sha256(iso_path)
 
     logger.info(f"New ISO information for {spin_name} {version}:")
@@ -100,10 +119,9 @@ def update_spin_info(config_data, spin_name, version, iso_path):
 
             # Update only the size and sha256 fields
             if "files" in spin and "iso" in spin["files"]:
-                spin["files"]["iso"].update({
-                    "size": file_size,
-                    "sha256": sha256
-                })
+                # Store size as full integer, not abbreviated format
+                spin["files"]["iso"]["size"] = file_size
+                spin["files"]["iso"]["sha256"] = sha256
                 logger.info(f"Updated {spin_name} {version}")
                 updated = True
 
