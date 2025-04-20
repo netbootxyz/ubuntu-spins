@@ -38,59 +38,57 @@ def save_yaml_config(config_file, config_data):
     with open(config_file, 'r') as f:
         lines = f.readlines()
 
-    current_path = []
-    indent_level = 0
-    in_spin = False
+    updated_lines = []
+    stack = []
     current_spin = None
     current_version = None
-    updated_lines = []
 
     for line in lines:
         stripped = line.lstrip()
         indent = len(line) - len(stripped)
         
-        # Reset state when indentation decreases
-        if indent < indent_level:
-            while current_path and len(current_path) * 2 > indent:
-                current_path.pop()
-                in_spin = False
-                current_spin = None
-                current_version = None
+        # Update stack based on indentation
+        while stack and stack[-1]['indent'] >= indent:
+            stack.pop()
+            
+        if stripped.startswith('- name:'):
+            current_spin = stripped.split(':')[1].strip().strip('"\'')
+            stack.append({'indent': indent, 'type': 'spin', 'name': current_spin})
+        elif current_spin and any(stripped.startswith(prefix) for prefix in ['version:', 'release_title:', '<<:']):
+            if '<<:' in stripped:  # Handle YAML anchor
+                continue  # Keep anchor references as is
+            current_version = stripped.split(':')[1].strip().strip('"\'')
         
-        indent_level = indent
-        
-        # Track current context
-        if stripped.startswith('spin_groups:'):
-            current_path = ['spin_groups']
-        elif stripped.startswith('- name:'):
-            spin_name = stripped.split(':')[1].strip()
-            in_spin = True
-            current_spin = None
-            current_version = None
-        elif in_spin and (stripped.startswith('version:') or stripped.startswith('release_title:')):
-            version = stripped.split(':')[1].strip()
-            current_version = version.strip("'\"")
-            # Find matching spin with correct version
+        # Find matching spin in config data
+        if current_spin and (stripped.startswith('size:') or stripped.startswith('sha256:')):
+            matching_spin = None
             for group in config_data['spin_groups'].values():
                 for spin in group['spins']:
-                    spin_version = spin.get('version') or spin.get('release_title')
-                    if spin['name'] == current_spin and spin_version == current_version:
-                        current_spin = spin
+                    spin_version = str(spin.get('version') or spin.get('release_title'))
+                    if spin['name'] == current_spin and spin_version == str(current_version):
+                        matching_spin = spin
                         break
-                if isinstance(current_spin, dict):
+                if matching_spin:
                     break
-        
-        # Update SHA256 and size if we're at those lines and have a matching spin
-        if in_spin and isinstance(current_spin, dict) and current_version and 'files' in current_spin and 'iso' in current_spin['files']:
-            if stripped.startswith('sha256:'):
-                line = line[:indent] + f"sha256: '{current_spin['files']['iso']['sha256']}'\n"
-            elif stripped.startswith('size:'):
-                line = line[:indent] + f"size: {current_spin['files']['iso']['size']}\n"
+            
+            # Update values if we found a match
+            if matching_spin and 'files' in matching_spin and 'iso' in matching_spin['files']:
+                if stripped.startswith('size:'):
+                    line = ' ' * indent + f"size: {matching_spin['files']['iso']['size']}\n"
+                elif stripped.startswith('sha256:'):
+                    line = ' ' * indent + f"sha256: '{matching_spin['files']['iso']['sha256']}'\n"
         
         updated_lines.append(line)
+
+        # Reset version when leaving spin block
+        if indent == 0 and not stripped.startswith('-'):
+            current_spin = None
+            current_version = None
+            stack = []
     
     with open(config_file, 'w') as f:
         f.writelines(updated_lines)
+
     logger.info(f"Updated configuration saved to {config_file}")
 
 def get_file_info(url):
@@ -327,6 +325,9 @@ def main():
                 if args.spin and spin["name"] != args.spin:
                     continue
 
+                # Get version, preferring release_title over version
+                version = spin.get("release_title") or spin.get("version")
+
                 if args.use_torrent:
                     torrent_url = resolve_torrent_url(spin)
                     if torrent_url:
@@ -334,7 +335,7 @@ def main():
                         iso_path = download_torrent(torrent_url, args.work_dir)
                         if iso_path:
                             try:
-                                if update_spin_info(config_data, spin["name"], spin.get("version"), iso_path):
+                                if update_spin_info(config_data, spin["name"], version, iso_path):
                                     updated = True
                             finally:
                                 if os.path.exists(iso_path):
@@ -358,10 +359,11 @@ def main():
                     iso_path = os.path.join(args.work_dir, f"{spin['name']}.iso")
                     if download_file(iso_url, iso_path):
                         try:
-                            if update_spin_info(config_data, spin["name"], spin.get("version"), iso_path):
+                            if update_spin_info(config_data, spin["name"], version, iso_path):
                                 updated = True
                         finally:
-                            os.unlink(iso_path)
+                            if os.path.exists(iso_path):
+                                os.unlink(iso_path)
 
         if updated and not args.dry_run:
             save_yaml_config(args.config, config_data)
