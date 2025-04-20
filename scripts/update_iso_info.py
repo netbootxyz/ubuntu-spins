@@ -86,10 +86,6 @@ def download_torrent(url, output_dir):
         # Create kill script that waits for download completion
         with open(kill_script, 'w') as f:
             f.write("""#!/bin/bash
-sleep 5  # Give transmission time to start
-while transmission-remote -l | grep -q '% Done'; do
-    sleep 2
-done
 killall transmission-cli
 """)
         os.chmod(kill_script, 0o755)
@@ -100,7 +96,7 @@ killall transmission-cli
                        '--no-portmap',
                        '--download-dir', output_dir,
                        torrent_path], 
-                      check=True,
+                      check=False,
                       timeout=3600)  # 1 hour timeout
         
         # Find downloaded ISO
