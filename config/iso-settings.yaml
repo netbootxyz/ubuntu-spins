@@ -111,8 +111,8 @@ spin_groups:
         files:
           iso:
             <<: *desktop_iso_template
-            size: 3.6G
-            sha256: 'b6c7d8e9f0a'
+            size: 5.8G
+            sha256: '456830b2bc5ccb44e408bb5f8e3e8e84a3d7acc8eb37231a283dbff92ce7e25e'
 
   ubuntu:
     content_id: com.ubuntu.releases:ubuntu
