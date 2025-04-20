@@ -39,39 +39,46 @@ def save_yaml_config(config_file, config_data):
         lines = f.readlines()
 
     updated_lines = []
-    stack = []
     current_spin = None
     current_version = None
+    in_files_block = False
 
     for line in lines:
         stripped = line.lstrip()
         indent = len(line) - len(stripped)
         
-        # Update stack based on indentation
-        while stack and stack[-1]['indent'] >= indent:
-            stack.pop()
-            
+        # Track current context
         if stripped.startswith('- name:'):
             current_spin = stripped.split(':')[1].strip().strip('"\'')
-            stack.append({'indent': indent, 'type': 'spin', 'name': current_spin})
-        elif current_spin and any(stripped.startswith(prefix) for prefix in ['version:', 'release_title:', '<<:']):
-            if '<<:' in stripped:  # Handle YAML anchor
-                continue  # Keep anchor references as is
-            current_version = stripped.split(':')[1].strip().strip('"\'')
+        elif stripped.startswith('files:'):
+            in_files_block = True
+        elif indent == 0 or (stripped.startswith('-') and indent <= 2):
+            current_spin = None
+            current_version = None
+            in_files_block = False
         
-        # Find matching spin in config data
-        if current_spin and (stripped.startswith('size:') or stripped.startswith('sha256:')):
+        # Handle YAML anchors and version tracking
+        if current_spin and stripped.startswith('<<:'):
+            if '*plucky' in stripped:
+                current_version = '24.04'
+            elif '*noble' in stripped:
+                current_version = '25.04'
+            # Keep anchor references as is
+            updated_lines.append(line)
+            continue
+        
+        # Update only size and sha256 values within files block
+        if current_spin and in_files_block:
             matching_spin = None
             for group in config_data['spin_groups'].values():
                 for spin in group['spins']:
                     spin_version = str(spin.get('version') or spin.get('release_title'))
-                    if spin['name'] == current_spin and spin_version == str(current_version):
+                    if spin['name'] == current_spin and str(current_version) == spin_version:
                         matching_spin = spin
                         break
                 if matching_spin:
                     break
             
-            # Update values if we found a match
             if matching_spin and 'files' in matching_spin and 'iso' in matching_spin['files']:
                 if stripped.startswith('size:'):
                     line = ' ' * indent + f"size: {matching_spin['files']['iso']['size']}\n"
@@ -79,12 +86,6 @@ def save_yaml_config(config_file, config_data):
                     line = ' ' * indent + f"sha256: '{matching_spin['files']['iso']['sha256']}'\n"
         
         updated_lines.append(line)
-
-        # Reset version when leaving spin block
-        if indent == 0 and not stripped.startswith('-'):
-            current_spin = None
-            current_version = None
-            stack = []
     
     with open(config_file, 'w') as f:
         f.writelines(updated_lines)
