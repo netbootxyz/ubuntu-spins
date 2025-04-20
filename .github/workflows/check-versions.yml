@@ -34,6 +34,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install ruamel.yaml requests beautifulsoup4 transmission-cli
 
+      - name: Install required packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y transmission-cli
+
       - name: Check for new versions
         run: python3 scripts/check_new_versions.py -v
 
