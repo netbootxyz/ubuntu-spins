@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import yaml
+import ruamel.yaml
 import requests
 import hashlib
 import os
@@ -43,28 +43,29 @@ def load_yaml_config(config_file):
             raise
 
 def save_yaml_config(config_file, config_data):
-    """Save the updated YAML configuration file while preserving template structure."""
+    """Save the updated YAML configuration file while preserving exact template structure."""
+    yaml = ruamel.yaml.YAML()
+    yaml.preserve_quotes = True
+    yaml.indent(mapping=2, sequence=4, offset=2)
+    
     with open(config_file, 'r') as f:
-        existing_data = yaml.safe_load(f)
+        existing_data = yaml.load(f)
         
-    # Only update sha256 and size values, preserve everything else
-    for group_name, group in existing_data["spin_groups"].items():
-        if group_name in config_data["spin_groups"]:
-            new_group = config_data["spin_groups"][group_name]
-            for i, spin in enumerate(group["spins"]):
-                if i < len(new_group["spins"]):
-                    new_spin = new_group["spins"][i]
-                    if "files" in spin and "iso" in spin["files"]:
+    # Only update specific size and sha256 values
+    for group_name, group in config_data["spin_groups"].items():
+        if group_name in existing_data["spin_groups"]:
+            for new_spin in group["spins"]:
+                for existing_spin in existing_data["spin_groups"][group_name]["spins"]:
+                    if existing_spin["name"] == new_spin["name"] and \
+                       existing_spin.get("release") == new_spin.get("release"):
                         if "files" in new_spin and "iso" in new_spin["files"]:
-                            # Only update size and sha256
                             if "size" in new_spin["files"]["iso"]:
-                                spin["files"]["iso"]["size"] = new_spin["files"]["iso"]["size"]
+                                existing_spin["files"]["iso"]["size"] = new_spin["files"]["iso"]["size"]
                             if "sha256" in new_spin["files"]["iso"]:
-                                spin["files"]["iso"]["sha256"] = new_spin["files"]["iso"]["sha256"]
+                                existing_spin["files"]["iso"]["sha256"] = new_spin["files"]["iso"]["sha256"]
     
     with open(config_file, 'w') as f:
-        yaml.dump(existing_data, f, default_flow_style=False)
-    logger.info(f"Updated configuration saved to {config_file}")
+        yaml.dump(existing_data, f)
 
 def get_file_info(url):
     try:

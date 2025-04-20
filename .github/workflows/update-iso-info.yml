@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyyaml requests
+          pip install pyyaml requests ruamel.yaml
           
           # Install transmission-cli if torrent option is enabled
           if [ "${{ github.event.inputs.use_torrent }}" == "true" ]; then
