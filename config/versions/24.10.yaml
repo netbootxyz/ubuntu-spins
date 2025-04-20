@@ -74,21 +74,6 @@ spin_groups:
       release_codename: Oracular Oriole
       release_title: '24.10'
       version: '24.10'
-  ubuntu-studio:
-    name: Ubuntu Studio
-    spins:
-    - files:
-        iso:
-          path_template: ubuntustudio-{{ version }}-desktop-amd64.iso
-          sha256: bf866bd7988e9f4970a2bdda2fffa2b1170aa8143c9b33eb38e7838f1b0125b6
-          size: 6740715520
-          url: https://cdimage.ubuntu.com/ubuntustudio/releases/24.10/release/
-      image_type: desktop
-      name: ubuntu-studio
-      release: oracular
-      release_codename: Oracular Oriole
-      release_title: '24.10'
-      version: '24.10'
   xubuntu:
     name: Xubuntu
     spins:

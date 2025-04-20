@@ -8,6 +8,7 @@ import subprocess
 import re
 from urllib.parse import urljoin
 import yaml
+import argparse
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -96,91 +97,148 @@ def load_release_codenames():
         logger.warning("Could not load release codenames")
         return {}
 
+def load_spins_config():
+    """Load spins configuration"""
+    try:
+        with open('config/spins.yaml', 'r') as f:
+            return yaml.safe_load(f)['spins']
+    except Exception as e:
+        logger.error(f"Failed to load spins config: {e}")
+        return {}
+
 def process_version(version):
     """Process a specific Ubuntu version"""
     logger.info(f"Processing Ubuntu version: {version}")
     config_dir = os.path.join('config', 'versions')
     version_file = os.path.join(config_dir, f'{version}.yaml')
     
-    codenames = load_release_codenames()
-    version_info = codenames.get(version, {})
-    release_codename = version_info.get('codename', '')
-    release = version_info.get('release', '')
-    
-    # Generate template first if not exists
-    if not os.path.exists(version_file):
-        logger.info(f"Generating template for {version}")
-        subprocess.run(['python3', 'scripts/generate_version_template.py', version],
-                      check=True)
-    
-    # Load and validate the template
-    with open(version_file, 'r') as f:
-        config = yaml.safe_load(f)
-    
-    # Add release codename and release to all spins
-    for group in config['spin_groups'].values():
-        for spin in group['spins']:
-            spin['release_codename'] = release_codename
-            spin['release'] = release
-    
-    # Filter spins based on ISO availability
-    valid_spins = {}
-    needs_update = False
-    
-    for spin_name, spin_data in config['spin_groups'].items():
-        spin = spin_data['spins'][0]  # Get first spin configuration
-        
-        if has_valid_data(spin):
-            logger.info(f"Using existing data for {spin_name} {version}")
-            valid_spins[spin_name] = spin_data
-        elif verify_iso_availability(version, spin_name):
-            needs_update = True
-            valid_spins[spin_name] = spin_data
-            logger.info(f"Will update {spin_name} {version}")
+    try:
+        # Load configurations
+        spins_config = load_spins_config()
+        codenames = load_release_codenames()
+        base_version = '.'.join(version.split('.')[:2])
+        version_info = codenames.get(base_version, {})
+        release_codename = version_info.get('codename', '')
+        release = version_info.get('release', '')
+
+        # Load or create version config
+        if os.path.exists(version_file):
+            with open(version_file, 'r') as f:
+                config = yaml.safe_load(f)
         else:
-            logger.warning(f"ISO not available for {spin_name} {version}, skipping")
-    
-    if not valid_spins:
-        logger.warning(f"No valid ISOs found for version {version}, removing template")
-        os.unlink(version_file)
-        return
-    
-    # Update template with only valid spins
-    config['spin_groups'] = valid_spins
-    with open(version_file, 'w') as f:
-        yaml.dump(config, f)
-    
-    # Only run update if needed
-    if needs_update:
-        subprocess.run(['python3', 'scripts/update_iso_info.py',
-                       '--config', version_file,
-                       '--use-torrent',
-                       '-v'],
-                      check=True)
-    
-    # Final validation of SHA256 and size
-    with open(version_file, 'r') as f:
-        config = yaml.safe_load(f)
-        
-    valid_spins = {}
-    for spin_name, spin_data in config['spin_groups'].items():
-        for spin in spin_data['spins']:
-            if has_valid_data(spin):
-                valid_spins[spin_name] = spin_data
+            logger.info(f"Generating template for {version}")
+            subprocess.run(['python3', 'scripts/generate_version_template.py', version],
+                         check=True)
+            with open(version_file, 'r') as f:
+                config = yaml.safe_load(f)
+
+        # Track which spins need updates
+        spins_to_update = []
+        valid_spins = {}
+
+        # First pass: check which spins need updating
+        for spin_id, spin_info in spins_config.items():
+            logger.info(f"Checking spin {spin_id} for version {version}")
+            
+            existing_spin = None
+            if spin_id in config['spin_groups']:
+                existing_spin = config['spin_groups'][spin_id]['spins'][0]
+                if has_valid_data(existing_spin):
+                    logger.info(f"Using existing data for {spin_id} {version}")
+                    valid_spins[spin_id] = config['spin_groups'][spin_id]
+                    continue
+
+            # Always attempt to update if ISO is available
+            if verify_iso_availability(version, spin_id):
+                logger.info(f"Will update {spin_id} {version}")
+                if existing_spin:
+                    valid_spins[spin_id] = config['spin_groups'][spin_id]
+                else:
+                    valid_spins[spin_id] = {
+                        'name': spin_info['name'],
+                        'content_id': spin_info['content_id'],
+                        'spins': [{
+                            'name': spin_id,
+                            'release': release,
+                            'version': version,
+                            'release_title': version,
+                            'release_codename': release_codename,
+                            'image_type': 'desktop',
+                            'architectures': ['amd64'],
+                            'files': {
+                                'iso': {
+                                    'url': spin_info['url_base'].replace('{{ version }}', version),
+                                    'path_template': spin_info['path_template'],
+                                    'sha256': '',
+                                    'size': 0
+                                }
+                            }
+                        }]
+                    }
+                spins_to_update.append(spin_id)
             else:
-                logger.warning(f"Missing SHA256 or size for {spin_name} {version}, skipping")
-    
-    if not valid_spins:
-        logger.warning(f"No valid spins with SHA256/size for {version}, removing template")
-        os.unlink(version_file)
-        return
-    
-    # Save final version with only valid spins
-    config['spin_groups'] = valid_spins
-    with open(version_file, 'w') as f:
-        yaml.dump(config, f)
+                logger.warning(f"ISO not available for {spin_id} {version}")
+
+        # Save current state before updates
+        if valid_spins:
+            config['spin_groups'] = valid_spins
+            with open(version_file, 'w') as f:
+                yaml.dump(config, f)
+
+            # Try to update each spin individually
+            for spin_id in spins_to_update:
+                try:
+                    logger.info(f"Attempting download for {spin_id} {version}")
+                    subprocess.run(['python3', 'scripts/update_iso_info.py',
+                                 '--config', version_file,
+                                 '--spin', spin_id,
+                                 '--use-torrent',
+                                 '-v'],
+                                check=True)
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Failed to update {spin_id}: {e}")
+
+            # Load final state
+            with open(version_file, 'r') as f:
+                config = yaml.safe_load(f)
+
+            # Keep spins that have data, remove those that failed
+            final_spins = {}
+            for spin_id, spin_data in config['spin_groups'].items():
+                if has_valid_data(spin_data['spins'][0]):
+                    final_spins[spin_id] = spin_data
+                else:
+                    logger.warning(f"Missing SHA256 or size for {spin_id} {version}, skipping")
+
+            # Save final state if we have any valid spins
+            if final_spins:
+                config['spin_groups'] = final_spins
+                with open(version_file, 'w') as f:
+                    yaml.dump(config, f)
+                return True
+            else:
+                logger.warning(f"No spins successfully downloaded for {version}, but keeping template for retry")
+                return False
+        else:
+            logger.warning(f"No valid ISOs found for version {version}")
+            return False
+
+    except Exception as e:
+        logger.error(f"Error processing version {version}: {e}")
+        return False
 
 def main():
+    parser = argparse.ArgumentParser(description='Check Ubuntu versions and update ISO information')
+    parser.add_argument('version', nargs='?', help='Specific version to check (e.g., 24.04.2)')
+    args = parser.parse_args()
+
+    if args.version:
+        # Process specific version only
+        logger.info(f"Checking specific version: {args.version}")
+        process_version(args.version)
+        return
+
+    # Regular version discovery and processing
     versions = get_available_versions()
     if not versions:
         logger.error("No versions found")

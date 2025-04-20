@@ -74,21 +74,6 @@ spin_groups:
       release_codename: Plucky Puffin
       release_title: '25.04'
       version: '25.04'
-  ubuntu-studio:
-    name: Ubuntu Studio
-    spins:
-    - files:
-        iso:
-          path_template: ubuntustudio-{{ version }}-desktop-amd64.iso
-          sha256: 8986611131c3e607c74891649359d32cc468263d269ba697ab814b5d2bc0a7ee
-          size: 7001329664
-          url: https://cdimage.ubuntu.com/ubuntustudio/releases/25.04/release/
-      image_type: desktop
-      name: ubuntu-studio
-      release: plucky
-      release_codename: Plucky Puffin
-      release_title: '25.04'
-      version: '25.04'
   xubuntu:
     name: Xubuntu
     spins:

@@ -11,19 +11,33 @@ logger = logging.getLogger(__name__)
 def load_spins_config():
     """Load spins configuration from YAML file"""
     yaml = YAML()
+    yaml.preserve_quotes = True
     spins_file = os.path.join('config', 'spins.yaml')
-    with open(spins_file, 'r') as f:
-        return yaml.load(f)['spins']
+    try:
+        with open(spins_file, 'r') as f:
+            return yaml.load(f)['spins']
+    except Exception as e:
+        logger.error(f"Failed to load spins config: {e}")
+        raise
 
 def load_release_codenames():
     """Load release codenames from YAML file"""
     yaml = YAML()
+    yaml.preserve_quotes = True
     codenames_file = os.path.join('config', 'release_codenames.yaml')
-    with open(codenames_file, 'r') as f:
-        return yaml.load(f)['release_codenames']
+    try:
+        with open(codenames_file, 'r') as f:
+            return yaml.load(f)['release_codenames']
+    except Exception as e:
+        logger.error(f"Failed to load release codenames: {e}")
+        raise
 
 def create_version_template(version):
     """Create a template for a specific Ubuntu version with configured spins"""
+    # Get base version (e.g., 24.04 from 24.04.2)
+    base_version = '.'.join(version.split('.')[:2])
+    logger.info(f"Using base version {base_version} for codename lookup")
+
     template = {
         'version': version,
         'default_settings': {
@@ -33,35 +47,68 @@ def create_version_template(version):
         'spin_groups': {}
     }
     
-    # Load release information
-    codenames = load_release_codenames()
-    version_info = codenames.get(version, {})
-    release_codename = version_info.get('codename', '')
-    release = version_info.get('release', '')
-    
-    spins = load_spins_config()
-    for spin_id, spin_info in spins.items():
-        group = {
-            'name': spin_info['name'],
-            'content_id': spin_info['content_id'],
-            'spins': [{
-                'name': spin_id,
-                'release': release,
-                'version': version,
-                'release_title': version,
-                'release_codename': release_codename,
-                'image_type': 'desktop',
-                'architectures': ['amd64'],
-                'files': {
-                    'iso': {
-                        'url': spin_info['url_base'].replace('{{ version }}', version),
-                        'path_template': spin_info['path_template'],
-                        'sha256': '',
-                        'size': 0
+    try:
+        spins = load_spins_config()
+        codenames = load_release_codenames()
+        version_info = codenames.get(base_version, {})
+        release_codename = version_info.get('codename', '')
+        release = version_info.get('release', '')
+        
+        for spin_id, spin_info in spins.items():
+            group = {
+                'name': spin_info['name'],
+                'content_id': spin_info['content_id'],
+                'spins': [{
+                    'name': spin_id,
+                    'release': release,
+                    'version': version,
+                    'release_title': version,
+                    'release_codename': release_codename,
+                    'image_type': 'desktop',
+                    'architectures': ['amd64'],
+                    'files': {
+                        'iso': {
+                            'url': spin_info['url_base'].replace('{{ version }}', version),
+                            'path_template': spin_info['path_template'],
+                            'sha256': '',
+                            'size': 0
+                        }
                     }
-                }
-            }]
-        }
-        template['spin_groups'][spin_id] = group
-    
-    return template
+                }]
+            }
+            template['spin_groups'][spin_id] = group
+        
+        return template
+    except Exception as e:
+        logger.error(f"Failed to create template: {e}")
+        raise
+
+def main():
+    parser = argparse.ArgumentParser(description='Generate Ubuntu version template')
+    parser.add_argument('version', help='Ubuntu version (e.g., 24.04.2)')
+    parser.add_argument('--output-dir', default=os.path.join('config', 'versions'),
+                       help='Output directory for version configs')
+    args = parser.parse_args()
+
+    try:
+        logger.info(f"Generating template for Ubuntu {args.version}")
+        
+        os.makedirs(args.output_dir, exist_ok=True)
+        output_file = os.path.join(args.output_dir, f'{args.version}.yaml')
+        
+        template = create_version_template(args.version)
+        
+        yaml = YAML()
+        yaml.preserve_quotes = True
+        yaml.indent(mapping=2, sequence=4, offset=2)
+        
+        with open(output_file, 'w') as f:
+            yaml.dump(template, f)
+        
+        logger.info(f"Template generated successfully at {output_file}")
+    except Exception as e:
+        logger.error(f"Failed to generate template: {e}")
+        raise
+
+if __name__ == '__main__':
+    main()

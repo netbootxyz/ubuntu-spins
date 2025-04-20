@@ -127,9 +127,19 @@ def get_iso_url(spin, version):
     path = spin['files']['iso']['path_template'].replace('{{ version }}', version)
     return urljoin(base_url, path)
 
+def get_torrent_url(spin, version):
+    """Get the correct torrent URL for a spin"""
+    iso_url = get_iso_url(spin, version)
+    # Check if URL ends with .iso
+    if not iso_url.endswith('.iso'):
+        logger.error(f"Invalid ISO URL format: {iso_url}")
+        return None
+    return f"{iso_url}.torrent"
+
 def main():
     parser = argparse.ArgumentParser(description='Update Ubuntu ISO information')
     parser.add_argument('--config', required=True, help='Path to YAML config file')
+    parser.add_argument('--spin', help='Update specific spin only')
     parser.add_argument('--use-torrent', action='store_true', help='Use torrent for downloading')
     parser.add_argument('--work-dir', default='/tmp/iso-work', help='Working directory')
     parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
@@ -146,32 +156,40 @@ def main():
             logger.error("No version specified in config")
             return
 
+        # If specific spin requested, filter config data
+        if args.spin:
+            if args.spin not in config_data['spin_groups']:
+                logger.error(f"Spin {args.spin} not found in config")
+                return
+            filtered_groups = {args.spin: config_data['spin_groups'][args.spin]}
+            config_data['spin_groups'] = filtered_groups
+
         for group_name, group in config_data['spin_groups'].items():
             for spin in group['spins']:
                 logger.info(f"Processing {spin['name']} {version}")
                 
-                iso_url = get_iso_url(spin, version)
-                iso_path = os.path.join(args.work_dir, f"{spin['name']}-{version}.iso")
-                
-                logger.debug(f"Using ISO URL: {iso_url}")
-                
                 if args.use_torrent:
-                    torrent_url = f"{iso_url}.torrent"
-                    downloaded_path = download_torrent(torrent_url, args.work_dir)
-                    if downloaded_path:
-                        size = os.path.getsize(downloaded_path)
-                        sha256 = calculate_sha256(downloaded_path)
-                        spin['files']['iso']['size'] = size
-                        spin['files']['iso']['sha256'] = sha256
-                        os.unlink(downloaded_path)
+                    torrent_url = get_torrent_url(spin, version)
+                    if torrent_url:
+                        logger.info(f"Using torrent URL: {torrent_url}")
+                        downloaded_path = download_torrent(torrent_url, args.work_dir)
+                        if downloaded_path:
+                            size = os.path.getsize(downloaded_path)
+                            sha256 = calculate_sha256(downloaded_path)
+                            spin['files']['iso']['size'] = size
+                            spin['files']['iso']['sha256'] = sha256
+                            os.unlink(downloaded_path)
                 else:
+                    iso_url = get_iso_url(spin, version)
+                    iso_path = os.path.join(args.work_dir, f"{spin['name']}-{version}.iso")
+                    logger.info(f"Using direct ISO URL: {iso_url}")
                     if download_with_progress(iso_url, iso_path):
                         size = os.path.getsize(iso_path)
                         sha256 = calculate_sha256(iso_path)
                         spin['files']['iso']['size'] = size
                         spin['files']['iso']['sha256'] = sha256
                         os.unlink(iso_path)
-                
+        
         save_yaml_config(args.config, config_data)
                 
     finally:
