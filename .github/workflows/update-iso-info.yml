@@ -57,7 +57,7 @@ jobs:
       
       - name: Run ISO update script
         run: |
-          COMMAND="python scripts/update_iso_info.py --config config/iso-settings.yaml"
+          COMMAND="python scripts/update_iso_info.py -v --config config/iso-settings.yaml"
           
           # Add specific spin parameter if provided
           if [ "${{ github.event.inputs.spin }}" != "" ]; then
