@@ -1,0 +1,85 @@
+name: Process Ubuntu Mini ISO
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
+
+jobs:
+  process-iso:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install required packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xorriso cpio xz-utils build-essential gcc make meson ninja-build libjson-c-dev cmake libcmocka-dev transmission-cli genisoimage
+
+      - name: Clone and build mini-iso-tools with patch
+        run: |
+          git clone -b netbootxyz-mods https://github.com/netbootxyz/mini-iso-tools build/mini-iso-tools
+          cd build/mini-iso-tools
+          #cp ../../patches/json.c json.c
+          meson setup build
+          sudo ninja -C build
+          sudo ninja -C build install
+
+      - name: Download latest ISO
+        run: |
+          wget https://cdimage.ubuntu.com/ubuntu-mini-iso/daily-live/current/plucky-mini-iso-amd64.iso
+
+      - name: Extract VMlinuz and initrd
+        run: |
+          isoinfo -x /casper/vmlinuz -R -i plucky-mini-iso-amd64.iso > vmlinuz
+          isoinfo -x /casper/initrd -R -i plucky-mini-iso-amd64.iso > initrd
+
+      - name: Unpack initrd
+        run: |
+          mkdir -p initrd-unpack
+          mv initrd initrd.orig
+          cd initrd-unpack
+          unmkinitramfs ../initrd.orig .
+
+      - name: Apply patches and copy binary
+        run: |
+          mkdir -p initrd-unpack/main/tmp/mini-iso-menu/
+          cp /usr/bin/transmission-cli initrd-unpack/main/usr/bin/
+          cp patches/iso-menu-session initrd-unpack/main/usr/lib/mini-iso-tools/
+          cp /usr/lib/mini-iso-tools/iso-chooser-menu initrd-unpack/main/usr/lib/mini-iso-tools/
+          cp build/mini-iso-tools/scripts/30mini-iso-menu initrd-unpack/main/scripts/casper-premount/30mini-iso-menu
+          wget https://releases.ubuntu.com/streams/v1/com.ubuntu.releases:ubuntu-server.json -O initrd-unpack/main/tmp/mini-iso-menu/ubuntu-server.json
+          wget https://releases.ubuntu.com/streams/v1/com.ubuntu.releases:ubuntu.json -O initrd-unpack/main/tmp/mini-iso-menu/ubuntu.json
+
+      - name: Generate json files
+        run: |
+          python3 scripts/generate_iso_json.py --output-dir initrd-unpack/main/tmp/mini-iso-menu/
+
+      - name: Repack initrd
+        run: |
+          cd initrd-unpack
+          cd early
+          find . -print0 | cpio --null --create --format=newc > ../../initrd
+          cd ../early2
+          find . -print0 | cpio --null --create --format=newc >> ../../initrd
+          cd ../early3
+          find . -print0 | cpio --null --create --format=newc >> ../../initrd
+          cd ../main
+          find . | cpio --create --format=newc | xz --format=lzma >> ../../initrd
+
+      - name: Generate json files
+        run: |
+          python3 scripts/generate_iso_json.py --output-dir output/
+
+      - name: Release Files
+        uses: softprops/action-gh-release@c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda # v2.2.1
+        with:
+          draft: true
+          files: |
+            vmlinuz
+            initrd
+            output/*
+

@@ -1,0 +1,13 @@
+release_codenames:
+  "25.04":
+    codename: "Plucky Puffin"
+    release: "plucky"
+  "24.10":
+    codename: "Oracular Oriole"
+    release: "oracular"
+  "24.04":
+    codename: "Noble Numbat"
+    release: "noble"
+  "22.04":
+    codename: "Jammy Jellyfish"
+    release: "jammy"

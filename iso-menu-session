@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+# ensures we have the unicode glyphs - half-blocks, right arrow
+/usr/bin/setfont /usr/lib/mini-iso-tools/subiquity.psf
+
+mkdir -p /tmp/mini-iso-menu
+
+/usr/lib/mini-iso-tools/iso-chooser-menu /mini-iso-menu.vars /tmp/mini-iso-menu/*

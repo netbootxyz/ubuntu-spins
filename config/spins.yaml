@@ -1,0 +1,36 @@
+spins:
+  kubuntu:
+    name: Kubuntu
+    content_id: "org.kubuntu:kubuntu"
+    url_base: https://cdimage.ubuntu.com/kubuntu/releases/
+    path_template: "{{ release }}/release/kubuntu-{{ version }}-desktop-amd64.iso"
+
+  xubuntu:
+    name: Xubuntu
+    content_id: "org.xubuntu:xubuntu"
+    url_base: https://cdimage.ubuntu.com/xubuntu/releases/
+    path_template: "{{ release }}/release/xubuntu-{{ version }}-desktop-amd64.iso"
+
+  lubuntu:
+    name: Lubuntu
+    content_id: "me.lubuntu:lubuntu"
+    url_base: https://cdimage.ubuntu.com/lubuntu/releases/
+    path_template: "{{ release }}/release/lubuntu-{{ version }}-desktop-amd64.iso"
+
+  ubuntu-mate:
+    name: Ubuntu MATE
+    content_id: "org.ubuntu-mate:ubuntu-mate"
+    url_base: https://cdimage.ubuntu.com/ubuntu-mate/releases/
+    path_template: "{{ release }}/release/ubuntu-mate-{{ version }}-desktop-amd64.iso"
+
+  ubuntu-budgie:
+    name: Ubuntu Budgie
+    content_id: "org.ubuntubudgie:ubuntu-budgie"
+    url_base: https://cdimage.ubuntu.com/ubuntu-budgie/releases/
+    path_template: "{{ release }}/release/ubuntu-budgie-{{ version }}-desktop-amd64.iso"
+
+  edubuntu:
+    name: Edubuntu
+    content_id: "org.edubuntu:edubuntu"
+    url_base: https://cdimage.ubuntu.com/edubuntu/releases/
+    path_template: "{{ release }}/release/edubuntu-{{ version }}-desktop-amd64.iso"

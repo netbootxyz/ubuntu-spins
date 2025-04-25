@@ -1,0 +1,85 @@
+version: 22.04.5
+datatype: image-downloads
+format: products:1.0
+spin_groups:
+  kubuntu:
+    name: Kubuntu
+    content_id: "org.kubuntu:kubuntu"
+    spins:
+      - name: kubuntu
+        release: "jammy"
+        version: 22.04.5
+        release_title: 22.04.5
+        release_codename: "Jammy Jellyfish"
+        image_type: desktop
+        files:
+          iso:
+            path_template: "{{ release }}/release/kubuntu-{{ version }}-desktop-amd64.iso"
+            url: https://cdimage.ubuntu.com/kubuntu/releases/
+            sha256: 'a3e2c4b1bc190cebaa8083c0d23ea2555e223d86b885570474a423b6de818888'
+            size: 4236351488
+  xubuntu:
+    name: Xubuntu
+    content_id: "org.xubuntu:xubuntu"
+    spins:
+      - name: xubuntu
+        release: "jammy"
+        version: 22.04.5
+        release_title: 22.04.5
+        release_codename: "Jammy Jellyfish"
+        image_type: desktop
+        files:
+          iso:
+            path_template: "{{ release }}/release/xubuntu-{{ version }}-desktop-amd64.iso"
+            url: https://cdimage.ubuntu.com/xubuntu/releases/
+            sha256: '864e2cf7f23a9e76a8e56d9187af5654d0155bac449e9e3063c696ec1281346c'
+            size: 3233513472
+  lubuntu:
+    name: Lubuntu
+    content_id: "me.lubuntu:lubuntu"
+    spins:
+      - name: lubuntu
+        release: "jammy"
+        version: 22.04.5
+        release_title: 22.04.5
+        release_codename: "Jammy Jellyfish"
+        image_type: desktop
+        files:
+          iso:
+            path_template: "{{ release }}/release/lubuntu-{{ version }}-desktop-amd64.iso"
+            url: https://cdimage.ubuntu.com/lubuntu/releases/
+            sha256: '8ebc2104d822205263d78cc1bee58d17f3e8d8de7aa8e2f249ac2093ec0dd4bc'
+            size: 3110764544
+  ubuntu-mate:
+    name: Ubuntu MATE
+    content_id: "org.ubuntu-mate:ubuntu-mate"
+    spins:
+      - name: ubuntu-mate
+        release: "jammy"
+        version: 22.04.5
+        release_title: 22.04.5
+        release_codename: "Jammy Jellyfish"
+        image_type: desktop
+        files:
+          iso:
+            path_template: "{{ release }}/release/ubuntu-mate-{{ version }}-desktop-amd64.iso"
+            url: https://cdimage.ubuntu.com/ubuntu-mate/releases/
+            sha256: 'b382a3aebffc916cce71369e0c09719dd819b8b6ab308d4396ac31c1ada867c4'
+            size: 3680239616
+  ubuntu-budgie:
+    name: Ubuntu Budgie
+    content_id: "org.ubuntubudgie:ubuntu-budgie"
+    spins:
+      - name: ubuntu-budgie
+        release: "jammy"
+        version: 22.04.5
+        release_title: 22.04.5
+        release_codename: "Jammy Jellyfish"
+        image_type: desktop
+        files:
+          iso:
+            path_template: "{{ release }}/release/ubuntu-budgie-{{ version }}-desktop-amd64.iso"
+            url: https://cdimage.ubuntu.com/ubuntu-budgie/releases/
+            sha256: '0ea70cb4badd1ee0d96d60759104db585397f0915ebb6e5a401f58367f98a76e'
+            size: 3571154944
+
