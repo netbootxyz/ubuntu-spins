@@ -21,7 +21,7 @@ jobs:
 
       - name: Clone and build mini-iso-tools with patch
         run: |
-          git clone -b netbootxyz-mods https://github.com/netbootxyz/mini-iso-tools build/mini-iso-tools
+          git clone -b nbxyz-mods https://github.com/netbootxyz/mini-iso-tools build/mini-iso-tools
           cd build/mini-iso-tools
           #cp ../../patches/json.c json.c
           meson setup build
