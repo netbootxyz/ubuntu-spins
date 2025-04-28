@@ -81,5 +81,3 @@ jobs:
           files: |
             vmlinuz
             initrd
-            output/*
-
