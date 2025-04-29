@@ -17,7 +17,7 @@ jobs:
       - name: Install required packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y xorriso cpio xz-utils build-essential gcc make meson ninja-build libjson-c-dev cmake libcmocka-dev transmission-cli genisoimage
+          sudo apt-get install -y xorriso cpio xz-utils build-essential gcc make meson ninja-build libjson-c-dev cmake libcmocka-dev ctorrent transmission-cli genisoimage
 
       - name: Clone and build mini-iso-tools with patch
         run: |
@@ -47,7 +47,7 @@ jobs:
       - name: Apply patches and copy binary
         run: |
           mkdir -p initrd-unpack/main/tmp/mini-iso-menu/
-          cp /usr/bin/transmission-cli initrd-unpack/main/usr/bin/
+          cp /usr/bin/ctorrent initrd-unpack/main/usr/bin/
           cp patches/iso-menu-session initrd-unpack/main/usr/lib/mini-iso-tools/
           cp /usr/lib/mini-iso-tools/iso-chooser-menu initrd-unpack/main/usr/lib/mini-iso-tools/
           cp build/mini-iso-tools/scripts/30mini-iso-menu initrd-unpack/main/scripts/casper-premount/30mini-iso-menu
