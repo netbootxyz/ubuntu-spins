@@ -46,9 +46,14 @@ jobs:
 
       - name: Apply patches and copy binary
         run: |
+          mkdir download-tmp
+          cd download-tmp
+          apt-get download ctorrent libc6 libgcc-s1 libstdc++6
+          for deb in *.deb; do
+            dpkg-deb -x "$deb" ../initrd-unpack/main/
+          done
+          cd ..
           mkdir -p initrd-unpack/main/tmp/mini-iso-menu/
-          cp /usr/bin/ctorrent initrd-unpack/main/usr/bin/ctorrent
-          chmod +x initrd-unpack/main/usr/bin/ctorrent
           cp patches/iso-menu-session initrd-unpack/main/usr/lib/mini-iso-tools/
           cp /usr/lib/mini-iso-tools/iso-chooser-menu initrd-unpack/main/usr/lib/mini-iso-tools/
           cp build/mini-iso-tools/scripts/30mini-iso-menu initrd-unpack/main/scripts/casper-premount/30mini-iso-menu
