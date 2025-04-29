@@ -47,7 +47,8 @@ jobs:
       - name: Apply patches and copy binary
         run: |
           mkdir -p initrd-unpack/main/tmp/mini-iso-menu/
-          wget https://github.com/userdocs/qbittorrent-nox-static/releases/download/release-5.1.0_v2.0.11/x86_64-qbittorrent-nox -O initrd-unpack/main/usr/bin/x86_64-qbittorrent-nox
+          wget https://github.com/userdocs/qbittorrent-nox-static/releases/download/release-5.1.0_v2.0.11/x86_64-qbittorrent-nox -O initrd-unpack/main/usr/bin/qbittorrent-nox
+          chmod +x initrd-unpack/main/usr/bin/qbittorrent-nox
           cp patches/iso-menu-session initrd-unpack/main/usr/lib/mini-iso-tools/
           cp /usr/lib/mini-iso-tools/iso-chooser-menu initrd-unpack/main/usr/lib/mini-iso-tools/
           cp build/mini-iso-tools/scripts/30mini-iso-menu initrd-unpack/main/scripts/casper-premount/30mini-iso-menu
