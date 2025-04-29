@@ -48,7 +48,7 @@ jobs:
         run: |
           mkdir download-tmp
           cd download-tmp
-          apt-get download ctorrent libc6 libgcc-s1 libstdc++6
+          apt-get download transmission-cli libc6 libcurl4 libevent-2.1-7 libminiupnpc17 libnatpmp1 libssl3 zlib1g
           for deb in *.deb; do
             dpkg-deb -x "$deb" ../initrd-unpack/main/
           done
