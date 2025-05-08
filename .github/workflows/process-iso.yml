@@ -46,13 +46,6 @@ jobs:
 
       - name: Apply patches and copy binary
         run: |
-          mkdir download-tmp
-          cd download-tmp
-          apt-get download transmission-cli libc6 libcurl4 libevent-2.1-7 libminiupnpc17 libnatpmp1 libssl3 zlib1g
-          for deb in *.deb; do
-            dpkg-deb -x "$deb" ../initrd-unpack/main/
-          done
-          cd ..
           mkdir -p initrd-unpack/main/tmp/mini-iso-menu/
           cp patches/iso-menu-session initrd-unpack/main/usr/lib/mini-iso-tools/
           cp /usr/lib/mini-iso-tools/iso-chooser-menu initrd-unpack/main/usr/lib/mini-iso-tools/
