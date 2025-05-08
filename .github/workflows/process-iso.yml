@@ -30,12 +30,12 @@ jobs:
 
       - name: Download latest ISO
         run: |
-          wget https://cdimage.ubuntu.com/ubuntu-mini-iso/daily-live/current/plucky-mini-iso-amd64.iso
+          wget https://cdimage.ubuntu.com/ubuntu-mini-iso/daily-live/current/questing-mini-iso-amd64.iso
 
       - name: Extract VMlinuz and initrd
         run: |
-          isoinfo -x /casper/vmlinuz -R -i plucky-mini-iso-amd64.iso > vmlinuz
-          isoinfo -x /casper/initrd -R -i plucky-mini-iso-amd64.iso > initrd
+          isoinfo -x /casper/vmlinuz -R -i questing-mini-iso-amd64.iso > vmlinuz
+          isoinfo -x /casper/initrd -R -i questing-mini-iso-amd64.iso > initrd
 
       - name: Unpack initrd
         run: |
