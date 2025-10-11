@@ -1,8 +1,9 @@
 name: Update Ubuntu ISO Information
 
 on:
-  schedule:
-  #  - cron: '0 1 * * 1'
+  # Uncomment to enable weekly automatic updates:
+  # schedule:
+  #   - cron: '0 1 * * 1'  # Weekly on Monday at 1:00 UTC
 
   workflow_dispatch:
     inputs:
