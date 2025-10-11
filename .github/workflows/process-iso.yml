@@ -60,13 +60,28 @@ jobs:
       - name: Repack initrd
         run: |
           cd initrd-unpack
-          cd early
-          find . -print0 | cpio --null --create --format=newc > ../../initrd
-          cd ../early2
-          find . -print0 | cpio --null --create --format=newc >> ../../initrd
-          cd ../early3
-          find . -print0 | cpio --null --create --format=newc >> ../../initrd
-          cd ../main
+
+          # Pack early directories if they exist
+          if [ -d "early" ]; then
+            cd early
+            find . -print0 | cpio --null --create --format=newc > ../../initrd
+            cd ..
+          fi
+
+          if [ -d "early2" ]; then
+            cd early2
+            find . -print0 | cpio --null --create --format=newc >> ../../initrd
+            cd ..
+          fi
+
+          if [ -d "early3" ]; then
+            cd early3
+            find . -print0 | cpio --null --create --format=newc >> ../../initrd
+            cd ..
+          fi
+
+          # Pack main directory (compressed)
+          cd main
           find . | cpio --create --format=newc | xz --format=lzma >> ../../initrd
 
       - name: Generate json files
