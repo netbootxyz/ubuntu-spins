@@ -186,11 +186,11 @@ spin_groups:
 - ✅ Workflow references non-existent files → Fixed
 
 ### 🔧 Known Gaps
-1. **Ubuntu Desktop/Server not included** - Only spins are tracked
-2. **No SHA256 file fetching** - Could grab from .sha256 files instead of downloading
-3. **No validation layer** - Malformed YAMLs can break JSON generation
-4. **Only amd64 architecture** - No arm64 support
-5. **Incomplete automation** - Still requires manual ISO updates
+1. **Ubuntu Desktop/Server not included** - Only spins are tracked (could expand to official Ubuntu)
+2. **Checksum fetching optimized** - Now uses SHA256SUMS files (via fetch_checksums.py) instead of downloading entire ISOs
+3. **Validation implemented** - validate_json.py ensures JSON output compatibility
+4. **Only amd64 architecture** - No arm64 support yet
+5. **Manual ISO updates** - update_iso_info.py requires manual trigger for checksum updates
 
 ## Recommended Workflow for Adding New Versions
 
@@ -270,22 +270,20 @@ jq . output/kubuntu.json | head -50
 ## Next Development Priorities
 
 ### High Priority
-1. **Add Ubuntu Desktop/Server official releases** - Expand beyond just spins
-2. **Fetch SHA256 from .sha256 files** - Avoid downloading entire ISOs
-3. **Automatic checksum updates** - Integrate into check-versions workflow
-4. **Validation script** - Verify YAML integrity before JSON generation
+1. **Automatic checksum updates** - Integrate fetch_checksums.py into check-versions workflow
+2. **Add official Ubuntu releases** - Expand beyond just spins to include ubuntu-desktop, ubuntu-server
+3. **Better error handling** - Retry logic, partial failure recovery
 
 ### Medium Priority
-5. **arm64 architecture support** - Expand to more architectures
-6. **Better error handling** - Retry logic, partial failure recovery
-7. **Comprehensive README** - User-facing documentation
-8. **Testing framework** - Unit tests for scripts
+4. **arm64 architecture support** - Expand to more architectures
+5. **Testing framework** - Unit tests for scripts
+6. **Version comparison in PRs** - Show diffs between versions
 
 ### Low Priority
-9. **Multiple image types** - Server, Live, Minimal variants
-10. **Checksums for vmlinuz/initrd** - In process-iso workflow
-11. **Version comparison in PRs** - Show diffs between versions
-12. **Metrics dashboard** - Track version coverage
+7. **Multiple image types** - Live, Minimal, Netboot variants
+8. **Checksums for vmlinuz/initrd** - In process-iso workflow
+9. **Metrics dashboard** - Track version coverage
+10. **Automated deprecated version cleanup** - Remove EOL versions
 
 ## File Ownership & Dependencies
 
@@ -299,8 +297,9 @@ jq . output/kubuntu.json | head -50
 
 ## Important Notes
 
-- **Only desktop ISOs** are currently supported (no server, minimal, etc.)
-- **Version templates are created with empty checksums** - Run update_iso_info.py to fill them
+- **Both desktop and server ISOs are supported** - The system handles both image types
+- **Version templates are created with empty checksums** - Run update_iso_info.py or fetch_checksums.py to fill them
 - **JSON generation skips incomplete entries** - Ensures only valid data reaches users
 - **process-iso.yml** is the final step that packages everything for netboot.xyz
 - **Generated JSON format** matches netboot.xyz's expected schema (products:1.0)
+- **Checksum fetching is fast** - fetch_checksums.py parses SHA256SUMS files (100x faster than downloading ISOs)
