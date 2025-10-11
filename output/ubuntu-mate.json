@@ -111,6 +111,28 @@
           }
         }
       }
+    },
+    "org.ubuntu-mate:ubuntu-mate:desktop:25.10:amd64": {
+      "aliases": "25.10,questing",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-mate",
+      "release": "questing",
+      "release_codename": "Questing Quokka",
+      "release_title": "25.10",
+      "version": "25.10",
+      "versions": {
+        "25.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "questing/release/ubuntu-mate-25.10-desktop-amd64.iso",
+              "sha256": "f9e441110886e79a2dfce9f7596f4e0d6479f115dd8792670681743e5917694f",
+              "size": 3821662208
+            }
+          }
+        }
+      }
     }
   },
   "content_id": "org.ubuntu-mate:ubuntu-mate"

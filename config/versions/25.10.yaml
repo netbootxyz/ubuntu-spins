@@ -1,0 +1,149 @@
+version: '25.10'
+datatype: image-downloads
+format: products:1.0
+content_id: com.ubuntu.releases:ubuntu
+spin_groups:
+  kubuntu:
+    name: Kubuntu
+    content_id: org.kubuntu:kubuntu
+    spins:
+      - name: kubuntu
+        release: questing
+        version: '25.10'
+        release_title: '25.10'
+        release_codename: Questing Quokka
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/kubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/kubuntu/releases/25.10/release/
+            sha256: '77cade4b5b6c85f0d7f163c7113b9207d58aec82e8247b7bfab7c37eafcf5963'
+            size: 4942229504
+  xubuntu:
+    name: Xubuntu
+    content_id: org.xubuntu:xubuntu
+    spins:
+      - name: xubuntu
+        release: questing
+        version: '25.10'
+        release_title: '25.10'
+        release_codename: Questing Quokka
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/xubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/xubuntu/releases/25.10/release/
+            sha256: 'f6a82db0a34731fd64f4a0ed15b653ab531b058a988830d164b1a0d1c00ba0a6'
+            size: 4721451008
+  lubuntu:
+    name: Lubuntu
+    content_id: me.lubuntu:lubuntu
+    spins:
+      - name: lubuntu
+        release: questing
+        version: '25.10'
+        release_title: '25.10'
+        release_codename: Questing Quokka
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/lubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/lubuntu/releases/25.10/release/
+            sha256: 'f7cd90d3b7f59cd2924602b3de0ba1c692682f2a575ea37b3d2f80b0e9ce09b6'
+            size: 3457515520
+  ubuntu-mate:
+    name: Ubuntu MATE
+    content_id: org.ubuntu-mate:ubuntu-mate
+    spins:
+      - name: ubuntu-mate
+        release: questing
+        version: '25.10'
+        release_title: '25.10'
+        release_codename: Questing Quokka
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/ubuntu-mate-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/ubuntu-mate/releases/25.10/release/
+            sha256: 'f9e441110886e79a2dfce9f7596f4e0d6479f115dd8792670681743e5917694f'
+            size: 3821662208
+  ubuntu-budgie:
+    name: Ubuntu Budgie
+    content_id: org.ubuntubudgie:ubuntu-budgie
+    spins:
+      - name: ubuntu-budgie
+        release: questing
+        version: '25.10'
+        release_title: '25.10'
+        release_codename: Questing Quokka
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/ubuntu-budgie-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/ubuntu-budgie/releases/25.10/release/
+            sha256: '4163b6ee85d4fabdb0569686a4a4d079406d43335c14c8931523dfb9a7c89c93'
+            size: 3633033216
+  edubuntu:
+    name: Edubuntu
+    content_id: org.edubuntu:edubuntu
+    spins:
+      - name: edubuntu
+        release: questing
+        version: '25.10'
+        release_title: '25.10'
+        release_codename: Questing Quokka
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/edubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/edubuntu/releases/25.10/release/
+            sha256: '33f5b9477cee28a204672213b6f5b7c45853bd3b9be184afab81e6325cb66378'
+            size: 6763950080
+  ubuntu-studio:
+    name: Ubuntu Studio
+    content_id: org.ubuntustudio:ubuntu-studio
+    spins:
+      - name: ubuntu-studio
+        release: questing
+        version: '25.10'
+        release_title: '25.10'
+        release_codename: Questing Quokka
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/ubuntustudio-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/ubuntustudio/releases/25.10/release/
+            sha256: 'aa4104e14e06862ebdd7d5d41c3706b41a5d9e855a674d78da465554978c70ad'
+            size: 7815274496
+  ubuntu-cinnamon:
+    name: Ubuntu Cinnamon
+    content_id: org.ubuntucinnamon:ubuntu-cinnamon
+    spins:
+      - name: ubuntu-cinnamon
+        release: questing
+        version: '25.10'
+        release_title: '25.10'
+        release_codename: Questing Quokka
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/ubuntucinnamon-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/ubuntucinnamon/releases/25.10/release/
+            sha256: 'c7cfabf83a07c45f03f12f618b5421b21d956c0a1465ffa968ddca644fcec566'
+            size: 4961034240

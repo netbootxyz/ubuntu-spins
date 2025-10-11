@@ -89,6 +89,28 @@
           }
         }
       }
+    },
+    "org.xubuntu:xubuntu:desktop:25.10:amd64": {
+      "aliases": "25.10,questing",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "xubuntu",
+      "release": "questing",
+      "release_codename": "Questing Quokka",
+      "release_title": "25.10",
+      "version": "25.10",
+      "versions": {
+        "25.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "questing/release/xubuntu-25.10-desktop-amd64.iso",
+              "sha256": "f6a82db0a34731fd64f4a0ed15b653ab531b058a988830d164b1a0d1c00ba0a6",
+              "size": 4721451008
+            }
+          }
+        }
+      }
     }
   },
   "content_id": "org.xubuntu:xubuntu"

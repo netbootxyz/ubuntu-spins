@@ -111,6 +111,28 @@
           }
         }
       }
+    },
+    "me.lubuntu:lubuntu:desktop:25.10:amd64": {
+      "aliases": "25.10,questing",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "lubuntu",
+      "release": "questing",
+      "release_codename": "Questing Quokka",
+      "release_title": "25.10",
+      "version": "25.10",
+      "versions": {
+        "25.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "questing/release/lubuntu-25.10-desktop-amd64.iso",
+              "sha256": "f7cd90d3b7f59cd2924602b3de0ba1c692682f2a575ea37b3d2f80b0e9ce09b6",
+              "size": 3457515520
+            }
+          }
+        }
+      }
     }
   },
   "content_id": "me.lubuntu:lubuntu"

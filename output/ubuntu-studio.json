@@ -1,0 +1,29 @@
+{
+  "datatype": "image-downloads",
+  "format": "products:1.0",
+  "products": {
+    "org.ubuntustudio:ubuntu-studio:desktop:25.10:amd64": {
+      "aliases": "25.10,questing",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-studio",
+      "release": "questing",
+      "release_codename": "Questing Quokka",
+      "release_title": "25.10",
+      "version": "25.10",
+      "versions": {
+        "25.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "questing/release/ubuntustudio-25.10-desktop-amd64.iso",
+              "sha256": "aa4104e14e06862ebdd7d5d41c3706b41a5d9e855a674d78da465554978c70ad",
+              "size": 7815274496
+            }
+          }
+        }
+      }
+    }
+  },
+  "content_id": "org.ubuntustudio:ubuntu-studio"
+}

@@ -1,0 +1,29 @@
+{
+  "datatype": "image-downloads",
+  "format": "products:1.0",
+  "products": {
+    "org.ubuntucinnamon:ubuntu-cinnamon:desktop:25.10:amd64": {
+      "aliases": "25.10,questing",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-cinnamon",
+      "release": "questing",
+      "release_codename": "Questing Quokka",
+      "release_title": "25.10",
+      "version": "25.10",
+      "versions": {
+        "25.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "questing/release/ubuntucinnamon-25.10-desktop-amd64.iso",
+              "sha256": "c7cfabf83a07c45f03f12f618b5421b21d956c0a1465ffa968ddca644fcec566",
+              "size": 4961034240
+            }
+          }
+        }
+      }
+    }
+  },
+  "content_id": "org.ubuntucinnamon:ubuntu-cinnamon"
+}

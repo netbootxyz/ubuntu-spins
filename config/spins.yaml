@@ -46,3 +46,15 @@ spins:
     content_id: "org.edubuntu:edubuntu"
     url_base: https://cdimage.ubuntu.com/edubuntu/releases/
     path_template: "{{ release }}/release/edubuntu-{{ version }}-desktop-amd64.iso"
+
+  ubuntu-studio:
+    name: Ubuntu Studio
+    content_id: "org.ubuntustudio:ubuntu-studio"
+    url_base: https://cdimage.ubuntu.com/ubuntustudio/releases/
+    path_template: "{{ release }}/release/ubuntustudio-{{ version }}-desktop-amd64.iso"
+
+  ubuntu-cinnamon:
+    name: Ubuntu Cinnamon
+    content_id: "org.ubuntucinnamon:ubuntu-cinnamon"
+    url_base: https://cdimage.ubuntu.com/ubuntucinnamon/releases/
+    path_template: "{{ release }}/release/ubuntucinnamon-{{ version }}-desktop-amd64.iso"

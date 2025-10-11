@@ -111,6 +111,28 @@
           }
         }
       }
+    },
+    "org.ubuntubudgie:ubuntu-budgie:desktop:25.10:amd64": {
+      "aliases": "25.10,questing",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-budgie",
+      "release": "questing",
+      "release_codename": "Questing Quokka",
+      "release_title": "25.10",
+      "version": "25.10",
+      "versions": {
+        "25.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "questing/release/ubuntu-budgie-25.10-desktop-amd64.iso",
+              "sha256": "4163b6ee85d4fabdb0569686a4a4d079406d43335c14c8931523dfb9a7c89c93",
+              "size": 3633033216
+            }
+          }
+        }
+      }
     }
   },
   "content_id": "org.ubuntubudgie:ubuntu-budgie"

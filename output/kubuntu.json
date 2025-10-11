@@ -111,6 +111,28 @@
           }
         }
       }
+    },
+    "org.kubuntu:kubuntu:desktop:25.10:amd64": {
+      "aliases": "25.10,questing",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "kubuntu",
+      "release": "questing",
+      "release_codename": "Questing Quokka",
+      "release_title": "25.10",
+      "version": "25.10",
+      "versions": {
+        "25.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "questing/release/kubuntu-25.10-desktop-amd64.iso",
+              "sha256": "77cade4b5b6c85f0d7f163c7113b9207d58aec82e8247b7bfab7c37eafcf5963",
+              "size": 4942229504
+            }
+          }
+        }
+      }
     }
   },
   "content_id": "org.kubuntu:kubuntu"
