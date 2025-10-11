@@ -35,9 +35,10 @@ ubuntu-spins/
 │       └── 25.04.yaml
 ├── scripts/
 │   ├── check_new_versions.py        # Discovers new versions, creates templates
-│   ├── generate_version_template.py # Template generator (deprecated, use check_new_versions)
-│   ├── update_iso_info.py          # Downloads ISOs, calculates SHA256/sizes
-│   └── generate_iso_json.py        # Aggregates YAMLs → JSON
+│   ├── fetch_checksums.py           # Fast checksum fetching from SHA256SUMS files
+│   ├── update_iso_info.py           # Downloads ISOs, calculates SHA256/sizes (slower)
+│   ├── generate_iso_json.py         # Aggregates YAMLs → JSON
+│   └── validate_json.py             # Validates JSON output format
 ├── output/
 │   └── *.json                  # Generated JSON files (one per spin)
 └── .github/workflows/
@@ -75,8 +76,28 @@ python3 scripts/check_new_versions.py -v
    - Creates YAML template if ISOs exist
    - Sets SHA256/size to empty (filled later by update_iso_info.py)
 
-### 2. `update_iso_info.py` (Checksum Calculator)
-**Purpose**: Download ISOs and calculate SHA256 hashes
+### 2. `fetch_checksums.py` (Fast Checksum Fetcher - Recommended)
+**Purpose**: Fetch SHA256 checksums from published SHA256SUMS files (100x faster)
+
+**Usage**:
+```bash
+# Fetch checksums for all spins in a version
+python3 scripts/fetch_checksums.py --config config/versions/25.10.yaml
+
+# Fetch with verbose output
+python3 scripts/fetch_checksums.py --config config/versions/25.10.yaml -v
+```
+
+**What it does**:
+1. Reads version YAML
+2. Fetches SHA256SUMS file from each spin's release directory
+3. Parses checksums and file sizes from the published data
+4. Updates YAML with checksums (completes in ~2-3 seconds)
+
+**Performance**: ~2.5 seconds vs. ~4 hours for downloading full ISOs
+
+### 3. `update_iso_info.py` (Checksum Calculator - Slow Method)
+**Purpose**: Download ISOs and calculate SHA256 hashes (backup method)
 
 **Usage**:
 ```bash
@@ -92,11 +113,13 @@ python3 scripts/update_iso_info.py --config config/versions/24.04.3.yaml --use-t
 
 **What it does**:
 1. Reads version YAML
-2. Downloads each ISO (direct or torrent)
-3. Calculates SHA256 and file size
+2. Downloads each ISO (direct or torrent) - 4-7GB per ISO
+3. Calculates SHA256 and file size locally
 4. Updates YAML with checksums
 
-### 3. `generate_iso_json.py` (JSON Generator)
+**Note**: This method is 100x slower than fetch_checksums.py. Use only when SHA256SUMS files are unavailable.
+
+### 4. `generate_iso_json.py` (JSON Generator)
 **Purpose**: Aggregate all versions into JSON format for netboot.xyz
 
 **Usage**:
@@ -155,10 +178,11 @@ spin_groups:
 - **What it does**: Runs `check_new_versions.py`, creates PR with new templates
 - **Manual inputs**: `version` (specific version), `dry_run` (preview mode)
 
-### `update-iso-info.yml` (Manual Checksum Update)
-- **Trigger**: Manual dispatch
-- **What it does**: Downloads ISOs, calculates checksums, updates YAMLs
+### `update-iso-info.yml` (Manual Checksum Update - Slow Method)
+- **Trigger**: Manual dispatch only
+- **What it does**: Downloads full ISOs, calculates checksums, updates YAMLs
 - **Manual inputs**: `spin` (specific spin), `version`, `use_torrent`
+- **Note**: This is the slow method (downloads 4-7GB ISOs). Consider using `fetch_checksums.py` instead (100x faster)
 
 ### `process-iso.yml` (Mini-ISO Builder)
 - **Trigger**: Push to master or manual
@@ -198,13 +222,23 @@ spin_groups:
 1. Wait for daily workflow to detect new version
 2. Review PR from `check-versions` workflow
 3. Merge PR (adds templates with empty checksums)
-4. Manually trigger `update-iso-info` workflow to fill checksums
-5. JSON files auto-generate on next push
+4. Fill checksums using fast method: `python3 scripts/fetch_checksums.py --config config/versions/{VERSION}.yaml`
+5. Generate JSON: `python3 scripts/generate_iso_json.py --output-dir output/`
+6. Commit and push changes
 
-### Manual
+### Manual (Fast Method)
 1. Run: `python3 scripts/check_new_versions.py --version {VERSION}`
 2. Verify: `config/versions/{VERSION}.yaml` created
-3. Update checksums: `python3 scripts/update_iso_info.py --config config/versions/{VERSION}.yaml`
+3. Fetch checksums (fast): `python3 scripts/fetch_checksums.py --config config/versions/{VERSION}.yaml -v`
+4. Generate JSON: `python3 scripts/generate_iso_json.py --output-dir output/`
+5. Validate: `python3 scripts/validate_json.py`
+6. Commit and push
+
+### Manual (Slow Method - Backup)
+Use this only if SHA256SUMS files are unavailable:
+1. Run: `python3 scripts/check_new_versions.py --version {VERSION}`
+2. Verify: `config/versions/{VERSION}.yaml` created
+3. Download ISOs and calculate checksums (slow): `python3 scripts/update_iso_info.py --config config/versions/{VERSION}.yaml`
 4. Generate JSON: `python3 scripts/generate_iso_json.py --output-dir output/`
 5. Commit and push
 
