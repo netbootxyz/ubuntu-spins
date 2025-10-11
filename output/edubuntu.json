@@ -1,0 +1,95 @@
+{
+  "datatype": "image-downloads",
+  "format": "products:1.0",
+  "products": {
+    "org.edubuntu:edubuntu:desktop:24.04.2:amd64": {
+      "aliases": "24.04.2,noble",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "edubuntu",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.2",
+      "version": "24.04.2",
+      "versions": {
+        "24.04.2": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "noble/release/edubuntu-24.04.2-desktop-amd64.iso",
+              "sha256": "068359bc3bf803be0d1aea61f29384e7446451b3410f1e3dd1317ec1ff55c59f",
+              "size": 6296694784
+            }
+          }
+        }
+      }
+    },
+    "org.edubuntu:edubuntu:desktop:24.04.3:amd64": {
+      "aliases": "24.04.3,noble",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "edubuntu",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.3",
+      "version": "24.04.3",
+      "versions": {
+        "24.04.3": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "noble/release/edubuntu-24.04.3-desktop-amd64.iso",
+              "sha256": "e874f828c304a0aaf37cc6380babcf44c123b4ada544de43e12a694623f18a42",
+              "size": 6370881536
+            }
+          }
+        }
+      }
+    },
+    "org.edubuntu:edubuntu:desktop:24.10:amd64": {
+      "aliases": "24.10,oracular",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "edubuntu",
+      "release": "oracular",
+      "release_codename": "Oracular Oriole",
+      "release_title": "24.10",
+      "version": "24.10",
+      "versions": {
+        "24.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "oracular/release/edubuntu-24.10-desktop-amd64.iso",
+              "sha256": "718afe9a7b41a8eaab78ddf7ea79e614855f6fdfb2fb1d7996065eb240a9bab5",
+              "size": 6756536320
+            }
+          }
+        }
+      }
+    },
+    "org.edubuntu:edubuntu:desktop:25.04:amd64": {
+      "aliases": "25.04,plucky",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "edubuntu",
+      "release": "plucky",
+      "release_codename": "Plucky Puffin",
+      "release_title": "25.04",
+      "version": "25.04",
+      "versions": {
+        "25.04": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "plucky/release/edubuntu-25.04-desktop-amd64.iso",
+              "sha256": "456830b2bc5ccb44e408bb5f8e3e8e84a3d7acc8eb37231a283dbff92ce7e25e",
+              "size": 6223695872
+            }
+          }
+        }
+      }
+    }
+  },
+  "content_id": "org.edubuntu:edubuntu"
+}

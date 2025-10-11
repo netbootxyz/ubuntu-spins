@@ -1,4 +1,16 @@
 spins:
+  ubuntu-release:
+    name: Ubuntu Desktop Release
+    content_id: "org.ubuntu:ubuntu"
+    url_base: https://releases.ubuntu.com/{{ version }}/
+    path_template: "ubuntu-{{ version }}-desktop-amd64.iso"
+
+  ubuntu-server-release:
+    name: Ubuntu Server Release
+    content_id: "org.ubuntu:ubuntu"
+    url_base: https://releases.ubuntu.com/{{ version }}/
+    path_template: "ubuntu-{{ version }}-server-amd64.iso"
+    
   kubuntu:
     name: Kubuntu
     content_id: "org.kubuntu:kubuntu"

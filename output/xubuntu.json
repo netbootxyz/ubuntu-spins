@@ -1,0 +1,95 @@
+{
+  "datatype": "image-downloads",
+  "format": "products:1.0",
+  "products": {
+    "org.xubuntu:xubuntu:desktop:22.04.5:amd64": {
+      "aliases": "22.04.5,jammy",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "xubuntu",
+      "release": "jammy",
+      "release_codename": "Jammy Jellyfish",
+      "release_title": "22.04.5",
+      "version": "22.04.5",
+      "versions": {
+        "22.04.5": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "jammy/release/xubuntu-22.04.5-desktop-amd64.iso",
+              "sha256": "864e2cf7f23a9e76a8e56d9187af5654d0155bac449e9e3063c696ec1281346c",
+              "size": 3233513472
+            }
+          }
+        }
+      }
+    },
+    "org.xubuntu:xubuntu:desktop:24.04.3:amd64": {
+      "aliases": "24.04.3,noble",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "xubuntu",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.3",
+      "version": "24.04.3",
+      "versions": {
+        "24.04.3": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "noble/release/xubuntu-24.04.3-desktop-amd64.iso",
+              "sha256": "b61e083d8a5ab003bad6ef7ea31ec21d7bfdf19b99d75987ab3fa3bbe85ec1bf",
+              "size": 4312426496
+            }
+          }
+        }
+      }
+    },
+    "org.xubuntu:xubuntu:desktop:24.10:amd64": {
+      "aliases": "24.10,oracular",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "xubuntu",
+      "release": "oracular",
+      "release_codename": "Oracular Oriole",
+      "release_title": "24.10",
+      "version": "24.10",
+      "versions": {
+        "24.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "oracular/release/xubuntu-24.10-desktop-amd64.iso",
+              "sha256": "f0156a1efb87e4fe1aba135f9e91e6261ffc20c1933a46d06926a1c4117195b1",
+              "size": 4270448640
+            }
+          }
+        }
+      }
+    },
+    "org.xubuntu:xubuntu:desktop:25.04:amd64": {
+      "aliases": "25.04,plucky",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "xubuntu",
+      "release": "plucky",
+      "release_codename": "Plucky Puffin",
+      "release_title": "25.04",
+      "version": "25.04",
+      "versions": {
+        "25.04": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "plucky/release/xubuntu-25.04-desktop-amd64.iso",
+              "sha256": "c31de06ea12843a72190f5277f95378b6d921e9c1bb69b1888c6d15c8937a98a",
+              "size": 4557887488
+            }
+          }
+        }
+      }
+    }
+  },
+  "content_id": "org.xubuntu:xubuntu"
+}

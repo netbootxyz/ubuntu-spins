@@ -1,0 +1,117 @@
+{
+  "datatype": "image-downloads",
+  "format": "products:1.0",
+  "products": {
+    "org.ubuntubudgie:ubuntu-budgie:desktop:22.04.5:amd64": {
+      "aliases": "22.04.5,jammy",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-budgie",
+      "release": "jammy",
+      "release_codename": "Jammy Jellyfish",
+      "release_title": "22.04.5",
+      "version": "22.04.5",
+      "versions": {
+        "22.04.5": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "jammy/release/ubuntu-budgie-22.04.5-desktop-amd64.iso",
+              "sha256": "0ea70cb4badd1ee0d96d60759104db585397f0915ebb6e5a401f58367f98a76e",
+              "size": 3571154944
+            }
+          }
+        }
+      }
+    },
+    "org.ubuntubudgie:ubuntu-budgie:desktop:24.04.2:amd64": {
+      "aliases": "24.04.2,noble",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-budgie",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.2",
+      "version": "24.04.2",
+      "versions": {
+        "24.04.2": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "noble/release/ubuntu-budgie-24.04.2-desktop-amd64.iso",
+              "sha256": "0b9fd288f7ad2d3936187c7f9ebf74aa755068fa5c5dc33520f40b9ba88403a1",
+              "size": 4248414208
+            }
+          }
+        }
+      }
+    },
+    "org.ubuntubudgie:ubuntu-budgie:desktop:24.04.3:amd64": {
+      "aliases": "24.04.3,noble",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-budgie",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.3",
+      "version": "24.04.3",
+      "versions": {
+        "24.04.3": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "noble/release/ubuntu-budgie-24.04.3-desktop-amd64.iso",
+              "sha256": "7acb4d56ea3edd79d6e8023d5bdcdf2bd04e11180e3a47f5355218e3bd11198d",
+              "size": 4317884416
+            }
+          }
+        }
+      }
+    },
+    "org.ubuntubudgie:ubuntu-budgie:desktop:24.10:amd64": {
+      "aliases": "24.10,oracular",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-budgie",
+      "release": "oracular",
+      "release_codename": "Oracular Oriole",
+      "release_title": "24.10",
+      "version": "24.10",
+      "versions": {
+        "24.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "oracular/release/ubuntu-budgie-24.10-desktop-amd64.iso",
+              "sha256": "42c11dc83e6b949565c62325f257255d0b04c208b4f9a089a612605d98e2d414",
+              "size": 3463921664
+            }
+          }
+        }
+      }
+    },
+    "org.ubuntubudgie:ubuntu-budgie:desktop:25.04:amd64": {
+      "aliases": "25.04,plucky",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-budgie",
+      "release": "plucky",
+      "release_codename": "Plucky Puffin",
+      "release_title": "25.04",
+      "version": "25.04",
+      "versions": {
+        "25.04": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "plucky/release/ubuntu-budgie-25.04-desktop-amd64.iso",
+              "sha256": "dcc74c1c9b9bf00abab35385c21ec5a207f68eb59ef57689c13d591b945f7962",
+              "size": 3530133504
+            }
+          }
+        }
+      }
+    }
+  },
+  "content_id": "org.ubuntubudgie:ubuntu-budgie"
+}

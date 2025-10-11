@@ -6,8 +6,12 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:
     inputs:
-      force_update:
-        description: 'Force update of all versions'
+      version:
+        description: 'Check specific version (e.g., 24.04.3)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run - show what would be done without making changes'
         required: false
         type: boolean
         default: false
@@ -32,29 +36,43 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests pyyaml beautifulsoup4 ruamel.yaml
-
-      - name: Install required packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y transmission-cli
+          pip install -r requirements.txt
 
       - name: Check for new versions
-        run: python3 scripts/check_new_versions.py
+        run: |
+          COMMAND="python3 scripts/check_new_versions.py"
+
+          # Add specific version parameter if provided
+          if [ "${{ github.event.inputs.version }}" != "" ]; then
+            COMMAND="$COMMAND --version ${{ github.event.inputs.version }}"
+          fi
+
+          # Add dry-run flag if requested
+          if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+            COMMAND="$COMMAND --dry-run"
+          fi
+
+          echo "Running command: $COMMAND"
+          eval $COMMAND
 
       - name: Create Pull Request
+        if: github.event.inputs.dry_run != 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Update: Ubuntu version configs"
+          commit-message: "Auto: Add new Ubuntu version templates"
           branch: auto-version-update
           delete-branch: true
-          title: "Auto: Update Ubuntu version configs"
+          title: "Auto: Add new Ubuntu version templates"
           body: |
             This PR was automatically created by the version checker workflow.
-            
-            Changes:
-            - Checked for new Ubuntu versions
-            - Updated SHA256 checksums and sizes
-            
+
+            ## Changes
+            - Discovered and added new Ubuntu version templates
+            - Templates include all available spins (Kubuntu, Xubuntu, Lubuntu, etc.)
+            - SHA256 checksums and sizes are empty and need to be filled using `update_iso_info.py`
+
+            ## Next Steps
+            After merging this PR, run the `update-iso-info` workflow to download ISOs and calculate checksums.
+
             Please review the changes before merging.
