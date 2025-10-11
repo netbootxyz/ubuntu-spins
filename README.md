@@ -66,6 +66,31 @@ done
 python3 scripts/generate_iso_json.py --output-dir output/
 ```
 
+### Local ISO Mirror (NEW!)
+
+Download and cache ISOs locally for faster deployments and offline access:
+
+```bash
+# Download all ISOs with BitTorrent support
+python3 scripts/download_isos.py \
+  --cache-dir /srv/ubuntu-mirror \
+  --output-dir output/ \
+  --use-torrents \
+  --generate-server-config
+
+# Serve ISOs on your local network
+cd /srv/ubuntu-mirror && python3 serve.py
+# Access at http://localhost:8080
+```
+
+**Benefits**:
+- 🚀 **Faster downloads** with BitTorrent support
+- 💾 **Local caching** - download once, use many times
+- 🌐 **Offline access** - no internet required after download
+- 📦 **~35-40 GB** storage for all 8 spins per version
+
+See [LOCAL_MIRROR.md](LOCAL_MIRROR.md) for complete setup guide.
+
 ## How It Works
 
 ### Architecture
@@ -122,6 +147,7 @@ ubuntu-spins/
 ├── scripts/
 │   ├── check_new_versions.py     # Version discovery & template creation
 │   ├── fetch_checksums.py        # Fast checksum fetching (NEW!)
+│   ├── download_isos.py          # Local ISO mirror with torrent support (NEW!)
 │   ├── update_iso_info.py        # Legacy ISO downloader (slow)
 │   └── generate_iso_json.py      # JSON aggregator
 ├── output/
@@ -182,6 +208,40 @@ for file in config/versions/*.yaml; do
   python3 scripts/fetch_checksums.py --config "$file"
 done
 ```
+
+### `download_isos.py` 🚀 NEW!
+Downloads Ubuntu ISOs for local caching with BitTorrent support.
+
+**Features**:
+- BitTorrent downloads (faster, distributed)
+- HTTP fallback if torrents fail
+- SHA256 verification
+- Local caching (skip already downloaded)
+- Web server config generation (nginx + Python)
+
+**Examples**:
+```bash
+# Download all ISOs with torrents
+python3 scripts/download_isos.py \
+  --cache-dir /srv/ubuntu-mirror \
+  --output-dir output/ \
+  --use-torrents \
+  --generate-server-config
+
+# Download specific spin only
+python3 scripts/download_isos.py \
+  --cache-dir /srv/ubuntu-mirror \
+  --output-dir output/ \
+  --spin kubuntu
+
+# Download without verification (faster, not recommended)
+python3 scripts/download_isos.py \
+  --cache-dir /srv/ubuntu-mirror \
+  --output-dir output/ \
+  --no-verify
+```
+
+**See [LOCAL_MIRROR.md](LOCAL_MIRROR.md) for complete setup guide.**
 
 ### `generate_iso_json.py`
 Aggregates version YAMLs into JSON format for netboot.xyz.
@@ -415,16 +475,17 @@ This project is maintained by the netboot.xyz team for automated Ubuntu spin man
 ## Changelog
 
 ### 2025-10-11
+- ✨ **NEW**: Local ISO mirror support with `download_isos.py` (BitTorrent + HTTP fallback)
 - ✨ **NEW**: Complete bootable ISO now included in releases (`ubuntu-netbootxyz-mini.iso`)
 - ✨ Added `fetch_checksums.py` for fast checksum fetching (100x faster)
 - ✨ Complete rewrite of `check_new_versions.py` with automatic template generation
 - ✅ Added Ubuntu 25.10 "Questing Quokka" support with 8 spins
-- ✅ Added Ubuntu Studio and Ubuntu Cinnamon flavors
+- ✅ Added Ubuntu Studio and Ubuntu Cinnamon flavors (10 total distributions)
 - ✅ Added Ubuntu 24.04.3 support
 - 🔧 Fixed missing Xubuntu 24.04.2 checksum (ISO removed by Ubuntu)
 - 🔧 Fixed broken `update-iso-info.yml` workflow
 - 🧹 Removed deprecated `generate_version_template.py` script
-- 📝 Created comprehensive documentation (README, claude.md, VALIDATION.md)
+- 📝 Created comprehensive documentation (README, claude.md, VALIDATION.md, LOCAL_MIRROR.md)
 - 🐛 Fixed initrd repacking to handle variable directory structures
 
 ### Earlier
