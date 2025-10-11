@@ -110,31 +110,76 @@ jobs:
             cd ..
           fi
 
+      - name: Inspect original ISO boot structure
+        run: |
+          echo "=== Inspecting ISO structure ==="
+          isoinfo -d -i questing-mini-iso-amd64.iso
+          echo ""
+          echo "=== Looking for boot files ==="
+          find iso-extract -type f -name "*.bin" -o -name "efi.img" -o -name "bios.img" | head -20
+          echo ""
+          echo "=== Checking boot directory ==="
+          ls -la iso-extract/boot/ || echo "No /boot directory"
+          echo ""
+          echo "=== Checking for grub ==="
+          find iso-extract -type d -name "grub*" | head -10
+
       - name: Repackage ISO
         run: |
           # Get ISO label from original ISO
-          ISO_LABEL=$(isoinfo -d -i questing-mini-iso-amd64.iso | grep "Volume id:" | cut -d' ' -f3-)
+          ISO_LABEL=$(isoinfo -d -i questing-mini-iso-amd64.iso | grep "Volume id:" | cut -d' ' -f3- | tr -d ' ')
+          echo "ISO Label: $ISO_LABEL"
 
-          # Create new ISO with xorriso
-          xorriso -as mkisofs \
-            -r -V "$ISO_LABEL" \
-            -o ubuntu-netbootxyz-mini.iso \
-            -J -joliet-long \
-            -cache-inodes \
-            -b isolinux/isolinux.bin \
-            -c isolinux/boot.cat \
-            -no-emul-boot \
-            -boot-load-size 4 \
-            -boot-info-table \
-            -eltorito-alt-boot \
-            -e boot/grub/efi.img \
-            -no-emul-boot \
-            -isohybrid-gpt-basdat \
-            -isohybrid-apm-hfsplus \
-            iso-extract/
+          # Find actual boot files
+          if [ -f "iso-extract/boot/grub/bios.img" ]; then
+            BIOS_IMG="boot/grub/bios.img"
+            echo "Found BIOS boot image: $BIOS_IMG"
+          elif [ -f "iso-extract/isolinux/isolinux.bin" ]; then
+            BIOS_IMG="isolinux/isolinux.bin"
+            echo "Found isolinux boot image: $BIOS_IMG"
+          else
+            echo "Warning: No BIOS boot image found, ISO may not be BIOS bootable"
+            BIOS_IMG=""
+          fi
 
-          # Make ISO bootable on BIOS and UEFI
-          isohybrid --uefi ubuntu-netbootxyz-mini.iso || true
+          if [ -f "iso-extract/boot/grub/efi.img" ]; then
+            EFI_IMG="boot/grub/efi.img"
+            echo "Found EFI boot image: $EFI_IMG"
+          elif [ -f "iso-extract/efi/boot/bootx64.efi" ]; then
+            EFI_IMG="efi/boot/bootx64.efi"
+            echo "Found EFI boot image: $EFI_IMG"
+          else
+            echo "Warning: No EFI boot image found"
+            EFI_IMG=""
+          fi
+
+          # Build xorriso command dynamically
+          XORRISO_CMD="xorriso -as mkisofs -r -V \"$ISO_LABEL\" -o ubuntu-netbootxyz-mini.iso -J -joliet-long"
+
+          # Add BIOS boot if available
+          if [ -n "$BIOS_IMG" ]; then
+            if [[ "$BIOS_IMG" == *"isolinux"* ]]; then
+              XORRISO_CMD="$XORRISO_CMD -b $BIOS_IMG -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table"
+            else
+              XORRISO_CMD="$XORRISO_CMD -b $BIOS_IMG -no-emul-boot -boot-load-size 4"
+            fi
+          fi
+
+          # Add EFI boot if available
+          if [ -n "$EFI_IMG" ]; then
+            XORRISO_CMD="$XORRISO_CMD -eltorito-alt-boot -e $EFI_IMG -no-emul-boot -isohybrid-gpt-basdat"
+          fi
+
+          # Add source directory
+          XORRISO_CMD="$XORRISO_CMD iso-extract/"
+
+          echo "Running: $XORRISO_CMD"
+          eval $XORRISO_CMD
+
+          # Make ISO bootable on BIOS and UEFI (if supported)
+          if [ -n "$EFI_IMG" ]; then
+            isohybrid --uefi ubuntu-netbootxyz-mini.iso 2>/dev/null || echo "isohybrid failed or not needed"
+          fi
 
           echo "ISO repackaged successfully"
           ls -lh ubuntu-netbootxyz-mini.iso
