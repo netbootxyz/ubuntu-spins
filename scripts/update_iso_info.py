@@ -127,12 +127,20 @@ def update_iso_info(config_data, iso_path):
 def get_iso_url(spin, version):
     """Get the correct ISO URL based on spin type"""
     base_url = spin['files']['iso']['url'].rstrip('/')
-    path = spin['files']['iso']['path_template'] \
-        .replace('{{ release }}', spin['release']) \
+    
+    # Extract filename from template
+    filename = spin['files']['iso']['path_template'].split('/')[-1] \
         .replace('{{ version }}', version) \
-        .strip('"')  # Remove any quotes
-    # Remove any double slashes except in http(s)://
-    return f"{base_url}/{path}".replace('//', '/').replace('http:/', 'http://').replace('https:/', 'https://')
+        .strip('"')
+    
+    # Construct path with version and release
+    path = f"{version}/release/{filename}"
+    
+    # Construct final URL
+    full_url = f"{base_url}/{path}"
+    
+    # Fix up URL to ensure proper formatting
+    return full_url.replace('//', '/').replace('http:/', 'http://').replace('https:/', 'https://')
 
 def get_torrent_url(spin, version):
     """Get the correct torrent URL for a spin"""

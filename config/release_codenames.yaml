@@ -1,4 +1,7 @@
 release_codenames:
+  "25.10":
+    codename: "Questing Quetzel"
+    release: "questing"
   "25.04":
     codename: "Plucky Puffin"
     release: "plucky"

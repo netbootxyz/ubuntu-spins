@@ -1,0 +1,113 @@
+version: 24.04.3
+datatype: image-downloads
+format: products:1.0
+content_id: com.ubuntu.releases:ubuntu
+spin_groups:
+  kubuntu:
+    name: Kubuntu
+    content_id: org.kubuntu:kubuntu
+    spins:
+      - name: kubuntu
+        release: noble
+        version: 24.04.3
+        release_title: 24.04.3
+        release_codename: Noble Numbat
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/kubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/kubuntu/releases/24.04.3/release/
+            sha256: '8c69dd380e5a8969b77ca1708da59f0b9a50d0c151f0a65917180585697dd1e6'
+            size: 4560015360
+  xubuntu:
+    name: Xubuntu
+    content_id: org.xubuntu:xubuntu
+    spins:
+      - name: xubuntu
+        release: noble
+        version: 24.04.3
+        release_title: 24.04.3
+        release_codename: Noble Numbat
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/xubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/xubuntu/releases/24.04.3/release/
+            sha256: 'b61e083d8a5ab003bad6ef7ea31ec21d7bfdf19b99d75987ab3fa3bbe85ec1bf'
+            size: 4312426496
+  lubuntu:
+    name: Lubuntu
+    content_id: me.lubuntu:lubuntu
+    spins:
+      - name: lubuntu
+        release: noble
+        version: 24.04.3
+        release_title: 24.04.3
+        release_codename: Noble Numbat
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/lubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/lubuntu/releases/24.04.3/release/
+            sha256: 'd1c502297205db97e2f1195f9e5a1a86c7a9754dfd4758b96f41e384eb233aab'
+            size: 3388037120
+  ubuntu-mate:
+    name: Ubuntu MATE
+    content_id: org.ubuntu-mate:ubuntu-mate
+    spins:
+      - name: ubuntu-mate
+        release: noble
+        version: 24.04.3
+        release_title: 24.04.3
+        release_codename: Noble Numbat
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/ubuntu-mate-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/ubuntu-mate/releases/24.04.3/release/
+            sha256: '370b6f05935b7ef350eff2c5eb912c0fcf4c42c9ac2b246f2f9249cfb7d09151'
+            size: 4444039168
+  ubuntu-budgie:
+    name: Ubuntu Budgie
+    content_id: org.ubuntubudgie:ubuntu-budgie
+    spins:
+      - name: ubuntu-budgie
+        release: noble
+        version: 24.04.3
+        release_title: 24.04.3
+        release_codename: Noble Numbat
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/ubuntu-budgie-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/ubuntu-budgie/releases/24.04.3/release/
+            sha256: '7acb4d56ea3edd79d6e8023d5bdcdf2bd04e11180e3a47f5355218e3bd11198d'
+            size: 4317884416
+  edubuntu:
+    name: Edubuntu
+    content_id: org.edubuntu:edubuntu
+    spins:
+      - name: edubuntu
+        release: noble
+        version: 24.04.3
+        release_title: 24.04.3
+        release_codename: Noble Numbat
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/edubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/edubuntu/releases/24.04.3/release/
+            sha256: 'e874f828c304a0aaf37cc6380babcf44c123b4ada544de43e12a694623f18a42'
+            size: 6370881536

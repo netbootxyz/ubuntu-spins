@@ -1,0 +1,117 @@
+{
+  "datatype": "image-downloads",
+  "format": "products:1.0",
+  "products": {
+    "org.kubuntu:kubuntu:desktop:22.04.5:amd64": {
+      "aliases": "22.04.5,jammy",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "kubuntu",
+      "release": "jammy",
+      "release_codename": "Jammy Jellyfish",
+      "release_title": "22.04.5",
+      "version": "22.04.5",
+      "versions": {
+        "22.04.5": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "jammy/release/kubuntu-22.04.5-desktop-amd64.iso",
+              "sha256": "a3e2c4b1bc190cebaa8083c0d23ea2555e223d86b885570474a423b6de818888",
+              "size": 4236351488
+            }
+          }
+        }
+      }
+    },
+    "org.kubuntu:kubuntu:desktop:24.04.2:amd64": {
+      "aliases": "24.04.2,noble",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "kubuntu",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.2",
+      "version": "24.04.2",
+      "versions": {
+        "24.04.2": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "noble/release/kubuntu-24.04.2-desktop-amd64.iso",
+              "sha256": "e84c3cb8a9e91504fabbc4763adaacfee0ebd27ef988529dadafb9c53276fb4b",
+              "size": 4527759360
+            }
+          }
+        }
+      }
+    },
+    "org.kubuntu:kubuntu:desktop:24.04.3:amd64": {
+      "aliases": "24.04.3,noble",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "kubuntu",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.3",
+      "version": "24.04.3",
+      "versions": {
+        "24.04.3": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "noble/release/kubuntu-24.04.3-desktop-amd64.iso",
+              "sha256": "8c69dd380e5a8969b77ca1708da59f0b9a50d0c151f0a65917180585697dd1e6",
+              "size": 4560015360
+            }
+          }
+        }
+      }
+    },
+    "org.kubuntu:kubuntu:desktop:24.10:amd64": {
+      "aliases": "24.10,oracular",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "kubuntu",
+      "release": "oracular",
+      "release_codename": "Oracular Oriole",
+      "release_title": "24.10",
+      "version": "24.10",
+      "versions": {
+        "24.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "oracular/release/kubuntu-24.10-desktop-amd64.iso",
+              "sha256": "3b3c6f4b14c6609bfc296f671eccf11fed4f17702e0e675e810fa79db8fc097c",
+              "size": 4678961152
+            }
+          }
+        }
+      }
+    },
+    "org.kubuntu:kubuntu:desktop:25.04:amd64": {
+      "aliases": "25.04,plucky",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "kubuntu",
+      "release": "plucky",
+      "release_codename": "Plucky Puffin",
+      "release_title": "25.04",
+      "version": "25.04",
+      "versions": {
+        "25.04": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "plucky/release/kubuntu-25.04-desktop-amd64.iso",
+              "sha256": "701f1fd796ed6d5867f54af0e2dceac7b7f01a9f975fda3423e9d0e97da10ba8",
+              "size": 4699852800
+            }
+          }
+        }
+      }
+    }
+  },
+  "content_id": "org.kubuntu:kubuntu"
+}

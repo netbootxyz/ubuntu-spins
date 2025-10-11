@@ -1,0 +1,117 @@
+{
+  "datatype": "image-downloads",
+  "format": "products:1.0",
+  "products": {
+    "org.ubuntu-mate:ubuntu-mate:desktop:22.04.5:amd64": {
+      "aliases": "22.04.5,jammy",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-mate",
+      "release": "jammy",
+      "release_codename": "Jammy Jellyfish",
+      "release_title": "22.04.5",
+      "version": "22.04.5",
+      "versions": {
+        "22.04.5": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "jammy/release/ubuntu-mate-22.04.5-desktop-amd64.iso",
+              "sha256": "b382a3aebffc916cce71369e0c09719dd819b8b6ab308d4396ac31c1ada867c4",
+              "size": 3680239616
+            }
+          }
+        }
+      }
+    },
+    "org.ubuntu-mate:ubuntu-mate:desktop:24.04.2:amd64": {
+      "aliases": "24.04.2,noble",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-mate",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.2",
+      "version": "24.04.2",
+      "versions": {
+        "24.04.2": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "noble/release/ubuntu-mate-24.04.2-desktop-amd64.iso",
+              "sha256": "ec1399cf90678c29ee1f80055826b21a3d90f59d50d154e5ea70b1931ce909c9",
+              "size": 4301398016
+            }
+          }
+        }
+      }
+    },
+    "org.ubuntu-mate:ubuntu-mate:desktop:24.04.3:amd64": {
+      "aliases": "24.04.3,noble",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-mate",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.3",
+      "version": "24.04.3",
+      "versions": {
+        "24.04.3": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "noble/release/ubuntu-mate-24.04.3-desktop-amd64.iso",
+              "sha256": "370b6f05935b7ef350eff2c5eb912c0fcf4c42c9ac2b246f2f9249cfb7d09151",
+              "size": 4444039168
+            }
+          }
+        }
+      }
+    },
+    "org.ubuntu-mate:ubuntu-mate:desktop:24.10:amd64": {
+      "aliases": "24.10,oracular",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-mate",
+      "release": "oracular",
+      "release_codename": "Oracular Oriole",
+      "release_title": "24.10",
+      "version": "24.10",
+      "versions": {
+        "24.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "oracular/release/ubuntu-mate-24.10-desktop-amd64.iso",
+              "sha256": "6139a5f9bd00bac15a50e013b1f80f39098c5c4290b1f052cf88bc27871b9ae7",
+              "size": 3521746944
+            }
+          }
+        }
+      }
+    },
+    "org.ubuntu-mate:ubuntu-mate:desktop:25.04:amd64": {
+      "aliases": "25.04,plucky",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-mate",
+      "release": "plucky",
+      "release_codename": "Plucky Puffin",
+      "release_title": "25.04",
+      "version": "25.04",
+      "versions": {
+        "25.04": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "plucky/release/ubuntu-mate-25.04-desktop-amd64.iso",
+              "sha256": "08d49a03c5c90f9a8fbb522e7d0e9097ba99431fb43df96b9e4c07458c0969d9",
+              "size": 3724666880
+            }
+          }
+        }
+      }
+    }
+  },
+  "content_id": "org.ubuntu-mate:ubuntu-mate"
+}

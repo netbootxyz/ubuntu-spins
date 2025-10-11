@@ -1,0 +1,117 @@
+{
+  "datatype": "image-downloads",
+  "format": "products:1.0",
+  "products": {
+    "me.lubuntu:lubuntu:desktop:22.04.5:amd64": {
+      "aliases": "22.04.5,jammy",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "lubuntu",
+      "release": "jammy",
+      "release_codename": "Jammy Jellyfish",
+      "release_title": "22.04.5",
+      "version": "22.04.5",
+      "versions": {
+        "22.04.5": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "jammy/release/lubuntu-22.04.5-desktop-amd64.iso",
+              "sha256": "8ebc2104d822205263d78cc1bee58d17f3e8d8de7aa8e2f249ac2093ec0dd4bc",
+              "size": 3110764544
+            }
+          }
+        }
+      }
+    },
+    "me.lubuntu:lubuntu:desktop:24.04.2:amd64": {
+      "aliases": "24.04.2,noble",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "lubuntu",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.2",
+      "version": "24.04.2",
+      "versions": {
+        "24.04.2": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "noble/release/lubuntu-24.04.2-desktop-amd64.iso",
+              "sha256": "d29e07f791eec68f76521bd8fecd2fb15507c9aab9f8197979cbc70e117dacb1",
+              "size": 3352426496
+            }
+          }
+        }
+      }
+    },
+    "me.lubuntu:lubuntu:desktop:24.04.3:amd64": {
+      "aliases": "24.04.3,noble",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "lubuntu",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.3",
+      "version": "24.04.3",
+      "versions": {
+        "24.04.3": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "noble/release/lubuntu-24.04.3-desktop-amd64.iso",
+              "sha256": "d1c502297205db97e2f1195f9e5a1a86c7a9754dfd4758b96f41e384eb233aab",
+              "size": 3388037120
+            }
+          }
+        }
+      }
+    },
+    "me.lubuntu:lubuntu:desktop:24.10:amd64": {
+      "aliases": "24.10,oracular",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "lubuntu",
+      "release": "oracular",
+      "release_codename": "Oracular Oriole",
+      "release_title": "24.10",
+      "version": "24.10",
+      "versions": {
+        "24.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "oracular/release/lubuntu-24.10-desktop-amd64.iso",
+              "sha256": "5c9c3f03ea12566ecec008aef97afa997854674a1a0421d400cf48d819fd953c",
+              "size": 3513397248
+            }
+          }
+        }
+      }
+    },
+    "me.lubuntu:lubuntu:desktop:25.04:amd64": {
+      "aliases": "25.04,plucky",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "lubuntu",
+      "release": "plucky",
+      "release_codename": "Plucky Puffin",
+      "release_title": "25.04",
+      "version": "25.04",
+      "versions": {
+        "25.04": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "plucky/release/lubuntu-25.04-desktop-amd64.iso",
+              "sha256": "da49827ab8bce6b78214d6fd44c4334a5194e5c87534906e4f272492de4fd14e",
+              "size": 3344099328
+            }
+          }
+        }
+      }
+    }
+  },
+  "content_id": "me.lubuntu:lubuntu"
+}
