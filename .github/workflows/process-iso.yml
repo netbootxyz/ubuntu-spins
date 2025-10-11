@@ -17,7 +17,7 @@ jobs:
       - name: Install required packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y xorriso cpio xz-utils build-essential gcc make meson ninja-build libjson-c-dev cmake libcmocka-dev ctorrent transmission-cli genisoimage
+          sudo apt-get install -y xorriso cpio xz-utils build-essential gcc make meson ninja-build libjson-c-dev cmake libcmocka-dev ctorrent transmission-cli genisoimage syslinux-utils
 
       - name: Clone and build mini-iso-tools with patch
         run: |
@@ -88,10 +88,73 @@ jobs:
         run: |
           python3 scripts/generate_iso_json.py --output-dir output/
 
+      - name: Extract ISO contents
+        run: |
+          mkdir iso-extract
+          xorriso -osirrox on -indev questing-mini-iso-amd64.iso -extract / iso-extract/
+
+      - name: Replace initrd and vmlinuz in ISO
+        run: |
+          # Replace the initrd and vmlinuz with our modified versions
+          cp vmlinuz iso-extract/casper/vmlinuz
+          cp initrd iso-extract/casper/initrd
+
+          # Update file sizes in md5sum.txt if it exists
+          if [ -f iso-extract/md5sum.txt ]; then
+            # Remove old checksums for casper files
+            grep -v "casper/vmlinuz\|casper/initrd" iso-extract/md5sum.txt > iso-extract/md5sum.txt.new || true
+            # Add new checksums
+            cd iso-extract
+            md5sum casper/vmlinuz casper/initrd >> md5sum.txt.new
+            mv md5sum.txt.new md5sum.txt
+            cd ..
+          fi
+
+      - name: Repackage ISO
+        run: |
+          # Get ISO label from original ISO
+          ISO_LABEL=$(isoinfo -d -i questing-mini-iso-amd64.iso | grep "Volume id:" | cut -d' ' -f3-)
+
+          # Create new ISO with xorriso
+          xorriso -as mkisofs \
+            -r -V "$ISO_LABEL" \
+            -o ubuntu-netbootxyz-mini.iso \
+            -J -joliet-long \
+            -cache-inodes \
+            -b isolinux/isolinux.bin \
+            -c isolinux/boot.cat \
+            -no-emul-boot \
+            -boot-load-size 4 \
+            -boot-info-table \
+            -eltorito-alt-boot \
+            -e boot/grub/efi.img \
+            -no-emul-boot \
+            -isohybrid-gpt-basdat \
+            -isohybrid-apm-hfsplus \
+            iso-extract/
+
+          # Make ISO bootable on BIOS and UEFI
+          isohybrid --uefi ubuntu-netbootxyz-mini.iso || true
+
+          echo "ISO repackaged successfully"
+          ls -lh ubuntu-netbootxyz-mini.iso
+
+      - name: Generate checksums
+        run: |
+          sha256sum ubuntu-netbootxyz-mini.iso > ubuntu-netbootxyz-mini.iso.sha256
+          md5sum ubuntu-netbootxyz-mini.iso > ubuntu-netbootxyz-mini.iso.md5
+          sha256sum vmlinuz > vmlinuz.sha256
+          sha256sum initrd > initrd.sha256
+
       - name: Release Files
         uses: softprops/action-gh-release@c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda # v2.2.1
         with:
           draft: true
           files: |
+            ubuntu-netbootxyz-mini.iso
+            ubuntu-netbootxyz-mini.iso.sha256
+            ubuntu-netbootxyz-mini.iso.md5
             vmlinuz
+            vmlinuz.sha256
             initrd
+            initrd.sha256

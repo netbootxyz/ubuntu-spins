@@ -98,9 +98,11 @@ python3 scripts/generate_iso_json.py --output-dir output/
 ┌─────────────────────────────────────────────────────────────────┐
 │ 4. Mini-ISO Packaging                                           │
 │    process-iso.yml (GitHub Actions)                             │
+│    ├─ Downloads Ubuntu mini-ISO                                │
+│    ├─ Extracts vmlinuz/initrd                                  │
 │    ├─ Embeds JSON files in initrd                              │
-│    ├─ Builds custom mini-ISO                                   │
-│    └─ Releases for netboot.xyz users                           │
+│    ├─ Repackages complete bootable ISO                         │
+│    └─ Releases ISO + vmlinuz/initrd + checksums                │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -235,9 +237,23 @@ Downloads ISOs and updates checksums (slow, use sparingly).
 
 ### Mini-ISO Builder
 **Workflow**: `.github/workflows/process-iso.yml`
-**Trigger**: Push to master or manual
+**Trigger**: Push to master, daily, or manual
 
-Builds the final mini-ISO with embedded JSON files for netboot.xyz.
+Builds the netboot.xyz mini-ISO with embedded JSON files.
+
+**What it does**:
+1. Downloads the latest Ubuntu mini-ISO
+2. Extracts vmlinuz and initrd
+3. Embeds all spin JSON files into the initrd
+4. Repackages everything into a standalone bootable ISO
+5. Creates draft release with:
+   - `ubuntu-netbootxyz-mini.iso` - Complete bootable ISO
+   - `vmlinuz` + `initrd` - For PXE/network boot
+   - SHA256 and MD5 checksums for verification
+
+**Usage**:
+- Boot the ISO directly on any system (BIOS or UEFI)
+- Or use vmlinuz/initrd for network booting via netboot.xyz
 
 ## Configuration Files
 
@@ -399,13 +415,17 @@ This project is maintained by the netboot.xyz team for automated Ubuntu spin man
 ## Changelog
 
 ### 2025-10-11
-- ✨ Added `fetch_checksums.py` for fast checksum fetching
+- ✨ **NEW**: Complete bootable ISO now included in releases (`ubuntu-netbootxyz-mini.iso`)
+- ✨ Added `fetch_checksums.py` for fast checksum fetching (100x faster)
 - ✨ Complete rewrite of `check_new_versions.py` with automatic template generation
+- ✅ Added Ubuntu 25.10 "Questing Quokka" support with 8 spins
+- ✅ Added Ubuntu Studio and Ubuntu Cinnamon flavors
 - ✅ Added Ubuntu 24.04.3 support
-- ✅ Added Ubuntu 25.10 (Questing Quetzel) codename
 - 🔧 Fixed missing Xubuntu 24.04.2 checksum (ISO removed by Ubuntu)
-- 📝 Created comprehensive documentation
-- 🐛 Fixed GitHub workflow configuration issues
+- 🔧 Fixed broken `update-iso-info.yml` workflow
+- 🧹 Removed deprecated `generate_version_template.py` script
+- 📝 Created comprehensive documentation (README, claude.md, VALIDATION.md)
+- 🐛 Fixed initrd repacking to handle variable directory structures
 
 ### Earlier
 - Initial project structure
