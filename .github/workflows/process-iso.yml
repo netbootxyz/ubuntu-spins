@@ -34,8 +34,8 @@ jobs:
 
       - name: Extract VMlinuz and initrd
         run: |
-          isoinfo -x /casper/vmlinuz -R -i questing-mini-iso-amd64.iso > vmlinuz
-          isoinfo -x /casper/initrd -R -i questing-mini-iso-amd64.iso > initrd
+          isoinfo -x /casper/vmlinuz -R -i resolute-mini-iso-amd64.iso > vmlinuz
+          isoinfo -x /casper/initrd -R -i resolute-mini-iso-amd64.iso> initrd
 
       - name: Unpack initrd
         run: |
