@@ -16,12 +16,14 @@ Users can then boot any Ubuntu flavor directly from netboot.xyz without pre-down
 
 | Distribution | Versions | Status |
 |-------------|----------|--------|
-| **Kubuntu** | 22.04.5, 24.04.2, 24.04.3, 24.10, 25.04 | ✅ Active |
-| **Xubuntu** | 22.04.5, 24.04.3, 24.10, 25.04 | ✅ Active |
-| **Lubuntu** | 22.04.5, 24.04.2, 24.04.3, 24.10, 25.04 | ✅ Active |
-| **Ubuntu MATE** | 22.04.5, 24.04.2, 24.04.3, 24.10, 25.04 | ✅ Active |
-| **Ubuntu Budgie** | 22.04.5, 24.04.2, 24.04.3, 24.10, 25.04 | ✅ Active |
-| **Edubuntu** | 24.04.2, 24.04.3, 24.10, 25.04 | ✅ Active |
+| **Kubuntu** | 22.04.5, 24.04.2, 24.04.3, 24.10, 25.04, 25.10 | ✅ Active |
+| **Xubuntu** | 22.04.5, 24.04.2, 24.04.3, 24.10, 25.04, 25.10 | ✅ Active |
+| **Lubuntu** | 22.04.5, 24.04.2, 24.04.3, 24.10, 25.04, 25.10 | ✅ Active |
+| **Ubuntu MATE** | 22.04.5, 24.04.2, 24.04.3, 24.10, 25.04, 25.10 | ✅ Active |
+| **Ubuntu Budgie** | 22.04.5, 24.04.2, 24.04.3, 24.10, 25.04, 25.10 | ✅ Active |
+| **Edubuntu** | 24.04.2, 24.04.3, 24.10, 25.04, 25.10 | ✅ Active |
+| **Ubuntu Studio** | 22.04.5, 24.04.2, 24.04.3, 24.10, 25.04, 25.10 | ✅ Active |
+| **Ubuntu Cinnamon** | 24.04.2, 24.04.3, 24.10, 25.04, 25.10 | ✅ Active |
 
 **Note**: Point releases (e.g., 24.04.2 → 24.04.3) are superseded by newer ones. Ubuntu removes older ISOs from their CDN.
 
