@@ -30,7 +30,7 @@ jobs:
 
       - name: Download latest ISO
         run: |
-          wget https://cdimage.ubuntu.com/ubuntu-mini-iso/daily-live/current/questing-mini-iso-amd64.iso
+          wget https://cdimage.ubuntu.com/ubuntu-mini-iso/daily-live/current/resolute-mini-iso-amd64.iso
 
       - name: Extract VMlinuz and initrd
         run: |
