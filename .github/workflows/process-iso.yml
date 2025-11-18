@@ -91,7 +91,7 @@ jobs:
       - name: Extract ISO contents
         run: |
           mkdir iso-extract
-          xorriso -osirrox on -indev questing-mini-iso-amd64.iso -extract / iso-extract/
+          xorriso -osirrox on -indev resolute-mini-iso-amd64.iso -extract / iso-extract/
 
       - name: Replace initrd and vmlinuz in ISO
         run: |
@@ -116,7 +116,7 @@ jobs:
 
           # Use xorriso to extract boot image from original ISO and clone it
           # This preserves the exact boot configuration without needing to know the structure
-          xorriso -indev questing-mini-iso-amd64.iso \
+          xorriso -indev resolute-mini-iso-amd64.iso \
             -outdev ubuntu-netbootxyz-mini.iso \
             -boot_image any replay \
             -map iso-extract / \

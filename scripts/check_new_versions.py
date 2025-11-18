@@ -102,16 +102,18 @@ def verify_spin_availability(version, spin_id, spin_config, release, release_cod
     """
     # Build the ISO URL based on the spin configuration
     url_base = spin_config['url_base'].rstrip('/')
-    path_template = spin_config['path_template']
-
-    # Replace template variables
-    iso_path = path_template \
+    
+    # Extract filename from template
+    filename = spin_config['path_template'].split('/')[-1] \
         .replace('{{ version }}', version) \
-        .replace('{{ release }}', release)
-
+        .strip('"')
+    
     # Construct full ISO URL
     # For most spins: https://cdimage.ubuntu.com/kubuntu/releases/24.04/release/kubuntu-24.04-desktop-amd64.iso
-    full_url = f"{url_base}/{version}/release/{iso_path.split('/')[-1]}"
+    full_url = f"{url_base}/{version}/release/{filename}"
+    
+    # Fix up URL to ensure proper formatting
+    full_url = full_url.replace('//', '/').replace('http:/', 'http://').replace('https:/', 'https://')
 
     # Check if ISO exists
     if check_iso_exists(full_url):
