@@ -292,8 +292,8 @@ def check_for_new_versions(dry_run=False, check_specific_version=None):
         logger.info(f"{'='*60}")
         return True
     else:
-        logger.info("\nNo new version templates created.")
-        return False
+        logger.info("\nNo new version templates created. All versions are up to date!")
+        return True  # Success - no new versions is not an error
 
 def main():
     parser = argparse.ArgumentParser(
