@@ -1,4 +1,7 @@
 release_codenames:
+  "26.04":
+    codename: "Resolute Raccoon"
+    release: "resolute"
   "25.10":
     codename: "Questing Quokka"
     release: "questing"
