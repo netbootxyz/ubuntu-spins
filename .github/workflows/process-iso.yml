@@ -92,6 +92,7 @@ jobs:
         run: |
           mkdir iso-extract
           xorriso -osirrox on -indev resolute-mini-iso-amd64.iso -extract / iso-extract/
+          chmod -R u+w iso-extract
 
       - name: Replace initrd and vmlinuz in ISO
         run: |
