@@ -1,25 +1,12 @@
 name: Update Ubuntu ISO Information
 
 on:
-  # Uncomment to enable weekly automatic updates:
-  # schedule:
-  #   - cron: '0 1 * * 1'  # Weekly on Monday at 1:00 UTC
-
   workflow_dispatch:
     inputs:
-      spin:
-        description: 'Specify a specific Ubuntu spin to update (e.g., ubuntu, kubuntu, xubuntu)'
-        required: false
-        type: string
       version:
-        description: 'Specify a specific Ubuntu version to update (e.g., 22.04)'
+        description: 'Specify a specific Ubuntu version to update (e.g., 26.10)'
         required: false
         type: string
-      use_torrent:
-        description: 'Download ISOs using torrents (faster but requires transmission-cli)'
-        required: false
-        type: boolean
-        default: false
 
 jobs:
   update-iso-info:
@@ -33,59 +20,37 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.14'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-          # Install transmission-cli if torrent option is enabled
-          if [ "${{ github.event.inputs.use_torrent }}" == "true" ]; then
-            sudo apt-get update
-            sudo apt-get install -y transmission-cli
-          fi
-      
-      - name: Configure Git
+      - name: Fetch checksums
+        env:
+          VERSION: ${{ github.event.inputs.version }}
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-      
-      - name: Run ISO update script
-        run: |
-          # Determine which version files to process
-          if [ "${{ github.event.inputs.version }}" != "" ]; then
-            # Process specific version
-            VERSION_FILES="config/versions/${{ github.event.inputs.version }}.yaml"
+          if [ -n "$VERSION" ]; then
+            VERSION_FILES="config/versions/$VERSION.yaml"
           else
-            # Process all version files
             VERSION_FILES=$(ls config/versions/*.yaml)
           fi
 
-          # Process each version file
           for CONFIG_FILE in $VERSION_FILES; do
             echo "Processing $CONFIG_FILE..."
-
-            COMMAND="python3 scripts/update_iso_info.py -v --config $CONFIG_FILE"
-
-            # Add specific spin parameter if provided
-            if [ "${{ github.event.inputs.spin }}" != "" ]; then
-              COMMAND="$COMMAND --spin ${{ github.event.inputs.spin }}"
-            fi
-
-            # Use torrent if requested
-            if [ "${{ github.event.inputs.use_torrent }}" == "true" ]; then
-              COMMAND="$COMMAND --use-torrent"
-            fi
-
-            echo "Running command: $COMMAND"
-            eval $COMMAND || echo "Warning: Failed to process $CONFIG_FILE"
+            python3 scripts/fetch_checksums.py -v --config "$CONFIG_FILE" || echo "Warning: Failed to process $CONFIG_FILE"
           done
-      
+
+      - name: Regenerate JSON
+        run: |
+          python3 scripts/generate_iso_json.py --output-dir output/
+          python3 scripts/validate_json.py
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
@@ -96,11 +61,10 @@ jobs:
           title: "Auto: Update Ubuntu ISO information"
           body: |
             This is an automated PR created by the GitHub Actions workflow to update Ubuntu ISO information.
-            
-            The script has:
-            1. Checked for new Ubuntu spin versions
-            2. Downloaded updated ISOs
-            3. Calculated new SHA256 checksums and file sizes
-            4. Updated the YAML configuration
-            
+
+            The workflow has:
+            1. Fetched SHA256 checksums from Ubuntu's published SHA256SUMS files
+            2. Fetched ISO sizes via HEAD requests
+            3. Updated the YAML configuration and regenerated the JSON output
+
             Please review the changes before merging.

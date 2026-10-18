@@ -10,7 +10,7 @@ This project automates the management of Ubuntu spin distributions (Kubuntu, Xub
 ```
 Ubuntu CDN → check_new_versions.py → Version Templates (YAML)
                                             ↓
-                                    update_iso_info.py (downloads ISOs, calculates SHA256)
+                                    fetch_checksums.py (reads published SHA256SUMS)
                                             ↓
                                     Updated YAML with checksums
                                             ↓
@@ -29,21 +29,19 @@ ubuntu-spins/
 │   ├── release_codenames.yaml  # Version → codename mapping
 │   └── versions/               # Per-version YAML configs with SHA256/sizes
 │       ├── 22.04.5.yaml
-│       ├── 24.04.2.yaml
-│       ├── 24.04.3.yaml
-│       ├── 24.10.yaml
-│       └── 25.04.yaml
+│       ├── 24.04.5.yaml
+│       ├── 26.04.1.yaml
+│       └── 26.10.yaml
 ├── scripts/
 │   ├── check_new_versions.py        # Discovers new versions, creates templates
 │   ├── fetch_checksums.py           # Fast checksum fetching from SHA256SUMS files
-│   ├── update_iso_info.py           # Downloads ISOs, calculates SHA256/sizes (slower)
 │   ├── generate_iso_json.py         # Aggregates YAMLs → JSON
 │   └── validate_json.py             # Validates JSON output format
 ├── output/
 │   └── *.json                  # Generated JSON files (one per spin)
 └── .github/workflows/
     ├── check-versions.yml      # Daily version checker (creates PRs)
-    ├── update-iso-info.yml     # Manual ISO updater
+    ├── update-iso-info.yml     # Manual checksum updater (fetch_checksums.py)
     └── process-iso.yml         # Builds custom initrd with JSONs
 
 ```
@@ -59,7 +57,7 @@ ubuntu-spins/
 python3 scripts/check_new_versions.py
 
 # Check specific version
-python3 scripts/check_new_versions.py --version 24.04.3
+python3 scripts/check_new_versions.py --version 26.10
 
 # Dry run (show what would be done)
 python3 scripts/check_new_versions.py --dry-run
@@ -74,7 +72,9 @@ python3 scripts/check_new_versions.py -v
 3. For each new version:
    - Checks ISO availability (HEAD request) for each spin
    - Creates YAML template if ISOs exist
-   - Sets SHA256/size to empty (filled later by update_iso_info.py)
+   - Sets SHA256/size to empty (filled later by fetch_checksums.py)
+4. Skips point releases superseded by a newer one in the same series, and series
+   older than the newest tracked series that are no longer tracked (EOL)
 
 ### 2. `fetch_checksums.py` (Fast Checksum Fetcher - Recommended)
 **Purpose**: Fetch SHA256 checksums from published SHA256SUMS files (100x faster)
@@ -82,10 +82,10 @@ python3 scripts/check_new_versions.py -v
 **Usage**:
 ```bash
 # Fetch checksums for all spins in a version
-python3 scripts/fetch_checksums.py --config config/versions/25.10.yaml
+python3 scripts/fetch_checksums.py --config config/versions/26.10.yaml
 
 # Fetch with verbose output
-python3 scripts/fetch_checksums.py --config config/versions/25.10.yaml -v
+python3 scripts/fetch_checksums.py --config config/versions/26.10.yaml -v
 ```
 
 **What it does**:
@@ -96,30 +96,7 @@ python3 scripts/fetch_checksums.py --config config/versions/25.10.yaml -v
 
 **Performance**: ~2.5 seconds vs. ~4 hours for downloading full ISOs
 
-### 3. `update_iso_info.py` (Checksum Calculator - Slow Method)
-**Purpose**: Download ISOs and calculate SHA256 hashes (backup method)
-
-**Usage**:
-```bash
-# Update all spins in a version config
-python3 scripts/update_iso_info.py --config config/versions/24.04.3.yaml
-
-# Update specific spin only
-python3 scripts/update_iso_info.py --config config/versions/24.04.3.yaml --spin kubuntu
-
-# Use torrent for faster download
-python3 scripts/update_iso_info.py --config config/versions/24.04.3.yaml --use-torrent
-```
-
-**What it does**:
-1. Reads version YAML
-2. Downloads each ISO (direct or torrent) - 4-7GB per ISO
-3. Calculates SHA256 and file size locally
-4. Updates YAML with checksums
-
-**Note**: This method is 100x slower than fetch_checksums.py. Use only when SHA256SUMS files are unavailable.
-
-### 4. `generate_iso_json.py` (JSON Generator)
+### 3. `generate_iso_json.py` (JSON Generator)
 **Purpose**: Aggregate all versions into JSON format for netboot.xyz
 
 **Usage**:
@@ -158,16 +135,16 @@ release_codenames:
 ### `config/versions/{version}.yaml`
 Per-version configuration with all spins:
 ```yaml
-version: 24.04.3
+version: 26.10
 spin_groups:
   kubuntu:
     spins:
       - name: kubuntu
-        version: 24.04.3
-        release: noble
+        version: 26.10
+        release: stonking
         files:
           iso:
-            sha256: "abc123..."  # Filled by update_iso_info.py
+            sha256: "abc123..."  # Filled by fetch_checksums.py
             size: 4527759360
 ```
 
@@ -178,14 +155,14 @@ spin_groups:
 - **What it does**: Runs `check_new_versions.py`, creates PR with new templates
 - **Manual inputs**: `version` (specific version), `dry_run` (preview mode)
 
-### `update-iso-info.yml` (Manual Checksum Update - Slow Method)
+### `update-iso-info.yml` (Manual Checksum Update)
 - **Trigger**: Manual dispatch only
-- **What it does**: Downloads full ISOs, calculates checksums, updates YAMLs
-- **Manual inputs**: `spin` (specific spin), `version`, `use_torrent`
-- **Note**: This is the slow method (downloads 4-7GB ISOs). Consider using `fetch_checksums.py` instead (100x faster)
+- **What it does**: Runs `fetch_checksums.py` on version YAMLs, regenerates and validates JSON, creates PR
+- **Manual inputs**: `version` (specific version)
 
 ### `process-iso.yml` (Mini-ISO Builder)
-- **Trigger**: Push to master or manual
+- **Trigger**: Push to master, daily, or manual
+- **Mini-ISO source**: `MINI_ISO_URL` env at the top of the workflow (currently the 26.10 release mini-ISO)
 - **What it does**:
   1. Builds mini-iso-tools
   2. Extracts vmlinuz/initrd from mini-ISO
@@ -203,18 +180,14 @@ spin_groups:
 - GitHub workflow automation
 
 ### ⚠️ Issues Found & Fixed
-- ✅ Empty SHA256 in 24.04.2 Xubuntu → Need to run update_iso_info.py
-- ✅ Missing 25.10 codename → Added "Questing Quetzel"
 - ✅ Script only logged warnings → Now creates templates
 - ✅ No requirements.txt → Created
 - ✅ Workflow references non-existent files → Fixed
 
 ### 🔧 Known Gaps
 1. **Ubuntu Desktop/Server not included** - Only spins are tracked (could expand to official Ubuntu)
-2. **Checksum fetching optimized** - Now uses SHA256SUMS files (via fetch_checksums.py) instead of downloading entire ISOs
-3. **Validation implemented** - validate_json.py ensures JSON output compatibility
-4. **Only amd64 architecture** - No arm64 support yet
-5. **Manual ISO updates** - update_iso_info.py requires manual trigger for checksum updates
+2. **Only amd64 architecture** - No arm64 support yet
+3. **Manual checksum updates** - fetch_checksums.py is not yet run by check-versions workflow
 
 ## Recommended Workflow for Adding New Versions
 
@@ -234,19 +207,11 @@ spin_groups:
 5. Validate: `python3 scripts/validate_json.py`
 6. Commit and push
 
-### Manual (Slow Method - Backup)
-Use this only if SHA256SUMS files are unavailable:
-1. Run: `python3 scripts/check_new_versions.py --version {VERSION}`
-2. Verify: `config/versions/{VERSION}.yaml` created
-3. Download ISOs and calculate checksums (slow): `python3 scripts/update_iso_info.py --config config/versions/{VERSION}.yaml`
-4. Generate JSON: `python3 scripts/generate_iso_json.py --output-dir output/`
-5. Commit and push
-
 ## Critical Paths
 
 ### Path 1: New Version Discovery → netboot.xyz
 ```
-check_new_versions.py → version YAML → update_iso_info.py →
+check_new_versions.py → version YAML → fetch_checksums.py →
 generate_iso_json.py → JSON files → process-iso.yml →
 Mini-ISO with embedded JSONs → netboot.xyz
 ```
@@ -273,7 +238,7 @@ Install with: `pip install -r requirements.txt`
 python3 scripts/check_new_versions.py --dry-run
 
 # Test specific version
-python3 scripts/check_new_versions.py --version 25.10 --dry-run
+python3 scripts/check_new_versions.py --version 26.10 --dry-run
 
 # Generate JSONs and verify output
 python3 scripts/generate_iso_json.py --output-dir output/
@@ -291,7 +256,7 @@ jq . output/kubuntu.json | head -50
 
 ### Issue: Empty SHA256/size in YAML
 - **Cause**: Template created but checksums not calculated
-- **Fix**: Run `update_iso_info.py` on that config file
+- **Fix**: Run `fetch_checksums.py` on that config file
 
 ### Issue: JSON missing versions
 - **Cause**: generate_iso_json.py skips entries with empty SHA256 or size=0
@@ -317,22 +282,22 @@ jq . output/kubuntu.json | head -50
 7. **Multiple image types** - Live, Minimal, Netboot variants
 8. **Checksums for vmlinuz/initrd** - In process-iso workflow
 9. **Metrics dashboard** - Track version coverage
-10. **Automated deprecated version cleanup** - Remove EOL versions
+10. **Automated deprecated version cleanup** - Remove EOL versions (currently manual: delete the version YAML and its codename entry)
 
 ## File Ownership & Dependencies
 
 | File | Generated By | Consumed By |
 |------|-------------|-------------|
-| `config/spins.yaml` | Manual | check_new_versions, update_iso_info |
+| `config/spins.yaml` | Manual | check_new_versions |
 | `config/release_codenames.yaml` | Manual | check_new_versions, generate_iso_json |
-| `config/versions/*.yaml` | check_new_versions | update_iso_info, generate_iso_json |
+| `config/versions/*.yaml` | check_new_versions | fetch_checksums, generate_iso_json |
 | `output/*.json` | generate_iso_json | process-iso workflow, netboot.xyz |
 | `vmlinuz`, `initrd` | process-iso workflow | netboot.xyz users |
 
 ## Important Notes
 
-- **Both desktop and server ISOs are supported** - The system handles both image types
-- **Version templates are created with empty checksums** - Run update_iso_info.py or fetch_checksums.py to fill them
+- **Official Ubuntu desktop/server** come from Ubuntu's own streams JSON, fetched in process-iso.yml
+- **Version templates are created with empty checksums** - Run fetch_checksums.py to fill them
 - **JSON generation skips incomplete entries** - Ensures only valid data reaches users
 - **process-iso.yml** is the final step that packages everything for netboot.xyz
 - **Generated JSON format** matches netboot.xyz's expected schema (products:1.0)

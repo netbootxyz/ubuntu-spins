@@ -39,9 +39,8 @@ def load_release_codenames():
     with open('config/release_codenames.yaml', 'r') as f:
         return yaml.safe_load(f)['release_codenames']
 
-def get_release_info(version):
+def get_release_info(version, codenames):
     """Get release and codename for a version"""
-    codenames = load_release_codenames()
     base_version = '.'.join(version.split('.')[:2])  # Convert 24.04.2 to 24.04
     version_info = codenames.get(base_version, {})
     return {
@@ -51,6 +50,7 @@ def get_release_info(version):
 
 def aggregate_versions(versions_dir):
     """Load and aggregate all version YAMLs from the directory."""
+    codenames = load_release_codenames()
     aggregated_spins = defaultdict(lambda: {
         "datatype": "image-downloads",
         "format": "products:1.0",
@@ -75,7 +75,7 @@ def aggregate_versions(versions_dir):
                    not spin.get("files", {}).get("iso", {}).get("size", 0) > 0:
                     continue
 
-                release_info = get_release_info(spin.get("version", ""))
+                release_info = get_release_info(spin.get("version", ""), codenames)
                 
                 spin_data = {
                     "architectures": spin.get("architectures", ["amd64"]),
@@ -130,7 +130,7 @@ def aggregate_versions(versions_dir):
                         }
                         
                     except KeyError as e:
-                        print(f"Warning: Missing required field {e} in spin {spin.get('name', 'unknown')}")
+                        logger.warning(f"Missing required field {e} in spin {spin.get('name', 'unknown')}")
                         continue
     
     return dict(aggregated_spins)
@@ -158,7 +158,7 @@ def main():
             with open(output_file, 'w') as f:
                 json.dump(group_data, f, indent=2)
         else:
-            print(f"Warning: No valid products found for group {group_name}")
+            logger.warning(f"No valid products found for group {group_name}")
 
 if __name__ == '__main__':
     main()

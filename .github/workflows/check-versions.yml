@@ -70,9 +70,9 @@ jobs:
             ## Changes
             - Discovered and added new Ubuntu version templates
             - Templates include all available spins (Kubuntu, Xubuntu, Lubuntu, etc.)
-            - SHA256 checksums and sizes are empty and need to be filled using `update_iso_info.py`
+            - SHA256 checksums and sizes are empty and need to be filled using `fetch_checksums.py`
 
             ## Next Steps
-            After merging this PR, run the `update-iso-info` workflow to download ISOs and calculate checksums.
+            After merging this PR, run the `update-iso-info` workflow to fetch checksums and sizes.
 
             Please review the changes before merging.

@@ -2,23 +2,45 @@
   "datatype": "image-downloads",
   "format": "products:1.0",
   "products": {
-    "org.ubuntustudio:ubuntu-studio:desktop:25.10:amd64": {
-      "aliases": "25.10,questing",
+    "org.ubuntustudio:ubuntu-studio:desktop:26.04.1:amd64": {
+      "aliases": "26.04.1,resolute",
       "arch": "amd64",
       "image_type": "desktop",
       "os": "ubuntu-studio",
-      "release": "questing",
-      "release_codename": "Questing Quokka",
-      "release_title": "25.10",
-      "version": "25.10",
+      "release": "resolute",
+      "release_codename": "Resolute Raccoon",
+      "release_title": "26.04.1",
+      "version": "26.04.1",
       "versions": {
-        "25.10": {
+        "26.04.1": {
           "items": {
             "iso": {
               "ftype": "iso",
-              "path": "questing/release/ubuntustudio-25.10-desktop-amd64.iso",
-              "sha256": "aa4104e14e06862ebdd7d5d41c3706b41a5d9e855a674d78da465554978c70ad",
-              "size": 7815274496
+              "path": "resolute/release/ubuntustudio-26.04.1-desktop-amd64.iso",
+              "sha256": "2b25d06203c8a2f60da23e20e3afd1fa400f8ff8104fd074c1b7e49fc3768084",
+              "size": 7127195648
+            }
+          }
+        }
+      }
+    },
+    "org.ubuntustudio:ubuntu-studio:desktop:26.10:amd64": {
+      "aliases": "26.10,stonking",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-studio",
+      "release": "stonking",
+      "release_codename": "Stonking Stingray",
+      "release_title": "26.10",
+      "version": "26.10",
+      "versions": {
+        "26.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "stonking/release/ubuntustudio-26.10-desktop-amd64.iso",
+              "sha256": "00d1fb881501101b9f7e9fe5b22c5473f6c96fa4bb2b69f9c00e9ee69f537fe7",
+              "size": 6905530368
             }
           }
         }

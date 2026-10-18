@@ -1,16 +1,10 @@
 release_codenames:
+  "26.10":
+    codename: "Stonking Stingray"
+    release: "stonking"
   "26.04":
     codename: "Resolute Raccoon"
     release: "resolute"
-  "25.10":
-    codename: "Questing Quokka"
-    release: "questing"
-  "25.04":
-    codename: "Plucky Puffin"
-    release: "plucky"
-  "24.10":
-    codename: "Oracular Oriole"
-    release: "oracular"
   "24.04":
     codename: "Noble Numbat"
     release: "noble"
