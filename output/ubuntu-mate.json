@@ -24,111 +24,45 @@
         }
       }
     },
-    "org.ubuntu-mate:ubuntu-mate:desktop:24.04.2:amd64": {
-      "aliases": "24.04.2,noble",
+    "org.ubuntu-mate:ubuntu-mate:desktop:24.04.5:amd64": {
+      "aliases": "24.04.5,noble",
       "arch": "amd64",
       "image_type": "desktop",
       "os": "ubuntu-mate",
       "release": "noble",
       "release_codename": "Noble Numbat",
-      "release_title": "24.04.2",
-      "version": "24.04.2",
+      "release_title": "24.04.5",
+      "version": "24.04.5",
       "versions": {
-        "24.04.2": {
+        "24.04.5": {
           "items": {
             "iso": {
               "ftype": "iso",
-              "path": "noble/release/ubuntu-mate-24.04.2-desktop-amd64.iso",
-              "sha256": "ec1399cf90678c29ee1f80055826b21a3d90f59d50d154e5ea70b1931ce909c9",
-              "size": 4301398016
+              "path": "noble/release/ubuntu-mate-24.04.5-desktop-amd64.iso",
+              "sha256": "60430d35da5c0bdb3d84a2fdf4052495256fc26ec300d7cd5a9933a534f0422c",
+              "size": 5162776576
             }
           }
         }
       }
     },
-    "org.ubuntu-mate:ubuntu-mate:desktop:24.04.3:amd64": {
-      "aliases": "24.04.3,noble",
+    "org.ubuntu-mate:ubuntu-mate:desktop:26.10:amd64": {
+      "aliases": "26.10,stonking",
       "arch": "amd64",
       "image_type": "desktop",
       "os": "ubuntu-mate",
-      "release": "noble",
-      "release_codename": "Noble Numbat",
-      "release_title": "24.04.3",
-      "version": "24.04.3",
+      "release": "stonking",
+      "release_codename": "Stonking Stingray",
+      "release_title": "26.10",
+      "version": "26.10",
       "versions": {
-        "24.04.3": {
+        "26.10": {
           "items": {
             "iso": {
               "ftype": "iso",
-              "path": "noble/release/ubuntu-mate-24.04.3-desktop-amd64.iso",
-              "sha256": "370b6f05935b7ef350eff2c5eb912c0fcf4c42c9ac2b246f2f9249cfb7d09151",
-              "size": 4444039168
-            }
-          }
-        }
-      }
-    },
-    "org.ubuntu-mate:ubuntu-mate:desktop:24.10:amd64": {
-      "aliases": "24.10,oracular",
-      "arch": "amd64",
-      "image_type": "desktop",
-      "os": "ubuntu-mate",
-      "release": "oracular",
-      "release_codename": "Oracular Oriole",
-      "release_title": "24.10",
-      "version": "24.10",
-      "versions": {
-        "24.10": {
-          "items": {
-            "iso": {
-              "ftype": "iso",
-              "path": "oracular/release/ubuntu-mate-24.10-desktop-amd64.iso",
-              "sha256": "6139a5f9bd00bac15a50e013b1f80f39098c5c4290b1f052cf88bc27871b9ae7",
-              "size": 3521746944
-            }
-          }
-        }
-      }
-    },
-    "org.ubuntu-mate:ubuntu-mate:desktop:25.04:amd64": {
-      "aliases": "25.04,plucky",
-      "arch": "amd64",
-      "image_type": "desktop",
-      "os": "ubuntu-mate",
-      "release": "plucky",
-      "release_codename": "Plucky Puffin",
-      "release_title": "25.04",
-      "version": "25.04",
-      "versions": {
-        "25.04": {
-          "items": {
-            "iso": {
-              "ftype": "iso",
-              "path": "plucky/release/ubuntu-mate-25.04-desktop-amd64.iso",
-              "sha256": "08d49a03c5c90f9a8fbb522e7d0e9097ba99431fb43df96b9e4c07458c0969d9",
-              "size": 3724666880
-            }
-          }
-        }
-      }
-    },
-    "org.ubuntu-mate:ubuntu-mate:desktop:25.10:amd64": {
-      "aliases": "25.10,questing",
-      "arch": "amd64",
-      "image_type": "desktop",
-      "os": "ubuntu-mate",
-      "release": "questing",
-      "release_codename": "Questing Quokka",
-      "release_title": "25.10",
-      "version": "25.10",
-      "versions": {
-        "25.10": {
-          "items": {
-            "iso": {
-              "ftype": "iso",
-              "path": "questing/release/ubuntu-mate-25.10-desktop-amd64.iso",
-              "sha256": "f9e441110886e79a2dfce9f7596f4e0d6479f115dd8792670681743e5917694f",
-              "size": 3821662208
+              "path": "stonking/release/ubuntu-mate-26.10-desktop-amd64.iso",
+              "sha256": "383a61f97daa07bcc4f0081c99e39c6cfd2d5d4ddaceaa27330c2144b128044e",
+              "size": 4361039872
             }
           }
         }

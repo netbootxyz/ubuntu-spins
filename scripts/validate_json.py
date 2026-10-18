@@ -110,7 +110,7 @@ def main():
                 print(f"     - {err}")
             all_errors.extend(errors)
         else:
-            print(f"  ✅ No errors")
+            print("  ✅ No errors")
 
         if warnings:
             print(f"  ⚠️  {len(warnings)} warnings:")

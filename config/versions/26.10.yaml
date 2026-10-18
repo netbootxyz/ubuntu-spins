@@ -1,0 +1,151 @@
+version: '26.10'
+datatype: image-downloads
+format: products:1.0
+content_id: com.ubuntu.releases:ubuntu
+spin_groups:
+  kubuntu:
+    name: Kubuntu
+    content_id: org.kubuntu:kubuntu
+    spins:
+      - name: kubuntu
+        release: stonking
+        version: '26.10'
+        release_title: '26.10'
+        release_codename: Stonking Stingray
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/kubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/kubuntu/releases/26.10/release/
+            sha256: '8160b1d6266dfe1998d183b19713680263c09669f101e0e41cbcf11f50b6f785'
+            size: 5141966848
+  xubuntu:
+    name: Xubuntu
+    content_id: org.xubuntu:xubuntu
+    spins:
+      - name: xubuntu
+        release: stonking
+        version: '26.10'
+        release_title: '26.10'
+        release_codename: Stonking Stingray
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/xubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/xubuntu/releases/26.10/release/
+            sha256: '8f5662cf26f320a8a2cda807f16b4ba66449cf9846946a47fc2e9aa6d1a56690'
+            size: 5282123776
+  lubuntu:
+    name: Lubuntu
+    content_id: me.lubuntu:lubuntu
+    spins:
+      - name: lubuntu
+        release: stonking
+        version: '26.10'
+        release_title: '26.10'
+        release_codename: Stonking Stingray
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/lubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/lubuntu/releases/26.10/release/
+            sha256: 'fd71fb468451ff2a14914aeb344b530e7eb1d4f7c810f35d855ecbe68330b7eb'
+            size: 3996559360
+  ubuntu-mate:
+    name: Ubuntu MATE
+    content_id: org.ubuntu-mate:ubuntu-mate
+    spins:
+      - name: ubuntu-mate
+        release: stonking
+        version: '26.10'
+        release_title: '26.10'
+        release_codename: Stonking Stingray
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/ubuntu-mate-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/ubuntu-mate/releases/26.10/release/
+            sha256: '383a61f97daa07bcc4f0081c99e39c6cfd2d5d4ddaceaa27330c2144b128044e'
+            size: 4361039872
+  ubuntu-budgie:
+    name: Ubuntu Budgie
+    content_id: org.ubuntubudgie:ubuntu-budgie
+    spins:
+      - name: ubuntu-budgie
+        release: stonking
+        version: '26.10'
+        release_title: '26.10'
+        release_codename: Stonking Stingray
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/ubuntu-budgie-{{ version }}-desktop-amd64.iso'
+            url: 
+              https://cdimage.ubuntu.com/ubuntu-budgie/releases/26.10/release/
+            sha256: 'b9b278b0bd6afe65ceaf75c0e9af44aaab2682bb01513dbae4ec0661fb3a992d'
+            size: 4188016640
+  edubuntu:
+    name: Edubuntu
+    content_id: org.edubuntu:edubuntu
+    spins:
+      - name: edubuntu
+        release: stonking
+        version: '26.10'
+        release_title: '26.10'
+        release_codename: Stonking Stingray
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/edubuntu-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/edubuntu/releases/26.10/release/
+            sha256: '7e594a5f5dd9d55c34b90baa1069e1c3b633feaac51476733acd50f1953b650d'
+            size: 7184648192
+  ubuntu-studio:
+    name: Ubuntu Studio
+    content_id: org.ubuntustudio:ubuntu-studio
+    spins:
+      - name: ubuntu-studio
+        release: stonking
+        version: '26.10'
+        release_title: '26.10'
+        release_codename: Stonking Stingray
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/ubuntustudio-{{ version }}-desktop-amd64.iso'
+            url: https://cdimage.ubuntu.com/ubuntustudio/releases/26.10/release/
+            sha256: '00d1fb881501101b9f7e9fe5b22c5473f6c96fa4bb2b69f9c00e9ee69f537fe7'
+            size: 6905530368
+  ubuntu-cinnamon:
+    name: Ubuntu Cinnamon
+    content_id: org.ubuntucinnamon:ubuntu-cinnamon
+    spins:
+      - name: ubuntu-cinnamon
+        release: stonking
+        version: '26.10'
+        release_title: '26.10'
+        release_codename: Stonking Stingray
+        image_type: desktop
+        architectures:
+          - amd64
+        files:
+          iso:
+            path_template: '{{ release }}/release/ubuntucinnamon-{{ version }}-desktop-amd64.iso'
+            url: 
+              https://cdimage.ubuntu.com/ubuntucinnamon/releases/26.10/release/
+            sha256: 'e0fe999fa11f666df7e9da38c4f90eae85cc8a01416af13e81ad81a22cbc6044'
+            size: 4897769472

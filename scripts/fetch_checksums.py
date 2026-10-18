@@ -119,7 +119,7 @@ def update_version_checksums(config_file, dry_run=False):
                         iso_info['size'] = new_size
                         updated_count += 1
                     else:
-                        logger.info(f"  [DRY RUN] Would update")
+                        logger.info("  [DRY RUN] Would update")
                 else:
                     logger.info(f"✓ {spin_name}: Already up to date")
             else:
@@ -133,7 +133,7 @@ def update_version_checksums(config_file, dry_run=False):
     elif dry_run:
         logger.info(f"\n[DRY RUN] Would update {updated_count} checksums")
     else:
-        logger.info(f"\n✅ All checksums are up to date")
+        logger.info("\n✅ All checksums are up to date")
 
 def main():
     parser = argparse.ArgumentParser(

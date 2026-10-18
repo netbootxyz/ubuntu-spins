@@ -2,23 +2,67 @@
   "datatype": "image-downloads",
   "format": "products:1.0",
   "products": {
-    "org.ubuntucinnamon:ubuntu-cinnamon:desktop:25.10:amd64": {
-      "aliases": "25.10,questing",
+    "org.ubuntucinnamon:ubuntu-cinnamon:desktop:24.04.5:amd64": {
+      "aliases": "24.04.5,noble",
       "arch": "amd64",
       "image_type": "desktop",
       "os": "ubuntu-cinnamon",
-      "release": "questing",
-      "release_codename": "Questing Quokka",
-      "release_title": "25.10",
-      "version": "25.10",
+      "release": "noble",
+      "release_codename": "Noble Numbat",
+      "release_title": "24.04.5",
+      "version": "24.04.5",
       "versions": {
-        "25.10": {
+        "24.04.5": {
           "items": {
             "iso": {
               "ftype": "iso",
-              "path": "questing/release/ubuntucinnamon-25.10-desktop-amd64.iso",
-              "sha256": "c7cfabf83a07c45f03f12f618b5421b21d956c0a1465ffa968ddca644fcec566",
-              "size": 4961034240
+              "path": "noble/release/ubuntucinnamon-24.04.5-desktop-amd64.iso",
+              "sha256": "7fef6d987a29d2a81e4edac3fc6d640ce533f1d95d82c28119baaefc9fbd4721",
+              "size": 6961655808
+            }
+          }
+        }
+      }
+    },
+    "org.ubuntucinnamon:ubuntu-cinnamon:desktop:26.04.1:amd64": {
+      "aliases": "26.04.1,resolute",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-cinnamon",
+      "release": "resolute",
+      "release_codename": "Resolute Raccoon",
+      "release_title": "26.04.1",
+      "version": "26.04.1",
+      "versions": {
+        "26.04.1": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "resolute/release/ubuntucinnamon-26.04.1-desktop-amd64.iso",
+              "sha256": "ceb8156f6aabf597da4a98a9794a319d765b39c888a5200ae88f3915d22c8371",
+              "size": 5667256320
+            }
+          }
+        }
+      }
+    },
+    "org.ubuntucinnamon:ubuntu-cinnamon:desktop:26.10:amd64": {
+      "aliases": "26.10,stonking",
+      "arch": "amd64",
+      "image_type": "desktop",
+      "os": "ubuntu-cinnamon",
+      "release": "stonking",
+      "release_codename": "Stonking Stingray",
+      "release_title": "26.10",
+      "version": "26.10",
+      "versions": {
+        "26.10": {
+          "items": {
+            "iso": {
+              "ftype": "iso",
+              "path": "stonking/release/ubuntucinnamon-26.10-desktop-amd64.iso",
+              "sha256": "e0fe999fa11f666df7e9da38c4f90eae85cc8a01416af13e81ad81a22cbc6044",
+              "size": 4897769472
             }
           }
         }

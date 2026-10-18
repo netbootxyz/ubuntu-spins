@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: '0 0 * * *'  # Run daily at midnight UTC
 
+env:
+  MINI_ISO_URL: https://cdimage.ubuntu.com/ubuntu-mini-iso/releases/26.10/release/ubuntu-mini-iso-26.10-mini-iso-amd64.iso
+  MINI_ISO: mini-iso-amd64.iso
+
 jobs:
   process-iso:
     runs-on: ubuntu-latest
@@ -17,25 +21,24 @@ jobs:
       - name: Install required packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y xorriso cpio xz-utils build-essential gcc make meson ninja-build libjson-c-dev cmake libcmocka-dev ctorrent transmission-cli genisoimage syslinux-utils
+          sudo apt-get install -y xorriso cpio xz-utils build-essential gcc make meson ninja-build libjson-c-dev cmake libcmocka-dev genisoimage
 
-      - name: Clone and build mini-iso-tools with patch
+      - name: Clone and build mini-iso-tools
         run: |
           git clone -b nbxyz-mods https://github.com/netbootxyz/mini-iso-tools build/mini-iso-tools
           cd build/mini-iso-tools
-          #cp ../../patches/json.c json.c
           meson setup build
           sudo ninja -C build
           sudo ninja -C build install
 
-      - name: Download latest ISO
+      - name: Download mini ISO
         run: |
-          wget https://cdimage.ubuntu.com/ubuntu-mini-iso/daily-live/current/resolute-mini-iso-amd64.iso
+          wget "$MINI_ISO_URL" -O "$MINI_ISO"
 
       - name: Extract VMlinuz and initrd
         run: |
-          isoinfo -x /casper/vmlinuz -R -i resolute-mini-iso-amd64.iso > vmlinuz
-          isoinfo -x /casper/initrd -R -i resolute-mini-iso-amd64.iso> initrd
+          isoinfo -x /casper/vmlinuz -R -i "$MINI_ISO" > vmlinuz
+          isoinfo -x /casper/initrd -R -i "$MINI_ISO" > initrd
 
       - name: Unpack initrd
         run: |
@@ -84,14 +87,10 @@ jobs:
           cd main
           find . | cpio --create --format=newc | xz --format=lzma >> ../../initrd
 
-      - name: Generate json files
-        run: |
-          python3 scripts/generate_iso_json.py --output-dir output/
-
       - name: Extract ISO contents
         run: |
           mkdir iso-extract
-          xorriso -osirrox on -indev resolute-mini-iso-amd64.iso -extract / iso-extract/
+          xorriso -osirrox on -indev "$MINI_ISO" -extract / iso-extract/
           chmod -R u+w iso-extract
 
       - name: Replace initrd and vmlinuz in ISO
@@ -117,7 +116,7 @@ jobs:
 
           # Use xorriso to extract boot image from original ISO and clone it
           # This preserves the exact boot configuration without needing to know the structure
-          xorriso -indev resolute-mini-iso-amd64.iso \
+          xorriso -indev "$MINI_ISO" \
             -outdev ubuntu-netbootxyz-mini.iso \
             -boot_image any replay \
             -map iso-extract / \

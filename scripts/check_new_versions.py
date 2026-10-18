@@ -15,10 +15,8 @@ import logging
 import re
 import yaml
 import argparse
-import os
 import sys
 from pathlib import Path
-from urllib.parse import urljoin
 from ruamel.yaml import YAML
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -27,13 +25,46 @@ logger = logging.getLogger(__name__)
 # Minimum supported version (YY.MM format)
 MIN_VERSION = "22.04"
 
-def version_to_float(version):
-    """Convert version string to float for comparison."""
+def version_key(version):
+    """Convert version string to a tuple for comparison (24.04 -> (24, 4, 0))."""
     try:
-        parts = version.split('.')
-        return float(parts[0]) + float(parts[1]) / 100
-    except (ValueError, IndexError):
-        return 0
+        parts = [int(p) for p in version.split('.')]
+    except ValueError:
+        return (0, 0, 0)
+    return tuple(parts + [0] * (3 - len(parts)))
+
+def series_of(version):
+    """Return the release series of a version (24.04.2 -> 24.04)."""
+    return '.'.join(version.split('.')[:2])
+
+def filter_candidates(available, existing):
+    """
+    Select which discovered versions are worth templating.
+
+    Skips point releases superseded by a newer one in the same series
+    (e.g. 24.04.4 when 24.04.5 exists), and series older than the newest
+    one we track that we no longer track (EOL releases still on the CDN).
+    """
+    all_versions = available | existing
+    latest_in_series = {}
+    for v in all_versions:
+        s = series_of(v)
+        if s not in latest_in_series or version_key(v) > version_key(latest_in_series[s]):
+            latest_in_series[s] = v
+
+    tracked_series = {series_of(v) for v in existing}
+    newest_tracked = max((version_key(s) for s in tracked_series), default=(0, 0, 0))
+
+    candidates = set()
+    for v in available - existing:
+        s = series_of(v)
+        if latest_in_series[s] != v:
+            logger.debug(f"Skipping {v}: superseded by {latest_in_series[s]}")
+        elif s not in tracked_series and version_key(s) < newest_tracked:
+            logger.debug(f"Skipping {v}: series {s} is no longer tracked")
+        else:
+            candidates.add(v)
+    return candidates
 
 def get_existing_versions():
     """Get list of versions we already have configured."""
@@ -55,7 +86,7 @@ def scrape_ubuntu_versions():
     Returns a set of version strings.
     """
     versions = set()
-    min_version_float = version_to_float(MIN_VERSION)
+    min_version = version_key(MIN_VERSION)
 
     # Pattern to match version numbers (e.g., 24.04, 24.04.2, 25.04)
     version_pattern = re.compile(r'^(\d{2}\.\d{2}(?:\.\d+)?)/?$')
@@ -78,7 +109,7 @@ def scrape_ubuntu_versions():
                 match = version_pattern.match(href)
                 if match:
                     version = match.group(1)
-                    if version_to_float(version) >= min_version_float:
+                    if version_key(version) >= min_version:
                         versions.add(version)
 
         except Exception as e:
@@ -95,25 +126,16 @@ def check_iso_exists(url):
         logger.debug(f"Error checking {url}: {e}")
         return False
 
-def verify_spin_availability(version, spin_id, spin_config, release, release_codename):
+def verify_spin_availability(version, spin_id, spin_config):
     """
     Verify that a specific spin ISO is available for download.
     Returns the ISO URL if available, None otherwise.
     """
-    # Build the ISO URL based on the spin configuration
     url_base = spin_config['url_base'].rstrip('/')
-    
-    # Extract filename from template
-    filename = spin_config['path_template'].split('/')[-1] \
-        .replace('{{ version }}', version) \
-        .strip('"')
-    
-    # Construct full ISO URL
-    # For most spins: https://cdimage.ubuntu.com/kubuntu/releases/24.04/release/kubuntu-24.04-desktop-amd64.iso
+    filename = spin_config['path_template'].split('/')[-1].replace('{{ version }}', version)
+
+    # e.g. https://cdimage.ubuntu.com/kubuntu/releases/24.04.3/release/kubuntu-24.04.3-desktop-amd64.iso
     full_url = f"{url_base}/{version}/release/{filename}"
-    
-    # Fix up URL to ensure proper formatting
-    full_url = full_url.replace('//', '/').replace('http:/', 'http://').replace('https:/', 'https://')
 
     # Check if ISO exists
     if check_iso_exists(full_url):
@@ -143,8 +165,7 @@ def load_release_codenames():
 
 def get_release_info(version, codenames):
     """Get release name and codename for a version."""
-    base_version = '.'.join(version.split('.')[:2])  # Convert 24.04.2 to 24.04
-    version_info = codenames.get(base_version, {})
+    version_info = codenames.get(series_of(version), {})
     return {
         'release': version_info.get('release', ''),
         'codename': version_info.get('codename', '')
@@ -198,7 +219,7 @@ def generate_version_template(version, spins_config, codenames):
     # Check each spin for availability
     available_spins = []
     for spin_id, spin_config in spins_config.items():
-        iso_url = verify_spin_availability(version, spin_id, spin_config, release, release_codename)
+        iso_url = verify_spin_availability(version, spin_id, spin_config)
         if iso_url:
             available_spins.append(spin_id)
             spin_entry = create_spin_entry(spin_id, spin_config, version, release, release_codename)
@@ -259,7 +280,7 @@ def check_for_new_versions(dry_run=False, check_specific_version=None):
             return False
 
         logger.info(f"Found {len(all_versions)} available versions: {sorted(all_versions)}")
-        versions_to_check = all_versions - existing_versions
+        versions_to_check = filter_candidates(all_versions, existing_versions)
 
     if not versions_to_check:
         logger.info("No new versions to process. All versions are up to date!")

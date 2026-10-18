@@ -1,4 +1,4 @@
-version: '26.04'
+version: 26.04.1
 datatype: image-downloads
 format: products:1.0
 content_id: com.ubuntu.releases:ubuntu
@@ -9,8 +9,8 @@ spin_groups:
     spins:
       - name: kubuntu
         release: resolute
-        version: '26.04'
-        release_title: '26.04'
+        version: 26.04.1
+        release_title: 26.04.1
         release_codename: Resolute Raccoon
         image_type: desktop
         architectures:
@@ -18,17 +18,17 @@ spin_groups:
         files:
           iso:
             path_template: '{{ release }}/release/kubuntu-{{ version }}-desktop-amd64.iso'
-            url: https://cdimage.ubuntu.com/kubuntu/releases/26.04/release/
-            sha256: '95ce9cf68f13015b9a88bd1ef86fcf7eda77c99979fda48c69e28aa0a84f88ac'
-            size: 5068847104
+            url: https://cdimage.ubuntu.com/kubuntu/releases/26.04.1/release/
+            sha256: '831e4d4bb85098339ba43d3502cd6619b27e76daf37246a084cd68a6413090b8'
+            size: 5072990208
   xubuntu:
     name: Xubuntu
     content_id: org.xubuntu:xubuntu
     spins:
       - name: xubuntu
         release: resolute
-        version: '26.04'
-        release_title: '26.04'
+        version: 26.04.1
+        release_title: 26.04.1
         release_codename: Resolute Raccoon
         image_type: desktop
         architectures:
@@ -36,17 +36,17 @@ spin_groups:
         files:
           iso:
             path_template: '{{ release }}/release/xubuntu-{{ version }}-desktop-amd64.iso'
-            url: https://cdimage.ubuntu.com/xubuntu/releases/26.04/release/
-            sha256: 'ae030dbd99426a4c7b2d1c96731e0f435ec9d18f6a28c9e76f077dd5f46364bc'
-            size: 5183416320
+            url: https://cdimage.ubuntu.com/xubuntu/releases/26.04.1/release/
+            sha256: '0cd5160f72ae6b7a26be7a29248b60cbd579b9e6aa8fbd274e95264da0ade43d'
+            size: 5186390016
   lubuntu:
     name: Lubuntu
     content_id: me.lubuntu:lubuntu
     spins:
       - name: lubuntu
         release: resolute
-        version: '26.04'
-        release_title: '26.04'
+        version: 26.04.1
+        release_title: 26.04.1
         release_codename: Resolute Raccoon
         image_type: desktop
         architectures:
@@ -54,17 +54,17 @@ spin_groups:
         files:
           iso:
             path_template: '{{ release }}/release/lubuntu-{{ version }}-desktop-amd64.iso'
-            url: https://cdimage.ubuntu.com/lubuntu/releases/26.04/release/
-            sha256: 'a9eef9e75c139caa428d11799f681e2d29e6ba7e22aa045d9a64599d45cd12ff'
-            size: 3918290944
+            url: https://cdimage.ubuntu.com/lubuntu/releases/26.04.1/release/
+            sha256: 'a8038585420f2270845549c6f493e0ec98e68d4b2c49571cbe500a4b5fab3062'
+            size: 3927552000
   ubuntu-budgie:
     name: Ubuntu Budgie
     content_id: org.ubuntubudgie:ubuntu-budgie
     spins:
       - name: ubuntu-budgie
         release: resolute
-        version: '26.04'
-        release_title: '26.04'
+        version: 26.04.1
+        release_title: 26.04.1
         release_codename: Resolute Raccoon
         image_type: desktop
         architectures:
@@ -72,17 +72,18 @@ spin_groups:
         files:
           iso:
             path_template: '{{ release }}/release/ubuntu-budgie-{{ version }}-desktop-amd64.iso'
-            url: https://cdimage.ubuntu.com/ubuntu-budgie/releases/26.04/release/
-            sha256: 'cbdebfa6517d6f64ecc07f6b91a672cf623e1f378b1b92c6e2d27bd7c8b6ca42'
-            size: 4121487360
+            url: 
+              https://cdimage.ubuntu.com/ubuntu-budgie/releases/26.04.1/release/
+            sha256: 'a0a712266e536246786a4e29f6d0d7328326b9b4b54f746202a8575208c23921'
+            size: 4127838208
   edubuntu:
     name: Edubuntu
     content_id: org.edubuntu:edubuntu
     spins:
       - name: edubuntu
         release: resolute
-        version: '26.04'
-        release_title: '26.04'
+        version: 26.04.1
+        release_title: 26.04.1
         release_codename: Resolute Raccoon
         image_type: desktop
         architectures:
@@ -90,17 +91,17 @@ spin_groups:
         files:
           iso:
             path_template: '{{ release }}/release/edubuntu-{{ version }}-desktop-amd64.iso'
-            url: https://cdimage.ubuntu.com/edubuntu/releases/26.04/release/
-            sha256: 'e2255cca689450e368d504fbbc28a2b8086f3e871d5364ca14409391e6985ac3'
-            size: 7939172352
+            url: https://cdimage.ubuntu.com/edubuntu/releases/26.04.1/release/
+            sha256: '1bd6aa9285b4b0f15af69b281c35513305506a7743a6cb32bc22528856b694e2'
+            size: 7943991296
   ubuntu-studio:
     name: Ubuntu Studio
     content_id: org.ubuntustudio:ubuntu-studio
     spins:
       - name: ubuntu-studio
         release: resolute
-        version: '26.04'
-        release_title: '26.04'
+        version: 26.04.1
+        release_title: 26.04.1
         release_codename: Resolute Raccoon
         image_type: desktop
         architectures:
@@ -108,17 +109,18 @@ spin_groups:
         files:
           iso:
             path_template: '{{ release }}/release/ubuntustudio-{{ version }}-desktop-amd64.iso'
-            url: https://cdimage.ubuntu.com/ubuntustudio/releases/26.04/release/
-            sha256: '900e75b0c40875d4e7c223788a94fd6cb908058780a4484c64cea5807ce3d5e0'
-            size: 7141033984
+            url: 
+              https://cdimage.ubuntu.com/ubuntustudio/releases/26.04.1/release/
+            sha256: '2b25d06203c8a2f60da23e20e3afd1fa400f8ff8104fd074c1b7e49fc3768084'
+            size: 7127195648
   ubuntu-cinnamon:
     name: Ubuntu Cinnamon
     content_id: org.ubuntucinnamon:ubuntu-cinnamon
     spins:
       - name: ubuntu-cinnamon
         release: resolute
-        version: '26.04'
-        release_title: '26.04'
+        version: 26.04.1
+        release_title: 26.04.1
         release_codename: Resolute Raccoon
         image_type: desktop
         architectures:
@@ -126,6 +128,7 @@ spin_groups:
         files:
           iso:
             path_template: '{{ release }}/release/ubuntucinnamon-{{ version }}-desktop-amd64.iso'
-            url: https://cdimage.ubuntu.com/ubuntucinnamon/releases/26.04/release/
-            sha256: '42276d3917da9b3ec8b97f924847d85b3faf07c5d12f182596455bb571431f6f'
-            size: 5659195392
+            url: 
+              https://cdimage.ubuntu.com/ubuntucinnamon/releases/26.04.1/release/
+            sha256: 'ceb8156f6aabf597da4a98a9794a319d765b39c888a5200ae88f3915d22c8371'
+            size: 5667256320

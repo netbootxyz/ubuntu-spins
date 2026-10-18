@@ -16,16 +16,16 @@ Users can then boot any Ubuntu flavor directly from netboot.xyz without pre-down
 
 | Distribution | Versions | Status |
 |-------------|----------|--------|
-| **Kubuntu** | 22.04.5, 24.04.2, 24.04.3, 25.04, 25.10 | ✅ Active |
-| **Xubuntu** | 22.04.5, 24.04.2, 24.04.3, 25.04, 25.10 | ✅ Active |
-| **Lubuntu** | 22.04.5, 24.04.2, 24.04.3, 25.04, 25.10 | ✅ Active |
-| **Ubuntu MATE** | 22.04.5, 24.04.2, 24.04.3, 25.04, 25.10 | ✅ Active |
-| **Ubuntu Budgie** | 22.04.5, 24.04.2, 24.04.3, 25.04, 25.10 | ✅ Active |
-| **Edubuntu** | 24.04.2, 24.04.3, 25.04, 25.10 | ✅ Active |
-| **Ubuntu Studio** | 22.04.5, 24.04.2, 24.04.3, 25.04, 25.10 | ✅ Active |
-| **Ubuntu Cinnamon** | 24.04.2, 24.04.3, 25.04, 25.10 | ✅ Active |
+| **Kubuntu** | 22.04.5, 24.04.5, 26.04.1, 26.10 | ✅ Active |
+| **Xubuntu** | 22.04.5, 24.04.5, 26.04.1, 26.10 | ✅ Active |
+| **Lubuntu** | 22.04.5, 24.04.5, 26.04.1, 26.10 | ✅ Active |
+| **Ubuntu MATE** | 22.04.5, 24.04.5, 26.10 | ✅ Active |
+| **Ubuntu Budgie** | 22.04.5, 24.04.5, 26.04.1, 26.10 | ✅ Active |
+| **Edubuntu** | 24.04.5, 26.04.1, 26.10 | ✅ Active |
+| **Ubuntu Studio** | 26.04.1, 26.10 | ✅ Active |
+| **Ubuntu Cinnamon** | 24.04.5, 26.04.1, 26.10 | ✅ Active |
 
-**Note**: Point releases (e.g., 24.04.2 → 24.04.3) are superseded by newer ones. Ubuntu removes older ISOs from their CDN.
+**Note**: Only the latest point release of each supported series is tracked (e.g., 24.04.5 replaces 24.04.3). The version checker skips superseded point releases and end-of-life series.
 
 ## Quick Start
 
@@ -42,7 +42,7 @@ pip install -r requirements.txt
 python3 scripts/check_new_versions.py
 
 # Check specific version
-python3 scripts/check_new_versions.py --version 24.10
+python3 scripts/check_new_versions.py --version 26.10
 
 # Dry run (preview only)
 python3 scripts/check_new_versions.py --dry-run
@@ -54,7 +54,7 @@ Instead of downloading multi-GB ISOs, fetch checksums from Ubuntu's published SH
 
 ```bash
 # Update checksums for a specific version
-python3 scripts/fetch_checksums.py --config config/versions/24.04.3.yaml
+python3 scripts/fetch_checksums.py --config config/versions/26.10.yaml
 
 # Update all versions
 for file in config/versions/*.yaml; do
@@ -117,22 +117,21 @@ ubuntu-spins/
 │   ├── release_codenames.yaml    # Version → codename mapping
 │   └── versions/                 # Per-version configs
 │       ├── 22.04.5.yaml
-│       ├── 24.04.2.yaml
-│       ├── 24.04.3.yaml
-│       ├── 24.10.yaml
-│       └── 25.04.yaml
+│       ├── 24.04.5.yaml
+│       ├── 26.04.1.yaml
+│       └── 26.10.yaml
 ├── scripts/
 │   ├── check_new_versions.py     # Version discovery & template creation
-│   ├── fetch_checksums.py        # Fast checksum fetching (NEW!)
-│   ├── update_iso_info.py        # Legacy ISO downloader (slow)
-│   └── generate_iso_json.py      # JSON aggregator
+│   ├── fetch_checksums.py        # Checksum fetching from SHA256SUMS
+│   ├── generate_iso_json.py      # JSON aggregator
+│   └── validate_json.py          # JSON output validation
 ├── output/
 │   ├── kubuntu.json              # Generated JSON files
 │   ├── xubuntu.json
 │   └── ... (one per spin)
 └── .github/workflows/
     ├── check-versions.yml        # Daily automation
-    ├── update-iso-info.yml       # Manual ISO updates
+    ├── update-iso-info.yml       # Manual checksum updates
     └── process-iso.yml           # Mini-ISO builder
 ```
 
@@ -146,6 +145,7 @@ Discovers new Ubuntu versions and creates templates.
 - Verifies ISO availability with HEAD requests
 - Creates version templates automatically
 - Skips versions without available ISOs
+- Skips superseded point releases and end-of-life series
 
 **Examples**:
 ```bash
@@ -153,7 +153,7 @@ Discovers new Ubuntu versions and creates templates.
 python3 scripts/check_new_versions.py
 
 # Check specific version
-python3 scripts/check_new_versions.py --version 25.10
+python3 scripts/check_new_versions.py --version 26.10
 
 # Dry run
 python3 scripts/check_new_versions.py --dry-run
@@ -162,7 +162,7 @@ python3 scripts/check_new_versions.py --dry-run
 python3 scripts/check_new_versions.py -v
 ```
 
-### `fetch_checksums.py` ⚡ NEW!
+### `fetch_checksums.py`
 Fetches SHA256 checksums from Ubuntu's published files (no ISO download needed).
 
 **Why this is better**:
@@ -174,10 +174,10 @@ Fetches SHA256 checksums from Ubuntu's published files (no ISO download needed).
 **Examples**:
 ```bash
 # Update single version
-python3 scripts/fetch_checksums.py --config config/versions/24.04.3.yaml
+python3 scripts/fetch_checksums.py --config config/versions/26.10.yaml
 
 # Dry run
-python3 scripts/fetch_checksums.py --config config/versions/24.04.3.yaml --dry-run
+python3 scripts/fetch_checksums.py --config config/versions/26.10.yaml --dry-run
 
 # Update all versions
 for file in config/versions/*.yaml; do
@@ -199,21 +199,6 @@ Aggregates version YAMLs into JSON format for netboot.xyz.
 python3 scripts/generate_iso_json.py --output-dir output/
 ```
 
-### `update_iso_info.py` (Legacy)
-Downloads ISOs and calculates checksums. **Prefer `fetch_checksums.py` instead** for speed.
-
-**Examples**:
-```bash
-# Update specific version (slow - downloads ISOs)
-python3 scripts/update_iso_info.py --config config/versions/24.04.3.yaml
-
-# Update single spin only
-python3 scripts/update_iso_info.py --config config/versions/24.04.3.yaml --spin kubuntu
-
-# Use torrent (faster, requires transmission-cli)
-python3 scripts/update_iso_info.py --config config/versions/24.04.3.yaml --use-torrent
-```
-
 ## GitHub Actions
 
 ### Daily Version Checker
@@ -223,19 +208,17 @@ python3 scripts/update_iso_info.py --config config/versions/24.04.3.yaml --use-t
 Automatically discovers new versions and creates a PR with templates.
 
 **Manual triggers**:
-- `version`: Check specific version (e.g., "24.10")
+- `version`: Check specific version (e.g., "26.10")
 - `dry_run`: Preview without creating PR
 
-### Manual ISO Updater
+### Manual Checksum Updater
 **Workflow**: `.github/workflows/update-iso-info.yml`
 **Trigger**: Manual only
 
-Downloads ISOs and updates checksums (slow, use sparingly).
+Runs `fetch_checksums.py` across version configs, regenerates the JSON output, and opens a PR.
 
 **Manual inputs**:
-- `spin`: Update specific spin only
 - `version`: Update specific version
-- `use_torrent`: Use torrents for faster download
 
 ### Mini-ISO Builder
 **Workflow**: `.github/workflows/process-iso.yml`
@@ -244,7 +227,7 @@ Downloads ISOs and updates checksums (slow, use sparingly).
 Builds the netboot.xyz mini-ISO with embedded JSON files.
 
 **What it does**:
-1. Downloads the latest Ubuntu mini-ISO
+1. Downloads the Ubuntu mini-ISO (pinned via `MINI_ISO_URL`, currently 26.10)
 2. Extracts vmlinuz and initrd
 3. Embeds all spin JSON files into the initrd
 4. Repackages everything into a standalone bootable ISO
@@ -285,16 +268,16 @@ release_codenames:
 Per-version configuration with all spins and their checksums.
 
 ```yaml
-version: 24.04.3
+version: 24.04.5
 spin_groups:
   kubuntu:
     spins:
       - name: kubuntu
-        version: 24.04.3
+        version: 24.04.5
         release: noble
         files:
           iso:
-            sha256: "8c69dd380e5a8969b77ca1708da59f0b9a50d0c151f0a65917180585697dd1e6"
+            sha256: "..."
             size: 4560015360
 ```
 
@@ -307,15 +290,21 @@ When Ubuntu announces a new version:
 1. Update `config/release_codenames.yaml`:
 ```yaml
 release_codenames:
-  "25.10":
-    codename: "Questing Quetzel"
-    release: "questing"
+  "26.10":
+    codename: "Stonking Stingray"
+    release: "stonking"
 ```
 
 2. Run version checker:
 ```bash
-python3 scripts/check_new_versions.py --version 25.10
+python3 scripts/check_new_versions.py --version 26.10
 ```
+
+3. Update `MINI_ISO_URL` in `.github/workflows/process-iso.yml` if the mini-ISO should move to the new release.
+
+### Removing an End-of-Life Release
+
+Delete its `config/versions/*.yaml` file and its entry in `release_codenames.yaml`, then regenerate the JSON. The version checker will not re-add a series older than the newest one tracked.
 
 ### Adding a New Spin
 
@@ -341,7 +330,7 @@ python3 scripts/check_new_versions.py
 ### "No ISOs available for version X"
 **Cause**: Ubuntu hasn't published ISOs for that version yet, or removed them.
 
-**Solution**: Wait for release, or check if a newer point release exists (e.g., use 24.04.3 instead of 24.04.2).
+**Solution**: Wait for release, or check if a newer point release exists (e.g., use 24.04.5 instead of 24.04.3).
 
 ### "SHA256SUMS file not found"
 **Cause**: Version is too old or was removed from Ubuntu's CDN.
@@ -353,29 +342,13 @@ python3 scripts/check_new_versions.py
 
 **Solution**: Run `fetch_checksums.py` to update:
 ```bash
-python3 scripts/fetch_checksums.py --config config/versions/24.04.3.yaml
+python3 scripts/fetch_checksums.py --config config/versions/26.10.yaml
 ```
 
 ### Workflow fails with "module not found"
 **Cause**: Missing Python dependencies.
 
 **Solution**: Ensure workflow uses `pip install -r requirements.txt`.
-
-## Performance Notes
-
-### Old Method (update_iso_info.py)
-- Downloads 4-6 GB ISOs per spin
-- 6 spins × 4 GB = 24+ GB download
-- Takes hours on slow connections
-- Requires significant disk space
-
-### New Method (fetch_checksums.py)
-- Fetches ~1 KB SHA256SUMS files
-- Uses HEAD requests for file sizes
-- Completes in seconds
-- No disk space needed
-
-**Always prefer `fetch_checksums.py`** unless you specifically need to verify ISOs locally.
 
 ## Contributing
 
@@ -397,7 +370,7 @@ pip install -r requirements.txt
 python3 scripts/check_new_versions.py --dry-run -v
 
 # Test checksum fetching
-python3 scripts/fetch_checksums.py --config config/versions/24.04.3.yaml --dry-run
+python3 scripts/fetch_checksums.py --config config/versions/26.10.yaml --dry-run
 
 # Test JSON generation
 python3 scripts/generate_iso_json.py --output-dir output/
@@ -415,6 +388,14 @@ This project is maintained by the netboot.xyz team for automated Ubuntu spin man
 - [Issue Tracker](https://github.com/netbootxyz/ubuntu-spins/issues) - Report problems
 
 ## Changelog
+
+### 2026-10-18
+- ✅ Added Ubuntu 26.10 "Stonking Stingray", 26.04.1 and 24.04.5
+- 🧹 Removed 24.04.2 and 25.04 (ISOs gone), 25.10 (EOL), and superseded 24.04.3 / 26.04
+- 🔧 Version checker now skips superseded point releases and EOL series
+- 🔧 Mini-ISO builder now uses the 26.10 release mini-ISO (daily-live path was removed upstream)
+- 🧹 Removed `update_iso_info.py` (broken URL construction); `update-iso-info.yml` now uses `fetch_checksums.py`
+- 🧹 Removed unused `ubuntu-release`/`ubuntu-server-release` spin entries, duplicate `iso-menu-session`, and stale report docs
 
 ### 2025-10-11
 - ✨ **NEW**: Complete bootable ISO now included in releases (`ubuntu-netbootxyz-mini.iso`)
